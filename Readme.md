@@ -3,7 +3,7 @@ This is an easy to use, non-bloated, framework independent, barcode generator in
 
 It creates SVG, PNG, JPG and HTML images, from the most used 1D barcode standards.
 
-*The codebase is largely from the TCPDF barcode generator. It is still a bit of a mess, bit I will clean it in the future. I do not expect the interface of this class will change during the clean ups.*
+*The codebase is largely from the [TCPDF barcode generator](https://github.com/tecnickcom/TCPDF) by Nicola Asuni. This code is therefor licensed under LGPLv3. It is still a bit of a mess, bit I will clean it in the future. I do not expect the interface of this class will change during the clean ups.*
 
 ## Installation
 Install through [composer](https://getcomposer.org/doc/00-intro.md):
