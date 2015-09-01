@@ -5,11 +5,11 @@
     "keywords": [ "php", "barcode", "barcode generator", "EAN", "EAN13", "UPC", "Code39", "Code128", "Code93", "Standard 2 of 5", "MSI", "POSTNET", "KIX", "KIXCODE", "CODABAR", "PHARMA", "Code11", "SVG", "PNG", "HTML", "JPG", "JPEG" ],
     "homepage": "http://github.com/picqer/php-barcode-generator",
     "license": "LGPLv3",
-	"authors": [
-    	{
-    		"name": "Nicola Asuni",
-    		"email": "info@tecnick.com",
-    		"homepage": "http://nicolaasuni.tecnick.com"
+    "authors": [
+        {
+            "name": "Nicola Asuni",
+            "email": "info@tecnick.com",
+            "homepage": "http://nicolaasuni.tecnick.com"
     	},
         {
             "name": "Casper Bakker",
