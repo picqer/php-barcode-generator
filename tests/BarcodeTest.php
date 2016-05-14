@@ -87,7 +87,6 @@ class BarcodeTest extends PHPUnit_Framework_TestCase
         $this->assertStringEqualsFile('tests/verified-files/0049000004632-ean13.svg', $generated);
     }
 
-
     /**
      * @test
      * @expectedException \Picqer\Barcode\Exceptions\InvalidCheckDigitException
@@ -96,5 +95,15 @@ class BarcodeTest extends PHPUnit_Framework_TestCase
     {
         $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
         $generator->getBarcode('0049000004633', $generator::TYPE_EAN_13);
+    }
+
+    /**
+     * @test
+     * @expectedException \Picqer\Barcode\Exceptions\UnknownTypeException
+     */
+    public function generator_throws_unknown_type_exceptions()
+    {
+        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+        $generator->getBarcode('0049000004633', 'vladimir');
     }
 }

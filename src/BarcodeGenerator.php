@@ -34,6 +34,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
 use Picqer\Barcode\Exceptions\InvalidFormatException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
+use Picqer\Barcode\Exceptions\UnknownTypeException;
 
 abstract class BarcodeGenerator
 {
@@ -200,12 +201,14 @@ abstract class BarcodeGenerator
                 break;
             }
             default: {
-                $arrcode = false;
+                throw new UnknownTypeException();
                 break;
             }
         }
 
-        $arrcode = $this->convertBarcodeArrayToNewStyle($arrcode);
+        if ( ! isset($arrcode['maxWidth'])) {
+            $arrcode = $this->convertBarcodeArrayToNewStyle($arrcode);
+        }
 
         return $arrcode;
     }
@@ -517,8 +520,8 @@ abstract class BarcodeGenerator
             '%'
         );
         $sum = 0;
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
+        $codelength = strlen($code);
+        for ($i = 0; $i < $codelength; ++$i) {
             $k = array_keys($chars, $code{$i});
             $sum += $k[0];
         }
@@ -1429,7 +1432,7 @@ abstract class BarcodeGenerator
         $sequence = array();
         // get A sequences (if any)
         $numseq = array();
-        preg_match_all('/([\0-\31])/', $code, $numseq, PREG_OFFSET_CAPTURE);
+        preg_match_all('/([\x00-\x1f])/', $code, $numseq, PREG_OFFSET_CAPTURE);
         if (isset($numseq[1]) AND ! empty($numseq[1])) {
             $end_offset = 0;
             foreach ($numseq[1] as $val) {
@@ -2690,19 +2693,17 @@ abstract class BarcodeGenerator
      * @param $number (string) number to convert specified as a string
      * @return string hexadecimal representation
      */
-    public function dec_to_hex($number)
+    protected function dec_to_hex($number)
     {
-        $hex = array();
         if ($number == 0) {
             return '00';
         }
+
+        $hex = [];
+
         while ($number > 0) {
-            if ($number == 0) {
-                array_push($hex, '0');
-            } else {
-                array_push($hex, strtoupper(dechex(bcmod($number, '16'))));
-                $number = bcdiv($number, '16', 0);
-            }
+            array_push($hex, strtoupper(dechex(bcmod($number, '16'))));
+            $number = bcdiv($number, '16', 0);
         }
         $hex = array_reverse($hex);
 
@@ -2716,7 +2717,7 @@ abstract class BarcodeGenerator
      * @param $hex (string) hexadecimal number to convert specified as a string
      * @return string hexadecimal representation
      */
-    public function hex_to_dec($hex)
+    protected function hex_to_dec($hex)
     {
         $dec = 0;
         $bitval = 1;

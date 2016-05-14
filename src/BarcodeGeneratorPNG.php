@@ -37,7 +37,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
             $png = new \Imagick();
             $png->newImage($width, $height, 'none', 'png');
             $imageMagickObject = new \imagickdraw();
-            $imageMagickObject->setfillcolor($colorForeground);
+            $imageMagickObject->setFillColor($colorForeground);
         } else {
             return false;
         }
@@ -50,7 +50,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
             if ($bar['drawBar']) {
                 $y = round(($bar['positionVertical'] * $totalHeight / $barcodeData['maxHeight']), 3);
                 // draw a vertical bar
-                if ($imagick) {
+                if ($imagick && isset($imageMagickObject)) {
                     $imageMagickObject->rectangle($positionHorizontal, $y, ($positionHorizontal + $bw), ($y + $bh));
                 } else {
                     imagefilledrectangle($png, $positionHorizontal, $y, ($positionHorizontal + $bw) - 1, ($y + $bh),
@@ -60,8 +60,8 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
             $positionHorizontal += $bw;
         }
         ob_start();
-        if ($imagick) {
-            $png->drawimage($imageMagickObject);
+        if ($imagick && isset($imageMagickObject)) {
+            $png->drawImage($imageMagickObject);
             echo $png;
         } else {
             imagepng($png);
