@@ -43,4 +43,14 @@ class BarcodeTest extends PHPUnit_Framework_TestCase
         $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
         $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
     }
+
+    /**
+     * @test
+     * @expectedException \Picqer\Barcode\Exceptions\InvalidCharacterException
+     */
+    public function ean13_generator_throws_exception_if_invalid_chars_are_used()
+    {
+        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+        $generator->getBarcode('A123', $generator::TYPE_EAN_13);
+    }
 }

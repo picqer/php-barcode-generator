@@ -29,6 +29,8 @@
 
 namespace Picqer\Barcode;
 
+use Picqer\Barcode\Exceptions\InvalidCharacterException;
+
 abstract class BarcodeGenerator
 {
     const TYPE_CODE_39 = 'C39';
@@ -1638,6 +1640,9 @@ abstract class BarcodeGenerator
             }
             $seq .= '01010'; // center guard bar
             for ($i = $half_len; $i < $len; ++$i) {
+                if ( ! isset($codes['C'][$code{$i}])) {
+                    throw new InvalidCharacterException('Char ' . $code{$i} . ' not allowed');
+                }
                 $seq .= $codes['C'][$code{$i}];
             }
             $seq .= '101'; // right guard bar
