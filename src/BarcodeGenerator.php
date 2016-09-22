@@ -56,7 +56,7 @@ abstract class BarcodeGenerator
     const TYPE_EAN_8 = 'EAN8';
     const TYPE_EAN_13 = 'EAN13';
     const TYPE_UPC_A = 'UPCA';
-    const TYPE_UPC_E = 'UPCA';
+    const TYPE_UPC_E = 'UPCE';
     const TYPE_MSI = 'MSI';
     const TYPE_MSI_CHECKSUM = 'MSI+';
     const TYPE_POSTNET = 'POSTNET';
