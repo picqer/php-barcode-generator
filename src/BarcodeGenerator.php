@@ -42,7 +42,7 @@ abstract class BarcodeGenerator
     const TYPE_CODE_39_CHECKSUM = 'C39+';
     const TYPE_CODE_39E = 'C39E';
     const TYPE_CODE_39E_CHECKSUM = 'C39E+';
-    const TYPE_CODE_93 = 'C39';
+    const TYPE_CODE_93 = 'C93';
     const TYPE_STANDARD_2_5 = 'S25';
     const TYPE_STANDARD_2_5_CHECKSUM = 'S25+';
     const TYPE_INTERLEAVED_2_5 = 'I25';
