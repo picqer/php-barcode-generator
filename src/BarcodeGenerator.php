@@ -42,7 +42,7 @@ abstract class BarcodeGenerator
     const TYPE_CODE_39_CHECKSUM = 'C39+';
     const TYPE_CODE_39E = 'C39E';
     const TYPE_CODE_39E_CHECKSUM = 'C39E+';
-    const TYPE_CODE_93 = 'C39';
+    const TYPE_CODE_93 = 'C93';
     const TYPE_STANDARD_2_5 = 'S25';
     const TYPE_STANDARD_2_5_CHECKSUM = 'S25+';
     const TYPE_INTERLEAVED_2_5 = 'I25';
@@ -56,7 +56,7 @@ abstract class BarcodeGenerator
     const TYPE_EAN_8 = 'EAN8';
     const TYPE_EAN_13 = 'EAN13';
     const TYPE_UPC_A = 'UPCA';
-    const TYPE_UPC_E = 'UPCA';
+    const TYPE_UPC_E = 'UPCE';
     const TYPE_MSI = 'MSI';
     const TYPE_MSI_CHECKSUM = 'MSI+';
     const TYPE_POSTNET = 'POSTNET';
