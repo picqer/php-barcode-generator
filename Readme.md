@@ -23,7 +23,7 @@ echo $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
 The ->getBarcode() routine accepts the following:
 - $code Data for the barcode
 - $type Type of barcode, use the constants defined in the class
-- $widthFactor Width is based on the length of the data, with this factor you can make the barcode bars wider then default
+- $widthFactor Width is based on the length of the data, with this factor you can make the barcode bars wider than default
 - $totalHeight The total height of the barcode
 - $color Hex code of the foreground color
 
