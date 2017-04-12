@@ -39,7 +39,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
             $imageMagickObject = new \imagickdraw();
             $imageMagickObject->setFillColor($colorForeground);
         } else {
-            return false;
+            throw new BarcodeException('Neither gd-lib or imagick are installed');
         }
 
         // print bars
