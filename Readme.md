@@ -5,6 +5,25 @@ It creates SVG, PNG, JPG and HTML images, from the most used 1D barcode standard
 
 *The codebase is largely from the [TCPDF barcode generator](https://github.com/tecnickcom/TCPDF) by Nicola Asuni. This code is therefor licensed under LGPLv3. It is still a bit of a mess, bit I will clean it in the future. I do not expect the interface of this class will change during the clean ups.*
 
+## Dependencies
+php-barcode-generator requires either [gd-lib](https://secure.php.net/manual/en/ref.image.php) or [php5-imagick](https://secure.php.net/manual/en/book.imagick.php). If both are present, gd-lib will be used.
+
+### gd-lib
+In Debian, as root:
+```
+apt-get install php5-gd
+php5enmod gd
+service apache2 restart
+```
+
+### imagick
+In Debian, as root:
+```
+apt-get install php5-imagick
+php5enmod imagick
+service apache2 restart
+```
+
 ## Installation
 Install through [composer](https://getcomposer.org/doc/00-intro.md):
 
