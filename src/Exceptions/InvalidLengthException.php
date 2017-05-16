@@ -2,4 +2,6 @@
 
 namespace Picqer\Barcode\Exceptions;
 
-class InvalidLengthException extends BarcodeException {}
+class InvalidLengthException extends BarcodeException
+{
+}

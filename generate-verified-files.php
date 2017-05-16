@@ -1,10 +1,10 @@
 <?php
 
-include('src/BarcodeGenerator.php');
-include('src/BarcodeGeneratorPNG.php');
-include('src/BarcodeGeneratorSVG.php');
-include('src/BarcodeGeneratorJPG.php');
-include('src/BarcodeGeneratorHTML.php');
+include 'src/BarcodeGenerator.php';
+include 'src/BarcodeGeneratorPNG.php';
+include 'src/BarcodeGeneratorSVG.php';
+include 'src/BarcodeGeneratorJPG.php';
+include 'src/BarcodeGeneratorHTML.php';
 
 $generatorSVG = new Picqer\Barcode\BarcodeGeneratorSVG();
 file_put_contents('tests/verified-files/081231723897-ean13.svg', $generatorSVG->getBarcode('081231723897', $generatorSVG::TYPE_EAN_13));
