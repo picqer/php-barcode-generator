@@ -2,4 +2,6 @@
 
 namespace Picqer\Barcode\Exceptions;
 
-class InvalidCheckDigitException extends BarcodeException {}
+class InvalidCheckDigitException extends BarcodeException
+{
+}

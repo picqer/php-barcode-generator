@@ -2,4 +2,6 @@
 
 namespace Picqer\Barcode\Exceptions;
 
-class BarcodeException extends \Exception {}
+class BarcodeException extends \Exception
+{
+}
