@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode;
 
+use Picqer\Barcode\Exceptions\BarcodeException;
+
 class BarcodeGeneratorJPG extends BarcodeGenerator
 {
 
@@ -15,6 +17,7 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
      * @param array $color RGB (0-255) foreground color for bar elements (background is transparent).
      * @return string image data or false in case of error.
      * @public
+     * @throws BarcodeException
      */
     public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = array(0, 0, 0))
     {
@@ -39,7 +42,7 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
             $imageMagickObject = new \imagickdraw();
             $imageMagickObject->setFillColor($colorForeground);
         } else {
-            return false;
+            throw new BarcodeException('Neither gd-lib or imagick are installed!');
         }
 
         // print bars
