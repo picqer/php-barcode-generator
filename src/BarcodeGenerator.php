@@ -1273,35 +1273,7 @@ abstract class BarcodeGenerator
             }
             default: { // MODE AUTO
                 // split code into sequences
-                $sequence = array();
-                // get numeric sequences (if any)
-                $numseq = array();
-                preg_match_all('/([0-9]{4,})/', $code, $numseq, PREG_OFFSET_CAPTURE);
-                if (isset($numseq[1]) AND ! empty($numseq[1])) {
-                    $end_offset = 0;
-                    foreach ($numseq[1] as $val) {
-                        $offset = $val[1];
-                        if ($offset > $end_offset) {
-                            // non numeric sequence
-                            $sequence = array_merge($sequence,
-                                $this->get128ABsequence(substr($code, $end_offset, ($offset - $end_offset))));
-                        }
-                        // numeric sequence
-                        $slen = strlen($val[0]);
-                        if (($slen % 2) != 0) {
-                            // the length must be even
-                            --$slen;
-                        }
-                        $sequence[] = array('C', substr($code, $offset, $slen), $slen);
-                        $end_offset = $offset + $slen;
-                    }
-                    if ($end_offset < $len) {
-                        $sequence = array_merge($sequence, $this->get128ABsequence(substr($code, $end_offset)));
-                    }
-                } else {
-                    // text code (non C mode)
-                    $sequence = array_merge($sequence, $this->get128ABsequence($code));
-                }
+                $sequence = $this->optimiseSequence($code, $len);
                 // process the sequence
                 foreach ($sequence as $key => $seq) {
                     switch ($seq[0]) {
@@ -1417,6 +1389,66 @@ abstract class BarcodeGenerator
         }
 
         return $bararray;
+    }
+
+    /**
+     * Do some optimisation for a variable character type string
+     * 
+     * @param string $code
+     * @param int $len
+     * @return array
+     */
+    private function optimiseSequence($code, $len)
+    {
+        // split code into sequences
+        $sequence = array();
+        
+        // SPECIAL CASE: We had a set of barcodes that started with a % sign 
+        // followed by an odd number of characters.  While the generated barcode
+        // was valid it wasn't considered optimal on the grounds that there were
+        // two character encoding switches in the resulting barcode where it was
+        // possible to produce the same representation with only a single 
+        // switch if we encoded the first two characters as another encoding and
+        // all subsequent characters as type C.  This hack explicitly sets up 
+        // that sequence.  
+        if (preg_match("/^%\d{27,27}$/", $code)) {
+            $sequence = array_merge(
+                $sequence, 
+                $this->get128ABsequence(substr($code, 0, 2)),
+                [['C', substr($code, 2), 26]]
+            );
+            return $sequence;
+        }
+        
+        // get numeric sequences (if any)
+        $numseq = array();
+        preg_match_all('/([0-9]{4,})/', $code, $numseq, PREG_OFFSET_CAPTURE);
+        if (isset($numseq[1]) AND ! empty($numseq[1])) {
+            $end_offset = 0;
+            foreach ($numseq[1] as $val) {
+                $offset = $val[1];
+                if ($offset > $end_offset) {
+                    // non numeric sequence
+                    $sequence = array_merge($sequence, $this->get128ABsequence(substr($code, $end_offset, ($offset - $end_offset))));
+                }
+                // numeric sequence
+                $slen = strlen($val[0]);
+                if (($slen % 2) != 0) {
+                    // the length must be even
+                    --$slen;
+                }
+                $sequence[] = array('C', substr($code, $offset, $slen), $slen);
+                $end_offset = $offset + $slen;
+            }
+            if ($end_offset < $len) {
+                $sequence = array_merge($sequence, $this->get128ABsequence(substr($code, $end_offset)));
+            }
+        } else {
+            // text code (non C mode)
+            $sequence = array_merge($sequence, $this->get128ABsequence($code));
+        }
+        
+        return $sequence;
     }
 
     /**
