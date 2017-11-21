@@ -1283,12 +1283,12 @@ abstract class BarcodeGenerator
                         $offset = $val[1];
                         
                         // numeric sequence
-						$slen = strlen($val[0]);
-						if (($slen % 2) != 0) {
-							// the length must be even
-							++$offset;
-							$val[0] = substr($val[0],1);
-						}
+                        $slen = strlen($val[0]);
+                        if (($slen % 2) != 0) {
+                            // the length must be even
+                            ++$offset;
+                            $val[0] = substr($val[0],1);
+                        }
                         
                         if ($offset > $end_offset) {
                             // non numeric sequence
