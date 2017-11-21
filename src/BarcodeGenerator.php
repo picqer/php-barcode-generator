@@ -1281,12 +1281,21 @@ abstract class BarcodeGenerator
                     $end_offset = 0;
                     foreach ($numseq[1] as $val) {
                         $offset = $val[1];
+                        
+                        // numeric sequence
+						$slen = strlen($val[0]);
+						if (($slen % 2) != 0) {
+							// the length must be even
+							++$offset;
+							$val[0] = substr($val[0],1);
+						}
+                        
                         if ($offset > $end_offset) {
                             // non numeric sequence
                             $sequence = array_merge($sequence,
                                 $this->get128ABsequence(substr($code, $end_offset, ($offset - $end_offset))));
                         }
-                        // numeric sequence
+                        // numeric sequence fallback
                         $slen = strlen($val[0]);
                         if (($slen % 2) != 0) {
                             // the length must be even
