@@ -1419,6 +1419,28 @@ abstract class BarcodeGenerator
             );
             return $sequence;
         }
+
+        /**
+         * DPD International: If Dubai, UAE, Candaian, British, Neterland postcodes contains a mixed string & numbers,
+         * then the bar code should be generated on a different way.
+         *
+         * Example:
+         * %POBOX7215501576001732302784
+         *
+         * First 8 character should be "B"
+         *
+         * BBBBBBBCCCCCCCCCCCCCCCCCCC
+         *
+         */
+        if (!is_numeric(substr(ltrim($code,'%'), 0, 7))) {
+            $sequence = array_merge(
+                $sequence,
+                $this->get128ABsequence(substr($code, 0, 8)),
+                [['C', substr($code, 8), 26]]
+            );
+
+            return $sequence;
+        }
         
         // get numeric sequences (if any)
         $numseq = array();
