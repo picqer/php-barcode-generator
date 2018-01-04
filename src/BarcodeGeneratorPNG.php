@@ -18,9 +18,9 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
      * @return string image data or false in case of error.
      * @public
      */
-    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = array(0, 0, 0))
+    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = array(0, 0, 0), $is_mixed_postcode = false)
     {
-        $barcodeData = $this->getBarcodeData($code, $type);
+        $barcodeData = $this->getBarcodeData($code, $type, $is_mixed_postcode);
 
         // calculate image size
         $width = ($barcodeData['maxWidth'] * $widthFactor);
