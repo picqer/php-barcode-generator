@@ -74,10 +74,11 @@ abstract class BarcodeGenerator
      *
      * @param string $code code to print
      * @param string $type type of barcode
+     * @param boolean $is_mixed_postcode bar code generation for Dubai, Canadian or other type of postcode that contains mixed alphanumeric characters
      * @return array barcode array
      * @public
      */
-    protected function getBarcodeData($code, $type)
+    protected function getBarcodeData($code, $type, $is_mixed_postcode = false)
     {
         switch (strtoupper($type)) {
             case self::TYPE_CODE_39: { // CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
@@ -117,19 +118,19 @@ abstract class BarcodeGenerator
                 break;
             }
             case self::TYPE_CODE_128: { // CODE 128
-                $arrcode = $this->barcode_c128($code, '');
+                $arrcode = $this->barcode_c128($code, '', $is_mixed_postcode);
                 break;
             }
             case self::TYPE_CODE_128_A: { // CODE 128 A
-                $arrcode = $this->barcode_c128($code, 'A');
+                $arrcode = $this->barcode_c128($code, 'A', $is_mixed_postcode);
                 break;
             }
             case self::TYPE_CODE_128_B: { // CODE 128 B
-                $arrcode = $this->barcode_c128($code, 'B');
+                $arrcode = $this->barcode_c128($code, 'B', $is_mixed_postcode);
                 break;
             }
             case self::TYPE_CODE_128_C: { // CODE 128 C
-                $arrcode = $this->barcode_c128($code, 'C');
+                $arrcode = $this->barcode_c128($code, 'C', $is_mixed_postcode);
                 break;
             }
             case self::TYPE_EAN_2: { // 2-Digits UPC-Based Extention
@@ -1090,10 +1091,11 @@ abstract class BarcodeGenerator
      *
      * @param $code (string) code to represent.
      * @param $type (string) barcode type: A, B, C or empty for automatic switch (AUTO mode)
+     * @param boolean $is_mixed_postcode bar code generation for Dubai, Canadian or other type of postcode that contains mixed alphanumeric characters
      * @return array barcode representation.
      * @protected
      */
-    protected function barcode_c128($code, $type = '')
+    protected function barcode_c128($code, $type = '', $is_mixed_postcode = false)
     {
         $chr = array(
             '212222', /* 00 */
@@ -1273,7 +1275,7 @@ abstract class BarcodeGenerator
             }
             default: { // MODE AUTO
                 // split code into sequences
-                $sequence = $this->optimiseSequence($code, $len);
+                $sequence = $this->optimiseSequence($code, $len, $is_mixed_postcode);
                 // process the sequence
                 foreach ($sequence as $key => $seq) {
                     switch ($seq[0]) {
@@ -1393,29 +1395,53 @@ abstract class BarcodeGenerator
 
     /**
      * Do some optimisation for a variable character type string
-     * 
+     *
      * @param string $code
      * @param int $len
+     * @param boolean $is_mixed_postcode bar code generation for Dubai, Canadian or other type of postcode that contains mixed alphanumeric characters
      * @return array
      */
-    private function optimiseSequence($code, $len)
+    protected function optimiseSequence($code, $len, $is_mixed_postcode = false)
     {
+
         // split code into sequences
         $sequence = array();
-        
-        // SPECIAL CASE: We had a set of barcodes that started with a % sign 
+
+        // SPECIAL CASE: We had a set of barcodes that started with a % sign
         // followed by an odd number of characters.  While the generated barcode
         // was valid it wasn't considered optimal on the grounds that there were
         // two character encoding switches in the resulting barcode where it was
-        // possible to produce the same representation with only a single 
+        // possible to produce the same representation with only a single
         // switch if we encoded the first two characters as another encoding and
-        // all subsequent characters as type C.  This hack explicitly sets up 
-        // that sequence.  
+        // all subsequent characters as type C.  This hack explicitly sets up
+        // that sequence.
         if (preg_match("/^%\d{27,27}$/", $code)) {
             $sequence = array_merge(
-                $sequence, 
+                $sequence,
                 $this->get128ABsequence(substr($code, 0, 2)),
                 [['C', substr($code, 2), 26]]
+            );
+            return $sequence;
+        }
+
+        /**
+         * DPD International: If Dubai, UAE, Candaian, British, Neterland postcodes contains a mixed string & numbers,
+         * then the bar code should be generated on a different way.
+         *
+         * Example:
+         * %POBOX7215501576001732302784
+         *
+         * First 8 character should be "B"
+         *
+         * BBBBBBBCCCCCCCCCCCCCCCCCCC
+         *
+         */
+
+        if ( false !== $is_mixed_postcode && !is_integer(substr(ltrim($code,'%'), 0, 7))) {
+            $sequence = array_merge(
+                $sequence,
+                $this->get128ABsequence(substr($code, 0, 8)),
+                [['C', substr($code, 8), strlen(substr($code, 8))]]
             );
             return $sequence;
         }
@@ -1447,7 +1473,7 @@ abstract class BarcodeGenerator
             // text code (non C mode)
             $sequence = array_merge($sequence, $this->get128ABsequence($code));
         }
-        
+
         return $sequence;
     }
 
