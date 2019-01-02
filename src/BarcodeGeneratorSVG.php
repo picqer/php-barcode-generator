@@ -23,10 +23,11 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
         // replace table for special characters
         $repstr = array("\0" => '', '&' => '&amp;', '<' => '&lt;', '>' => '&gt;');
 
+        $width = round(($barcodeData['maxWidth'] * $widthFactor), 3);
+
         $svg = '<?xml version="1.0" standalone="no" ?>' . "\n";
         $svg .= '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' . "\n";
-        $svg .= '<svg width="' . round(($barcodeData['maxWidth'] * $widthFactor),
-                3) . '" height="' . $totalHeight . '" version="1.1" xmlns="http://www.w3.org/2000/svg">' . "\n";
+        $svg .= '<svg width="' . $width . '" height="' . $totalHeight . '" viewBox="0 0 ' . $width . ' ' . $totalHeight . '" version="1.1" xmlns="http://www.w3.org/2000/svg">' . "\n";
         $svg .= "\t" . '<desc>' . strtr($barcodeData['code'], $repstr) . '</desc>' . "\n";
         $svg .= "\t" . '<g id="bars" fill="' . $color . '" stroke="none">' . "\n";
         // print bars
