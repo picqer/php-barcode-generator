@@ -38,7 +38,7 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
             $imagick = true;
             $colorForeground = new \imagickpixel('rgb(' . $color[0] . ',' . $color[1] . ',' . $color[2] . ')');
             $jpg = new \Imagick();
-            $jpg->newImage($width, $height, 'none', 'jpg');
+            $jpg->newImage($width, $height, 'white', 'jpg');
             $imageMagickObject = new \imagickdraw();
             $imageMagickObject->setFillColor($colorForeground);
         } else {
