@@ -13,10 +13,13 @@ class BarcodeGeneratorHTML extends BarcodeGenerator
      * @param int $widthFactor Width of a single bar element in pixels.
      * @param int $totalHeight Height of a single bar element in pixels.
      * @param int|string $color Foreground color for bar elements (background is transparent).
+     * @param BarcodeLabel|null $label
      * @return string HTML code.
+     * @throws Exceptions\UnknownTypeException
      * @public
+     * @throws Exceptions\BarcodeException
      */
-    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = 'black')
+    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = 'black', BarcodeLabel $label = null)
     {
         $barcodeData = $this->getBarcodeData($code, $type);
 
@@ -37,6 +40,8 @@ class BarcodeGeneratorHTML extends BarcodeGenerator
         }
 
         $html .= '</div>' . "\n";
+
+        if($label) return $label->withLabel('HTML',array_merge($barcodeData,['widthFactor'=>$widthFactor,'color'=>$color,'totalHeight'=>$totalHeight]));
 
         return $html;
     }

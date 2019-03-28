@@ -15,11 +15,12 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
      * @param int $widthFactor Width of a single bar element in pixels.
      * @param int $totalHeight Height of a single bar element in pixels.
      * @param array $color RGB (0-255) foreground color for bar elements (background is transparent).
+     * @param BarcodeLabel $label show label under barcode
      * @return string image data or false in case of error.
      * @public
      * @throws BarcodeException
      */
-    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = array(0, 0, 0))
+    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = array(0, 0, 0), BarcodeLabel $label = null)
     {
         $barcodeData = $this->getBarcodeData($code, $type);
 
@@ -71,6 +72,8 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
             imagedestroy($jpg);
         }
         $image = ob_get_clean();
+
+        if($label) return $label->withLabel('JPG',$image);
 
         return $image;
     }

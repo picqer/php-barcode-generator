@@ -10,13 +10,16 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
      *
      * @param $code (string) code to print
      * @param $type (const) type of barcode
-     * @param $widthFactor (int) Minimum width of a single bar in user units.
-     * @param $totalHeight (int) Height of barcode in user units.
-     * @param $color (string) Foreground color (in SVG format) for bar elements (background is transparent).
+     * @param int $widthFactor (int) Minimum width of a single bar in user units.
+     * @param int $totalHeight (int) Height of barcode in user units.
+     * @param string $color (string) Foreground color (in SVG format) for bar elements (background is transparent).
+     * @param BarcodeLabel $label show label under barcode
      * @return string SVG code.
+     * @throws Exceptions\BarcodeException
+     * @throws Exceptions\UnknownTypeException
      * @public
      */
-    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = 'black')
+    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = 'black', BarcodeLabel $label = null)
     {
         $barcodeData = $this->getBarcodeData($code, $type);
 
@@ -44,6 +47,8 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
         }
         $svg .= "\t" . '</g>' . "\n";
         $svg .= '</svg>' . "\n";
+
+        if($label) return $label->withLabel('SVG',array_merge($barcodeData,['widthFactor'=>$widthFactor,'color'=>$color,'totalHeight'=>$totalHeight]));
 
         return $svg;
     }
