@@ -1502,7 +1502,11 @@ abstract class BarcodeGenerator
         }
         $sum_b = 0;
         for ($i = 0; $i < $data_len; $i += 2) {
-            $sum_b += ($code{$i});
+            try{
+                $sum_b += ($code{$i});
+            } catch(\Exception $e) {
+                throw new InvalidCharacterException();
+            }
         }
         if ($len < 13) {
             $sum_b *= 3;
