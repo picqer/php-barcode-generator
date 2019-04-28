@@ -17,14 +17,15 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=7.0.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.3"
     },
     "autoload": {
         "psr-4": {
-            "Picqer\\Barcode\\": "src"
+            "Picqer\\": "src",
+            "Test\\": "tests"
         }
     }
 }

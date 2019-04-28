@@ -36,7 +36,7 @@ use Picqer\Barcode\Exceptions\InvalidFormatException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
 use Picqer\Barcode\Exceptions\UnknownTypeException;
 
-abstract class BarcodeGenerator
+abstract class BarcodeGeneratorOLD
 {
     const TYPE_CODE_39 = 'C39';
     const TYPE_CODE_39_CHECKSUM = 'C39+';
