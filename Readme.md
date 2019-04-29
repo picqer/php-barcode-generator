@@ -14,6 +14,8 @@ composer require picqer/php-barcode-generator
 
 If you want to generate PNG or JPG images, you need the GD library or Imagick installed on your system as well.
 
+Using IMB Barcodes require bcmath extension to be installed as well.
+
 ## Usage
 Initiate the barcode generator for the output you want, then call the ->getBarcode() routine as many times as you want.
 
