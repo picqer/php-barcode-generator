@@ -9,7 +9,7 @@ class EanExt extends BarcodeTypeAbstract implements BarcodeTypeInterface
     /** @var int */
     protected $length;
 
-    public function __construct(string $code, int $length)
+    public function __construct(string $code, int $length = 2)
     {
         parent::__construct($code);
         $this->length = $length;

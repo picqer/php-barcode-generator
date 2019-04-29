@@ -14,7 +14,7 @@ class Html extends BarcodeRenderAbstract implements BarcodeRenderInterface
      *
      * @return string HTML code
      */
-    public function render(array $barcodeData, int $widthFactor = 2, int $totalHeight = 30, $color = '#FFFFFF'): string
+    public function render(array $barcodeData, int $widthFactor = 2, int $totalHeight = 30, string $color = '#FFFFFF'): string
     {
         $html = '<div style="font-size:0;position:relative;width:'.($barcodeData['maxWidth'] * $widthFactor).'px;height:'.($totalHeight).'px;">'."\n";
 
