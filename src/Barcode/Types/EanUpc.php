@@ -3,6 +3,7 @@
 namespace Picqer\Barcode\Types;
 
 use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
+use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 class EanUpc extends BarcodeTypeAbstract implements BarcodeTypeInterface
 {
