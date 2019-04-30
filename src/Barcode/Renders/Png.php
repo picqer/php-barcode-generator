@@ -18,7 +18,7 @@ class Png extends BarcodeRenderAbstract implements BarcodeRenderInterface
      *
      * @throws BarcodeException
      */
-    public function render(array $barcodeData, int $widthFactor = 2, int $totalHeight = 30, string $color = '#FFFFFF'): string
+    public function render(array $barcodeData, int $widthFactor = 2, int $totalHeight = 30, string $color = '#000000'): string
     {
         $color = $this->convertHexToRGB($color);
 

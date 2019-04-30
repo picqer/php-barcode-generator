@@ -24,7 +24,7 @@ class BarcodeGenerator
         $this->barcodeRender = $barcodeRenderFactory->generateBarcodeRender($barcodeRenderType);
     }
 
-    public function generate(int $widthFactor = 2, int $totalHeight = 30, $color = '#FFFFFF')
+    public function generate(int $widthFactor = 2, int $totalHeight = 30, $color = '#000000')
     {
         return $this->barcodeRender->render($this->barcodeType->generate(), $widthFactor, $totalHeight, $color);
     }

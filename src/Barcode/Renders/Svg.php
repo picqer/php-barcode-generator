@@ -14,7 +14,7 @@ class Svg extends BarcodeRenderAbstract implements BarcodeRenderInterface
      *
      * @return string SVG code
      */
-    public function render(array $barcodeData, int $widthFactor = 2, int $totalHeight = 30, string $color = '#FFFFFF'): string
+    public function render(array $barcodeData, int $widthFactor = 2, int $totalHeight = 30, string $color = '#000000'): string
     {
         // replace table for special characters
         $repstr = array("\0" => '', '&' => '&amp;', '<' => '&lt;', '>' => '&gt;');
