@@ -1,12 +1,13 @@
 <?php
 
-namespace Test;
+namespace Test\Unit;
 
 use Picqer\Barcode\BarcodeGenerator;
 use Picqer\Barcode\Constants\BarcodeRender;
 use Picqer\Barcode\Constants\BarcodeType;
+use Test\BaseTestCase;
 
-class RMS4CCTest extends \PHPUnit_Framework_TestCase
+class RMS4CCTest extends BaseTestCase
 {
     const VALID_CODE = '081231723897';
 

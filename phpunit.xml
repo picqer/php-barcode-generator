@@ -1,24 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
+         bootstrap="vendor/autoload.php"
          colors="true"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          processIsolation="false"
-         stopOnError="false"
-         stopOnFailure="false"
-         syntaxCheck="true"
-         verbose="true"
->
+         stopOnFailure="false">
     <testsuites>
-        <testsuite name="Barcode Test Suite">
-            <directory>./tests/</directory>
+        <testsuite name="Unit">
+            <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
     </testsuites>
     <filter>
-        <whitelist>
-            <directory>./src</directory>
+        <whitelist processUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
+    <logging>
+        <log type="coverage-html" target="tmp/report" lowUpperBound="35" highLowerBound="70"/>
+        <log type="coverage-clover" target="tmp/coverage.xml"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false"/>
+        <log type="json" target="tmp/logfile.json"/>
+        <log type="tap" target="tmp/logfile.tap"/>
+        <log type="testdox-html" target="tmp/testdox.html"/>
+        <log type="testdox-text" target="tmp/testdox.txt"/>
+    </logging>
+    <php>
+        <env name="APP_ENV" value="testing" force="true"/>
+    </php>
 </phpunit>

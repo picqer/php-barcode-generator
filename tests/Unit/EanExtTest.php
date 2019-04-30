@@ -1,12 +1,13 @@
 <?php
 
-namespace Test;
+namespace Test\Unit;
 
 use Picqer\Barcode\BarcodeGenerator;
 use Picqer\Barcode\Constants\BarcodeRender;
 use Picqer\Barcode\Constants\BarcodeType;
+use Test\BaseTestCase;
 
-class EanExtTest extends \PHPUnit_Framework_TestCase
+class EanExtTest extends BaseTestCase
 {
     const VALID_CODE = '081231723897';
 

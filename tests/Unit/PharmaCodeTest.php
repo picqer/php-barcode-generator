@@ -1,12 +1,13 @@
 <?php
 
-namespace Test;
+namespace Test\Unit;
 
 use Picqer\Barcode\BarcodeGenerator;
 use Picqer\Barcode\Constants\BarcodeRender;
 use Picqer\Barcode\Constants\BarcodeType;
+use Test\BaseTestCase;
 
-class PharmaCodeTest extends \PHPUnit_Framework_TestCase
+class PharmaCodeTest extends BaseTestCase
 {
     const VALID_CODE = '081231723897';
 
