@@ -1229,7 +1229,7 @@ abstract class BarcodeGenerator
                     if (($char_id >= 241) AND ($char_id <= 244)) {
                         $code_data[] = $fnc_a[$char_id];
                     } elseif (($char_id >= 0) AND ($char_id <= 95)) {
-                        $code_data[] = strpos($keys_a, $char);
+                        $code_data[] = $char ? strpos($keys_a, $char) : false;
                     } else {
                         throw new InvalidCharacterException('Char ' . $char . ' is unsupported');
                     }
@@ -1244,7 +1244,7 @@ abstract class BarcodeGenerator
                     if (($char_id >= 241) AND ($char_id <= 244)) {
                         $code_data[] = $fnc_b[$char_id];
                     } elseif (($char_id >= 32) AND ($char_id <= 127)) {
-                        $code_data[] = strpos($keys_b, $char);
+                        $code_data[] = $char ? strpos($keys_b, $char) : false;
                     } else {
                         throw new InvalidCharacterException('Char ' . $char . ' is unsupported');
                     }
@@ -1333,7 +1333,7 @@ abstract class BarcodeGenerator
                                 if (($char_id >= 241) AND ($char_id <= 244)) {
                                     $code_data[] = $fnc_a[$char_id];
                                 } else {
-                                    $code_data[] = strpos($keys_a, $char);
+                                    $code_data[] = $char ? strpos($keys_a, $char) : false;
                                 }
                             }
                             break;
@@ -1376,7 +1376,7 @@ abstract class BarcodeGenerator
                                 if (($char_id >= 241) AND ($char_id <= 244)) {
                                     $code_data[] = $fnc_b[$char_id];
                                 } else {
-                                    $code_data[] = strpos($keys_b, $char);
+                                    $code_data[] = $char ? strpos($keys_b, $char) : false;
                                 }
                             }
                             break;
