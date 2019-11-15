@@ -10,7 +10,7 @@ class BarcodeTest extends PHPUnit_Framework_TestCase
         $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
         $generated = $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
 
-        $this->assertEquals('PNG', substr($generated, 1, 3));
+        $this->assertEquals('PNG', \substr($generated, 1, 3));
     }
 
     /**

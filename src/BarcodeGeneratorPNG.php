@@ -26,14 +26,14 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
         $width = ($barcodeData['maxWidth'] * $widthFactor);
         $height = $totalHeight;
 
-        if (function_exists('imagecreate')) {
+        if (\function_exists('imagecreate')) {
             // GD library
             $imagick = false;
-            $png = imagecreate($width, $height);
-            $colorBackground = imagecolorallocate($png, 255, 255, 255);
-            imagecolortransparent($png, $colorBackground);
-            $colorForeground = imagecolorallocate($png, $color[0], $color[1], $color[2]);
-        } elseif (extension_loaded('imagick')) {
+            $png = \imagecreate($width, $height);
+            $colorBackground = \imagecolorallocate($png, 255, 255, 255);
+            \imagecolortransparent($png, $colorBackground);
+            $colorForeground = \imagecolorallocate($png, $color[0], $color[1], $color[2]);
+        } elseif (\extension_loaded('imagick')) {
             $imagick = true;
             $colorForeground = new \imagickpixel('rgb(' . $color[0] . ',' . $color[1] . ',' . $color[2] . ')');
             $png = new \Imagick();
@@ -47,29 +47,29 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
         // print bars
         $positionHorizontal = 0;
         foreach ($barcodeData['bars'] as $bar) {
-            $bw = round(($bar['width'] * $widthFactor), 3);
-            $bh = round(($bar['height'] * $totalHeight / $barcodeData['maxHeight']), 3);
+            $bw = \round(($bar['width'] * $widthFactor), 3);
+            $bh = \round(($bar['height'] * $totalHeight / $barcodeData['maxHeight']), 3);
             if ($bar['drawBar']) {
-                $y = round(($bar['positionVertical'] * $totalHeight / $barcodeData['maxHeight']), 3);
+                $y = \round(($bar['positionVertical'] * $totalHeight / $barcodeData['maxHeight']), 3);
                 // draw a vertical bar
                 if ($imagick && isset($imageMagickObject)) {
                     $imageMagickObject->rectangle($positionHorizontal, $y, ($positionHorizontal + $bw), ($y + $bh));
                 } else {
-                    imagefilledrectangle($png, $positionHorizontal, $y, ($positionHorizontal + $bw) - 1, ($y + $bh),
+                    \imagefilledrectangle($png, $positionHorizontal, $y, ($positionHorizontal + $bw) - 1, ($y + $bh),
                         $colorForeground);
                 }
             }
             $positionHorizontal += $bw;
         }
-        ob_start();
+        \ob_start();
         if ($imagick && isset($imageMagickObject)) {
             $png->drawImage($imageMagickObject);
             echo $png;
         } else {
-            imagepng($png);
-            imagedestroy($png);
+            \imagepng($png);
+            \imagedestroy($png);
         }
-        $image = ob_get_clean();
+        $image = \ob_get_clean();
 
         return $image;
     }
