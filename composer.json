@@ -26,5 +26,8 @@
         "psr-4": {
             "Picqer\\Barcode\\": "src"
         }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
     }
 }
