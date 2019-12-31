@@ -35,35 +35,38 @@ use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
 use Picqer\Barcode\Exceptions\InvalidFormatException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
 use Picqer\Barcode\Exceptions\UnknownTypeException;
+use Picqer\Barcode\Types\TypeCode93;
+use Picqer\Barcode\Types\TypeInterleaved25;
+use Picqer\Barcode\Types\TypeInterleaved25Checksum;
 
 abstract class BarcodeGenerator
 {
-    const TYPE_CODE_39 = 'C39';
-    const TYPE_CODE_39_CHECKSUM = 'C39+';
-    const TYPE_CODE_39E = 'C39E';
-    const TYPE_CODE_39E_CHECKSUM = 'C39E+';
-    const TYPE_CODE_93 = 'C93';
-    const TYPE_STANDARD_2_5 = 'S25';
-    const TYPE_STANDARD_2_5_CHECKSUM = 'S25+';
-    const TYPE_INTERLEAVED_2_5 = 'I25';
-    const TYPE_INTERLEAVED_2_5_CHECKSUM = 'I25+';
+    const TYPE_CODE_39 = 'C39'; // CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
+    const TYPE_CODE_39_CHECKSUM = 'C39+';  // CODE 39 with checksum
+    const TYPE_CODE_39E = 'C39E'; // CODE 39 EXTENDED
+    const TYPE_CODE_39E_CHECKSUM = 'C39E+'; // CODE 39 EXTENDED + CHECKSUM
+    const TYPE_CODE_93 = 'C93'; // CODE 93 - USS-93
+    const TYPE_STANDARD_2_5 = 'S25'; // Standard 2 of 5
+    const TYPE_STANDARD_2_5_CHECKSUM = 'S25+'; // Standard 2 of 5 + CHECKSUM
+    const TYPE_INTERLEAVED_2_5 = 'I25'; // Interleaved 2 of 5
+    const TYPE_INTERLEAVED_2_5_CHECKSUM = 'I25+'; // Interleaved 2 of 5 + CHECKSUM
     const TYPE_CODE_128 = 'C128';
     const TYPE_CODE_128_A = 'C128A';
     const TYPE_CODE_128_B = 'C128B';
     const TYPE_CODE_128_C = 'C128C';
-    const TYPE_EAN_2 = 'EAN2';
-    const TYPE_EAN_5 = 'EAN5';
+    const TYPE_EAN_2 = 'EAN2'; // 2-Digits UPC-Based Extention
+    const TYPE_EAN_5 = 'EAN5'; // 5-Digits UPC-Based Extention
     const TYPE_EAN_8 = 'EAN8';
     const TYPE_EAN_13 = 'EAN13';
     const TYPE_UPC_A = 'UPCA';
     const TYPE_UPC_E = 'UPCE';
-    const TYPE_MSI = 'MSI';
-    const TYPE_MSI_CHECKSUM = 'MSI+';
+    const TYPE_MSI = 'MSI'; // MSI (Variation of Plessey code)
+    const TYPE_MSI_CHECKSUM = 'MSI+'; // MSI + CHECKSUM (modulo 11)
     const TYPE_POSTNET = 'POSTNET';
     const TYPE_PLANET = 'PLANET';
-    const TYPE_RMS4CC = 'RMS4CC';
-    const TYPE_KIX = 'KIX';
-    const TYPE_IMB = 'IMB';
+    const TYPE_RMS4CC = 'RMS4CC'; // RMS4CC (Royal Mail 4-state Customer Code) - CBC (Customer Bar Code)
+    const TYPE_KIX = 'KIX'; // KIX (Klant index - Customer index)
+    const TYPE_IMB = 'IMB'; // IMB - Intelligent Mail Barcode - Onecode - USPS-B-3200
     const TYPE_CODABAR = 'CODABAR';
     const TYPE_CODE_11 = 'CODE11';
     const TYPE_PHARMA_CODE = 'PHARMA';
@@ -80,130 +83,131 @@ abstract class BarcodeGenerator
     protected function getBarcodeData($code, $type)
     {
         switch (strtoupper($type)) {
-            case self::TYPE_CODE_39: { // CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
+            case self::TYPE_CODE_39:
                 $arrcode = $this->barcode_code39($code, false, false);
                 break;
-            }
-            case self::TYPE_CODE_39_CHECKSUM: { // CODE 39 with checksum
+
+            case self::TYPE_CODE_39_CHECKSUM:
                 $arrcode = $this->barcode_code39($code, false, true);
                 break;
-            }
-            case self::TYPE_CODE_39E: { // CODE 39 EXTENDED
+
+            case self::TYPE_CODE_39E:
                 $arrcode = $this->barcode_code39($code, true, false);
                 break;
-            }
-            case self::TYPE_CODE_39E_CHECKSUM: { // CODE 39 EXTENDED + CHECKSUM
+
+            case self::TYPE_CODE_39E_CHECKSUM:
                 $arrcode = $this->barcode_code39($code, true, true);
                 break;
-            }
-            case self::TYPE_CODE_93: { // CODE 93 - USS-93
-                $arrcode = $this->barcode_code93($code);
+
+            case self::TYPE_CODE_93:
+                $barcodeDataBuilder = new TypeCode93();
+                $arrcode = $barcodeDataBuilder->getBarcodeData($code);
                 break;
-            }
-            case self::TYPE_STANDARD_2_5: { // Standard 2 of 5
+
+            case self::TYPE_STANDARD_2_5:
                 $arrcode = $this->barcode_s25($code, false);
                 break;
-            }
-            case self::TYPE_STANDARD_2_5_CHECKSUM: { // Standard 2 of 5 + CHECKSUM
+
+            case self::TYPE_STANDARD_2_5_CHECKSUM:
                 $arrcode = $this->barcode_s25($code, true);
                 break;
-            }
-            case self::TYPE_INTERLEAVED_2_5: { // Interleaved 2 of 5
-                $arrcode = $this->barcode_i25($code, false);
+
+            case self::TYPE_INTERLEAVED_2_5:
+                $barcodeDataBuilder = new TypeInterleaved25();
+                $arrcode = $barcodeDataBuilder->getBarcodeData($code);
                 break;
-            }
-            case self::TYPE_INTERLEAVED_2_5_CHECKSUM: { // Interleaved 2 of 5 + CHECKSUM
-                $arrcode = $this->barcode_i25($code, true);
+
+            case self::TYPE_INTERLEAVED_2_5_CHECKSUM:
+                $barcodeDataBuilder = new TypeInterleaved25Checksum();
+                $arrcode = $barcodeDataBuilder->getBarcodeData($code);
                 break;
-            }
-            case self::TYPE_CODE_128: { // CODE 128
+
+            case self::TYPE_CODE_128:
                 $arrcode = $this->barcode_c128($code, '');
                 break;
-            }
-            case self::TYPE_CODE_128_A: { // CODE 128 A
+
+            case self::TYPE_CODE_128_A:
                 $arrcode = $this->barcode_c128($code, 'A');
                 break;
-            }
-            case self::TYPE_CODE_128_B: { // CODE 128 B
+
+            case self::TYPE_CODE_128_B:
                 $arrcode = $this->barcode_c128($code, 'B');
                 break;
-            }
-            case self::TYPE_CODE_128_C: { // CODE 128 C
+
+            case self::TYPE_CODE_128_C:
                 $arrcode = $this->barcode_c128($code, 'C');
                 break;
-            }
-            case self::TYPE_EAN_2: { // 2-Digits UPC-Based Extention
+
+            case self::TYPE_EAN_2:
                 $arrcode = $this->barcode_eanext($code, 2);
                 break;
-            }
-            case self::TYPE_EAN_5: { // 5-Digits UPC-Based Extention
+
+            case self::TYPE_EAN_5:
                 $arrcode = $this->barcode_eanext($code, 5);
                 break;
-            }
-            case self::TYPE_EAN_8: { // EAN 8
+
+            case self::TYPE_EAN_8:
                 $arrcode = $this->barcode_eanupc($code, 8);
                 break;
-            }
-            case self::TYPE_EAN_13: { // EAN 13
+
+            case self::TYPE_EAN_13:
                 $arrcode = $this->barcode_eanupc($code, 13);
                 break;
-            }
-            case self::TYPE_UPC_A: { // UPC-A
+
+            case self::TYPE_UPC_A:
                 $arrcode = $this->barcode_eanupc($code, 12);
                 break;
-            }
-            case self::TYPE_UPC_E: { // UPC-E
+
+            case self::TYPE_UPC_E:
                 $arrcode = $this->barcode_eanupc($code, 6);
                 break;
-            }
-            case self::TYPE_MSI: { // MSI (Variation of Plessey code)
+
+            case self::TYPE_MSI:
                 $arrcode = $this->barcode_msi($code, false);
                 break;
-            }
-            case self::TYPE_MSI_CHECKSUM: { // MSI + CHECKSUM (modulo 11)
+
+            case self::TYPE_MSI_CHECKSUM:
                 $arrcode = $this->barcode_msi($code, true);
                 break;
-            }
-            case self::TYPE_POSTNET: { // POSTNET
+
+            case self::TYPE_POSTNET:
                 $arrcode = $this->barcode_postnet($code, false);
                 break;
-            }
-            case self::TYPE_PLANET: { // PLANET
+
+            case self::TYPE_PLANET:
                 $arrcode = $this->barcode_postnet($code, true);
                 break;
-            }
-            case self::TYPE_RMS4CC: { // RMS4CC (Royal Mail 4-state Customer Code) - CBC (Customer Bar Code)
+
+            case self::TYPE_RMS4CC:
                 $arrcode = $this->barcode_rms4cc($code, false);
                 break;
-            }
-            case self::TYPE_KIX: { // KIX (Klant index - Customer index)
+
+            case self::TYPE_KIX:
                 $arrcode = $this->barcode_rms4cc($code, true);
                 break;
-            }
-            case self::TYPE_IMB: { // IMB - Intelligent Mail Barcode - Onecode - USPS-B-3200
+
+            case self::TYPE_IMB:
                 $arrcode = $this->barcode_imb($code);
                 break;
-            }
-            case self::TYPE_CODABAR: { // CODABAR
+
+            case self::TYPE_CODABAR:
                 $arrcode = $this->barcode_codabar($code);
                 break;
-            }
-            case self::TYPE_CODE_11: { // CODE 11
+
+            case self::TYPE_CODE_11:
                 $arrcode = $this->barcode_code11($code);
                 break;
-            }
-            case self::TYPE_PHARMA_CODE: { // PHARMACODE
+
+            case self::TYPE_PHARMA_CODE:
                 $arrcode = $this->barcode_pharmacode($code);
                 break;
-            }
-            case self::TYPE_PHARMA_CODE_TWO_TRACKS: { // PHARMACODE TWO-TRACKS
+
+            case self::TYPE_PHARMA_CODE_TWO_TRACKS:
                 $arrcode = $this->barcode_pharmacode2t($code);
                 break;
-            }
-            default: {
+
+            default:
                 throw new UnknownTypeException();
-                break;
-            }
         }
 
         if ( ! isset($arrcode['maxWidth'])) {
@@ -531,329 +535,6 @@ abstract class BarcodeGenerator
     }
 
     /**
-     * CODE 93 - USS-93
-     * Compact code similar to Code 39
-     *
-     * @param $code (string) code to represent.
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_code93($code)
-    {
-        $chr = [];
-        $chr[48] = '131112'; // 0
-        $chr[49] = '111213'; // 1
-        $chr[50] = '111312'; // 2
-        $chr[51] = '111411'; // 3
-        $chr[52] = '121113'; // 4
-        $chr[53] = '121212'; // 5
-        $chr[54] = '121311'; // 6
-        $chr[55] = '111114'; // 7
-        $chr[56] = '131211'; // 8
-        $chr[57] = '141111'; // 9
-        $chr[65] = '211113'; // A
-        $chr[66] = '211212'; // B
-        $chr[67] = '211311'; // C
-        $chr[68] = '221112'; // D
-        $chr[69] = '221211'; // E
-        $chr[70] = '231111'; // F
-        $chr[71] = '112113'; // G
-        $chr[72] = '112212'; // H
-        $chr[73] = '112311'; // I
-        $chr[74] = '122112'; // J
-        $chr[75] = '132111'; // K
-        $chr[76] = '111123'; // L
-        $chr[77] = '111222'; // M
-        $chr[78] = '111321'; // N
-        $chr[79] = '121122'; // O
-        $chr[80] = '131121'; // P
-        $chr[81] = '212112'; // Q
-        $chr[82] = '212211'; // R
-        $chr[83] = '211122'; // S
-        $chr[84] = '211221'; // T
-        $chr[85] = '221121'; // U
-        $chr[86] = '222111'; // V
-        $chr[87] = '112122'; // W
-        $chr[88] = '112221'; // X
-        $chr[89] = '122121'; // Y
-        $chr[90] = '123111'; // Z
-        $chr[45] = '121131'; // -
-        $chr[46] = '311112'; // .
-        $chr[32] = '311211'; //
-        $chr[36] = '321111'; // $
-        $chr[47] = '112131'; // /
-        $chr[43] = '113121'; // +
-        $chr[37] = '211131'; // %
-        $chr[128] = '121221'; // ($)
-        $chr[129] = '311121'; // (/)
-        $chr[130] = '122211'; // (+)
-        $chr[131] = '312111'; // (%)
-        $chr[42] = '111141'; // start-stop
-        $code = strtoupper($code);
-        $encode = array(
-            chr(0)   => chr(131) . 'U',
-            chr(1)   => chr(128) . 'A',
-            chr(2)   => chr(128) . 'B',
-            chr(3)   => chr(128) . 'C',
-            chr(4)   => chr(128) . 'D',
-            chr(5)   => chr(128) . 'E',
-            chr(6)   => chr(128) . 'F',
-            chr(7)   => chr(128) . 'G',
-            chr(8)   => chr(128) . 'H',
-            chr(9)   => chr(128) . 'I',
-            chr(10)  => chr(128) . 'J',
-            chr(11)  => '£K',
-            chr(12)  => chr(128) . 'L',
-            chr(13)  => chr(128) . 'M',
-            chr(14)  => chr(128) . 'N',
-            chr(15)  => chr(128) . 'O',
-            chr(16)  => chr(128) . 'P',
-            chr(17)  => chr(128) . 'Q',
-            chr(18)  => chr(128) . 'R',
-            chr(19)  => chr(128) . 'S',
-            chr(20)  => chr(128) . 'T',
-            chr(21)  => chr(128) . 'U',
-            chr(22)  => chr(128) . 'V',
-            chr(23)  => chr(128) . 'W',
-            chr(24)  => chr(128) . 'X',
-            chr(25)  => chr(128) . 'Y',
-            chr(26)  => chr(128) . 'Z',
-            chr(27)  => chr(131) . 'A',
-            chr(28)  => chr(131) . 'B',
-            chr(29)  => chr(131) . 'C',
-            chr(30)  => chr(131) . 'D',
-            chr(31)  => chr(131) . 'E',
-            chr(32)  => ' ',
-            chr(33)  => chr(129) . 'A',
-            chr(34)  => chr(129) . 'B',
-            chr(35)  => chr(129) . 'C',
-            chr(36)  => chr(129) . 'D',
-            chr(37)  => chr(129) . 'E',
-            chr(38)  => chr(129) . 'F',
-            chr(39)  => chr(129) . 'G',
-            chr(40)  => chr(129) . 'H',
-            chr(41)  => chr(129) . 'I',
-            chr(42)  => chr(129) . 'J',
-            chr(43)  => chr(129) . 'K',
-            chr(44)  => chr(129) . 'L',
-            chr(45)  => '-',
-            chr(46)  => '.',
-            chr(47)  => chr(129) . 'O',
-            chr(48)  => '0',
-            chr(49)  => '1',
-            chr(50)  => '2',
-            chr(51)  => '3',
-            chr(52)  => '4',
-            chr(53)  => '5',
-            chr(54)  => '6',
-            chr(55)  => '7',
-            chr(56)  => '8',
-            chr(57)  => '9',
-            chr(58)  => chr(129) . 'Z',
-            chr(59)  => chr(131) . 'F',
-            chr(60)  => chr(131) . 'G',
-            chr(61)  => chr(131) . 'H',
-            chr(62)  => chr(131) . 'I',
-            chr(63)  => chr(131) . 'J',
-            chr(64)  => chr(131) . 'V',
-            chr(65)  => 'A',
-            chr(66)  => 'B',
-            chr(67)  => 'C',
-            chr(68)  => 'D',
-            chr(69)  => 'E',
-            chr(70)  => 'F',
-            chr(71)  => 'G',
-            chr(72)  => 'H',
-            chr(73)  => 'I',
-            chr(74)  => 'J',
-            chr(75)  => 'K',
-            chr(76)  => 'L',
-            chr(77)  => 'M',
-            chr(78)  => 'N',
-            chr(79)  => 'O',
-            chr(80)  => 'P',
-            chr(81)  => 'Q',
-            chr(82)  => 'R',
-            chr(83)  => 'S',
-            chr(84)  => 'T',
-            chr(85)  => 'U',
-            chr(86)  => 'V',
-            chr(87)  => 'W',
-            chr(88)  => 'X',
-            chr(89)  => 'Y',
-            chr(90)  => 'Z',
-            chr(91)  => chr(131) . 'K',
-            chr(92)  => chr(131) . 'L',
-            chr(93)  => chr(131) . 'M',
-            chr(94)  => chr(131) . 'N',
-            chr(95)  => chr(131) . 'O',
-            chr(96)  => chr(131) . 'W',
-            chr(97)  => chr(130) . 'A',
-            chr(98)  => chr(130) . 'B',
-            chr(99)  => chr(130) . 'C',
-            chr(100) => chr(130) . 'D',
-            chr(101) => chr(130) . 'E',
-            chr(102) => chr(130) . 'F',
-            chr(103) => chr(130) . 'G',
-            chr(104) => chr(130) . 'H',
-            chr(105) => chr(130) . 'I',
-            chr(106) => chr(130) . 'J',
-            chr(107) => chr(130) . 'K',
-            chr(108) => chr(130) . 'L',
-            chr(109) => chr(130) . 'M',
-            chr(110) => chr(130) . 'N',
-            chr(111) => chr(130) . 'O',
-            chr(112) => chr(130) . 'P',
-            chr(113) => chr(130) . 'Q',
-            chr(114) => chr(130) . 'R',
-            chr(115) => chr(130) . 'S',
-            chr(116) => chr(130) . 'T',
-            chr(117) => chr(130) . 'U',
-            chr(118) => chr(130) . 'V',
-            chr(119) => chr(130) . 'W',
-            chr(120) => chr(130) . 'X',
-            chr(121) => chr(130) . 'Y',
-            chr(122) => chr(130) . 'Z',
-            chr(123) => chr(131) . 'P',
-            chr(124) => chr(131) . 'Q',
-            chr(125) => chr(131) . 'R',
-            chr(126) => chr(131) . 'S',
-            chr(127) => chr(131) . 'T'
-        );
-        $code_ext = '';
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
-            if (ord($code[$i]) > 127) {
-                throw new InvalidCharacterException('Only supports till char 127');
-            }
-            $code_ext .= $encode[$code[$i]];
-        }
-        // checksum
-        $code_ext .= $this->checksum_code93($code_ext);
-        // add start and stop codes
-        $code = '*' . $code_ext . '*';
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-        $k = 0;
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
-            $char = ord($code[$i]);
-            if ( ! isset($chr[$char])) {
-                throw new InvalidCharacterException('Char ' . $char . ' is unsupported');
-            }
-            for ($j = 0; $j < 6; ++$j) {
-                if (($j % 2) == 0) {
-                    $t = true; // bar
-                } else {
-                    $t = false; // space
-                }
-                $w = $chr[$char][$j];
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
-            }
-        }
-        $bararray['bcode'][$k] = array('t' => true, 'w' => 1, 'h' => 1, 'p' => 0);
-        $bararray['maxw'] += 1;
-
-        return $bararray;
-    }
-
-    /**
-     * Calculate CODE 93 checksum (modulo 47).
-     *
-     * @param $code (string) code to represent.
-     * @return string checksum code.
-     * @protected
-     */
-    protected function checksum_code93($code)
-    {
-        $chars = array(
-            '0',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6',
-            '7',
-            '8',
-            '9',
-            'A',
-            'B',
-            'C',
-            'D',
-            'E',
-            'F',
-            'G',
-            'H',
-            'I',
-            'J',
-            'K',
-            'L',
-            'M',
-            'N',
-            'O',
-            'P',
-            'Q',
-            'R',
-            'S',
-            'T',
-            'U',
-            'V',
-            'W',
-            'X',
-            'Y',
-            'Z',
-            '-',
-            '.',
-            ' ',
-            '$',
-            '/',
-            '+',
-            '%',
-            '<',
-            '=',
-            '>',
-            '?'
-        );
-        // translate special characters
-        $code = strtr($code, chr(128) . chr(131) . chr(129) . chr(130), '<=>?');
-        $len = strlen($code);
-        // calculate check digit C
-        $p = 1;
-        $check = 0;
-        for ($i = ($len - 1); $i >= 0; --$i) {
-            $k = array_keys($chars, $code[$i]);
-            $check += ($k[0] * $p);
-            ++$p;
-            if ($p > 20) {
-                $p = 1;
-            }
-        }
-        $check %= 47;
-        $c = $chars[$check];
-        $code .= $c;
-        // calculate check digit K
-        $p = 1;
-        $check = 0;
-        for ($i = $len; $i >= 0; --$i) {
-            $k = array_keys($chars, $code[$i]);
-            $check += ($k[0] * $p);
-            ++$p;
-            if ($p > 15) {
-                $p = 1;
-            }
-        }
-        $check %= 47;
-        $k = $chars[$check];
-        $checksum = $c . $k;
-        // resto respecial characters
-        $checksum = strtr($checksum, '<=>?', chr(128) . chr(131) . chr(129) . chr(130));
-
-        return $checksum;
-    }
-
-    /**
      * Checksum for standard 2 of 5 barcodes.
      *
      * @param $code (string) code to process.
@@ -1011,73 +692,6 @@ abstract class BarcodeGenerator
                 $bararray['maxw'] += $w;
                 ++$k;
                 $w = 0;
-            }
-        }
-
-        return $bararray;
-    }
-
-    /**
-     * Interleaved 2 of 5 barcodes.
-     * Compact numeric code, widely used in industry, air cargo
-     * Contains digits (0 to 9) and encodes the data in the width of both bars and spaces.
-     *
-     * @param $code (string) code to represent.
-     * @param $checksum (boolean) if true add a checksum to the code
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_i25($code, $checksum = false)
-    {
-        $chr['0'] = '11221';
-        $chr['1'] = '21112';
-        $chr['2'] = '12112';
-        $chr['3'] = '22111';
-        $chr['4'] = '11212';
-        $chr['5'] = '21211';
-        $chr['6'] = '12211';
-        $chr['7'] = '11122';
-        $chr['8'] = '21121';
-        $chr['9'] = '12121';
-        $chr['A'] = '11';
-        $chr['Z'] = '21';
-        if ($checksum) {
-            // add checksum
-            $code .= $this->checksum_s25($code);
-        }
-        if ((strlen($code) % 2) != 0) {
-            // add leading zero if code-length is odd
-            $code = '0' . $code;
-        }
-        // add start and stop codes
-        $code = 'AA' . strtolower($code) . 'ZA';
-
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-        $k = 0;
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; $i = ($i + 2)) {
-            $char_bar = $code[$i];
-            $char_space = $code[$i + 1];
-            if ( ! isset($chr[$char_bar]) || ! isset($chr[$char_space])) {
-                throw new InvalidCharacterException();
-            }
-            // create a bar-space sequence
-            $seq = '';
-            $chrlen = strlen($chr[$char_bar]);
-            for ($s = 0; $s < $chrlen; $s++) {
-                $seq .= $chr[$char_bar][$s] . $chr[$char_space][$s];
-            }
-            $seqlen = strlen($seq);
-            for ($j = 0; $j < $seqlen; ++$j) {
-                if (($j % 2) == 0) {
-                    $t = true; // bar
-                } else {
-                    $t = false; // space
-                }
-                $w = $seq[$j];
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
             }
         }
 
