@@ -2035,7 +2035,7 @@ abstract class BarcodeGenerator
                 } else {
                     $t = false; // space
                 }
-                $w = $seq[$i];
+                $w = $seq[$j];
                 $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
                 $bararray['maxw'] += $w;
                 ++$k;
