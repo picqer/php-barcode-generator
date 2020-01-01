@@ -38,7 +38,7 @@ class VerifiedBarcodeTest extends TestCase
         ['type' => \Picqer\Barcode\BarcodeGenerator::TYPE_CODE_128, 'barcodes' => ['081231723897', '1234567890abcABC-283*33']],
         ['type' => \Picqer\Barcode\BarcodeGenerator::TYPE_CODE_128_A, 'barcodes' => ['1234567890']],
         ['type' => \Picqer\Barcode\BarcodeGenerator::TYPE_CODE_128_B, 'barcodes' => ['081231723897', '1234567890abcABC-283*33']],
-        ['type' => \Picqer\Barcode\BarcodeGenerator::TYPE_EAN_2, 'barcodes' => ['1234567890abcABC-283*33']],
+        ['type' => \Picqer\Barcode\BarcodeGenerator::TYPE_EAN_2, 'barcodes' => ['22']],
         ['type' => \Picqer\Barcode\BarcodeGenerator::TYPE_EAN_5, 'barcodes' => ['1234567890abcABC-283*33']],
         ['type' => \Picqer\Barcode\BarcodeGenerator::TYPE_EAN_8, 'barcodes' => ['1234568']],
         ['type' => \Picqer\Barcode\BarcodeGenerator::TYPE_UPC_A, 'barcodes' => ['123456789']],

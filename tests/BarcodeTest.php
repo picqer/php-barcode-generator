@@ -183,7 +183,7 @@ class BarcodeTest extends TestCase
     public function test_generator_can_generate_ean_2_barcode()
     {
         $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-        $result = $generator->getBarcode('1234567890abcABC-283*33', $generator::TYPE_EAN_2);
+        $result = $generator->getBarcode('22', $generator::TYPE_EAN_2);
 
         $this->assertGreaterThan(100, strlen($result));
     }
