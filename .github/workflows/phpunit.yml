@@ -1,4 +1,4 @@
-name: PHP Composer
+name: phpunit
 
 on: [push]
 
