@@ -25,40 +25,26 @@ abstract class TypeEanUpcBase implements TypeInterface
     {
         $length = $this->length;
 
-        $data_len = $length - 1;
-        //Padding
-        $code = str_pad($code, $data_len, '0', STR_PAD_LEFT);
-        $code_len = strlen($code);
-        // calculate check digit
-        $sum_a = 0;
-        for ($i = 1; $i < $data_len; $i += 2) {
-            $sum_a += $code[$i];
-        }
-        if ($length > 12) {
-            $sum_a *= 3;
-        }
-        $sum_b = 0;
-        for ($i = 0; $i < $data_len; $i += 2) {
-            $sum_b += intval(($code[$i]));
-        }
-        if ($length < 13) {
-            $sum_b *= 3;
-        }
-        $r = ($sum_a + $sum_b) % 10;
-        if ($r > 0) {
-            $r = (10 - $r);
-        }
-        if ($code_len == $data_len) {
-            // add check digit
-            $code .= $r;
-        } elseif ($r !== intval($code[$data_len])) {
+        $dataLength = $length - 1;
+
+        // Add zero padding in front
+        $code = str_pad($code, $dataLength, '0', STR_PAD_LEFT);
+
+        $checksumDigit = $this->calculateChecksumDigit($code);
+
+        if (strlen($code) == $dataLength) {
+            $code .= $checksumDigit;
+        } elseif ($checksumDigit !== intval($code[$dataLength])) {
+            // If length of given barcode is same as final length, barcode is including checksum
+            // Make sure that checksum is the same as we calculated
             throw new InvalidCheckDigitException();
         }
+
         if ($this->upca || $this->upce) {
-            // UPC-A
             $code = '0' . $code;
             ++$length;
         }
+
         if ($this->upce) {
             // convert UPC-A to UPC-E
             $tmp = substr($code, 4, 3);
@@ -82,9 +68,10 @@ abstract class TypeEanUpcBase implements TypeInterface
                 }
             }
         }
-        //Convert digits to bars
-        $codes = array(
-            'A' => array( // left odd parity
+
+        // Convert digits to bars
+        $codes = [
+            'A' => [ // left odd parity
                 '0' => '0001101',
                 '1' => '0011001',
                 '2' => '0010011',
@@ -95,8 +82,8 @@ abstract class TypeEanUpcBase implements TypeInterface
                 '7' => '0111011',
                 '8' => '0110111',
                 '9' => '0001011'
-            ),
-            'B' => array( // left even parity
+            ],
+            'B' => [ // left even parity
                 '0' => '0100111',
                 '1' => '0110011',
                 '2' => '0011011',
@@ -107,8 +94,8 @@ abstract class TypeEanUpcBase implements TypeInterface
                 '7' => '0010001',
                 '8' => '0001001',
                 '9' => '0010111'
-            ),
-            'C' => array( // right
+            ],
+            'C' => [ // right
                 '0' => '1110010',
                 '1' => '1100110',
                 '2' => '1101100',
@@ -119,56 +106,60 @@ abstract class TypeEanUpcBase implements TypeInterface
                 '7' => '1000100',
                 '8' => '1001000',
                 '9' => '1110100'
-            )
-        );
-        $parities = array(
-            '0' => array('A', 'A', 'A', 'A', 'A', 'A'),
-            '1' => array('A', 'A', 'B', 'A', 'B', 'B'),
-            '2' => array('A', 'A', 'B', 'B', 'A', 'B'),
-            '3' => array('A', 'A', 'B', 'B', 'B', 'A'),
-            '4' => array('A', 'B', 'A', 'A', 'B', 'B'),
-            '5' => array('A', 'B', 'B', 'A', 'A', 'B'),
-            '6' => array('A', 'B', 'B', 'B', 'A', 'A'),
-            '7' => array('A', 'B', 'A', 'B', 'A', 'B'),
-            '8' => array('A', 'B', 'A', 'B', 'B', 'A'),
-            '9' => array('A', 'B', 'B', 'A', 'B', 'A')
-        );
-        $upce_parities = array();
-        $upce_parities[0] = array(
-            '0' => array('B', 'B', 'B', 'A', 'A', 'A'),
-            '1' => array('B', 'B', 'A', 'B', 'A', 'A'),
-            '2' => array('B', 'B', 'A', 'A', 'B', 'A'),
-            '3' => array('B', 'B', 'A', 'A', 'A', 'B'),
-            '4' => array('B', 'A', 'B', 'B', 'A', 'A'),
-            '5' => array('B', 'A', 'A', 'B', 'B', 'A'),
-            '6' => array('B', 'A', 'A', 'A', 'B', 'B'),
-            '7' => array('B', 'A', 'B', 'A', 'B', 'A'),
-            '8' => array('B', 'A', 'B', 'A', 'A', 'B'),
-            '9' => array('B', 'A', 'A', 'B', 'A', 'B')
-        );
-        $upce_parities[1] = array(
-            '0' => array('A', 'A', 'A', 'B', 'B', 'B'),
-            '1' => array('A', 'A', 'B', 'A', 'B', 'B'),
-            '2' => array('A', 'A', 'B', 'B', 'A', 'B'),
-            '3' => array('A', 'A', 'B', 'B', 'B', 'A'),
-            '4' => array('A', 'B', 'A', 'A', 'B', 'B'),
-            '5' => array('A', 'B', 'B', 'A', 'A', 'B'),
-            '6' => array('A', 'B', 'B', 'B', 'A', 'A'),
-            '7' => array('A', 'B', 'A', 'B', 'A', 'B'),
-            '8' => array('A', 'B', 'A', 'B', 'B', 'A'),
-            '9' => array('A', 'B', 'B', 'A', 'B', 'A')
-        );
+            ]
+        ];
+
+        $parities = [
+            '0' => ['A', 'A', 'A', 'A', 'A', 'A'],
+            '1' => ['A', 'A', 'B', 'A', 'B', 'B'],
+            '2' => ['A', 'A', 'B', 'B', 'A', 'B'],
+            '3' => ['A', 'A', 'B', 'B', 'B', 'A'],
+            '4' => ['A', 'B', 'A', 'A', 'B', 'B'],
+            '5' => ['A', 'B', 'B', 'A', 'A', 'B'],
+            '6' => ['A', 'B', 'B', 'B', 'A', 'A'],
+            '7' => ['A', 'B', 'A', 'B', 'A', 'B'],
+            '8' => ['A', 'B', 'A', 'B', 'B', 'A'],
+            '9' => ['A', 'B', 'B', 'A', 'B', 'A'],
+        ];
+
+        $upce_parities = [
+            [
+                '0' => ['B', 'B', 'B', 'A', 'A', 'A'],
+                '1' => ['B', 'B', 'A', 'B', 'A', 'A'],
+                '2' => ['B', 'B', 'A', 'A', 'B', 'A'],
+                '3' => ['B', 'B', 'A', 'A', 'A', 'B'],
+                '4' => ['B', 'A', 'B', 'B', 'A', 'A'],
+                '5' => ['B', 'A', 'A', 'B', 'B', 'A'],
+                '6' => ['B', 'A', 'A', 'A', 'B', 'B'],
+                '7' => ['B', 'A', 'B', 'A', 'B', 'A'],
+                '8' => ['B', 'A', 'B', 'A', 'A', 'B'],
+                '9' => ['B', 'A', 'A', 'B', 'A', 'B'],
+            ],
+            [
+                '0' => ['A', 'A', 'A', 'B', 'B', 'B'],
+                '1' => ['A', 'A', 'B', 'A', 'B', 'B'],
+                '2' => ['A', 'A', 'B', 'B', 'A', 'B'],
+                '3' => ['A', 'A', 'B', 'B', 'B', 'A'],
+                '4' => ['A', 'B', 'A', 'A', 'B', 'B'],
+                '5' => ['A', 'B', 'B', 'A', 'A', 'B'],
+                '6' => ['A', 'B', 'B', 'B', 'A', 'A'],
+                '7' => ['A', 'B', 'A', 'B', 'A', 'B'],
+                '8' => ['A', 'B', 'A', 'B', 'B', 'A'],
+                '9' => ['A', 'B', 'B', 'A', 'B', 'A'],
+            ],
+        ];
+
         $k = 0;
         $seq = '101'; // left guard bar
         if ($this->upce) {
-            $bararray = array('code' => $upce_code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-            $p = $upce_parities[$code[1]][$r];
+            $bararray = ['code' => $upce_code, 'maxw' => 0, 'maxh' => 1, 'bcode' => []];
+            $p = $upce_parities[$code[1]][$checksumDigit];
             for ($i = 0; $i < 6; ++$i) {
                 $seq .= $codes[$p[$i]][$upce_code[$i]];
             }
             $seq .= '010101'; // right guard bar
         } else {
-            $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
+            $bararray = ['code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => []];
             $half_len = intval(ceil($length / 2));
             if ($length == 8) {
                 for ($i = 0; $i < $half_len; ++$i) {
@@ -189,6 +180,7 @@ abstract class TypeEanUpcBase implements TypeInterface
             }
             $seq .= '101'; // right guard bar
         }
+
         $clen = strlen($seq);
         $w = 0;
         for ($i = 0; $i < $clen; ++$i) {
@@ -199,7 +191,7 @@ abstract class TypeEanUpcBase implements TypeInterface
                 } else {
                     $t = false; // space
                 }
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
+                $bararray['bcode'][$k] = ['t' => $t, 'w' => $w, 'h' => 1, 'p' => 0];
                 $bararray['maxw'] += $w;
                 ++$k;
                 $w = 0;
@@ -207,5 +199,30 @@ abstract class TypeEanUpcBase implements TypeInterface
         }
 
         return $bararray;
+    }
+
+    protected function calculateChecksumDigit(string $code)
+    {
+        // calculate check digit
+        $sum_a = 0;
+        for ($i = 1; $i < $this->length-1; $i += 2) {
+            $sum_a += $code[$i];
+        }
+        if ($this->length > 12) {
+            $sum_a *= 3;
+        }
+        $sum_b = 0;
+        for ($i = 0; $i < $this->length-1; $i += 2) {
+            $sum_b += intval(($code[$i]));
+        }
+        if ($this->length < 13) {
+            $sum_b *= 3;
+        }
+        $checksumDigit = ($sum_a + $sum_b) % 10;
+        if ($checksumDigit > 0) {
+            $checksumDigit = (10 - $checksumDigit);
+        }
+
+        return $checksumDigit;
     }
 }
