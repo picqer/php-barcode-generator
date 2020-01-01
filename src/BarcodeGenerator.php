@@ -36,6 +36,7 @@ use Picqer\Barcode\Types\TypeCode11;
 use Picqer\Barcode\Types\TypeCode128;
 use Picqer\Barcode\Types\TypeCode128A;
 use Picqer\Barcode\Types\TypeCode128B;
+use Picqer\Barcode\Types\TypeCode128C;
 use Picqer\Barcode\Types\TypeCode39;
 use Picqer\Barcode\Types\TypeCode39Checksum;
 use Picqer\Barcode\Types\TypeCode39Extended;
@@ -63,15 +64,15 @@ use Picqer\Barcode\Types\TypeUpcExtension5;
 
 abstract class BarcodeGenerator
 {
-    const TYPE_CODE_39 = 'C39'; // CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
-    const TYPE_CODE_39_CHECKSUM = 'C39+';  // CODE 39 with checksum
+    const TYPE_CODE_39 = 'C39';
+    const TYPE_CODE_39_CHECKSUM = 'C39+';
     const TYPE_CODE_39E = 'C39E'; // CODE 39 EXTENDED
     const TYPE_CODE_39E_CHECKSUM = 'C39E+'; // CODE 39 EXTENDED + CHECKSUM
-    const TYPE_CODE_93 = 'C93'; // CODE 93 - USS-93
-    const TYPE_STANDARD_2_5 = 'S25'; // Standard 2 of 5
-    const TYPE_STANDARD_2_5_CHECKSUM = 'S25+'; // Standard 2 of 5 + CHECKSUM
-    const TYPE_INTERLEAVED_2_5 = 'I25'; // Interleaved 2 of 5
-    const TYPE_INTERLEAVED_2_5_CHECKSUM = 'I25+'; // Interleaved 2 of 5 + CHECKSUM
+    const TYPE_CODE_93 = 'C93';
+    const TYPE_STANDARD_2_5 = 'S25';
+    const TYPE_STANDARD_2_5_CHECKSUM = 'S25+';
+    const TYPE_INTERLEAVED_2_5 = 'I25';
+    const TYPE_INTERLEAVED_2_5_CHECKSUM = 'I25+';
     const TYPE_CODE_128 = 'C128';
     const TYPE_CODE_128_A = 'C128A';
     const TYPE_CODE_128_B = 'C128B';
@@ -96,137 +97,111 @@ abstract class BarcodeGenerator
 
     protected function getBarcodeData(string $code, string $type): array
     {
-        switch (strtoupper($type)) {
-            case self::TYPE_CODE_39:
-                $barcodeDataBuilder = new TypeCode39();
-                break;
-
-            case self::TYPE_CODE_39_CHECKSUM:
-                $barcodeDataBuilder = new TypeCode39Checksum();
-                break;
-
-            case self::TYPE_CODE_39E:
-                $barcodeDataBuilder = new TypeCode39Extended();
-                break;
-
-            case self::TYPE_CODE_39E_CHECKSUM:
-                $barcodeDataBuilder = new TypeCode39ExtendedChecksum();
-                break;
-
-            case self::TYPE_CODE_93:
-                $barcodeDataBuilder = new TypeCode93();
-                break;
-
-            case self::TYPE_STANDARD_2_5:
-                $barcodeDataBuilder = new TypeStandard2of5();
-                break;
-
-            case self::TYPE_STANDARD_2_5_CHECKSUM:
-                $barcodeDataBuilder = new TypeStandard2of5Checksum();
-                break;
-
-            case self::TYPE_INTERLEAVED_2_5:
-                $barcodeDataBuilder = new TypeInterleaved25();
-                break;
-
-            case self::TYPE_INTERLEAVED_2_5_CHECKSUM:
-                $barcodeDataBuilder = new TypeInterleaved25Checksum();
-                break;
-
-            case self::TYPE_CODE_128:
-                $barcodeDataBuilder = new TypeCode128();
-                break;
-
-            case self::TYPE_CODE_128_A:
-                $barcodeDataBuilder = new TypeCode128A();
-                break;
-
-            case self::TYPE_CODE_128_B:
-                $barcodeDataBuilder = new TypeCode128B();
-                break;
-
-            case self::TYPE_CODE_128_C:
-                $barcodeDataBuilder = new TypeCode128C();
-                break;
-
-            case self::TYPE_EAN_2:
-                $barcodeDataBuilder = new TypeUpcExtension2();
-                break;
-
-            case self::TYPE_EAN_5:
-                $barcodeDataBuilder = new TypeUpcExtension5();
-                break;
-
-            case self::TYPE_EAN_8:
-                $barcodeDataBuilder = new TypeEan8();
-                break;
-
-            case self::TYPE_EAN_13:
-                $barcodeDataBuilder = new TypeEan13();
-                break;
-
-            case self::TYPE_UPC_A:
-                $barcodeDataBuilder = new TypeUpcA();
-                break;
-
-            case self::TYPE_UPC_E:
-                $barcodeDataBuilder = new TypeUpcE();
-                break;
-
-            case self::TYPE_MSI:
-                $barcodeDataBuilder = new TypeMsi();
-                break;
-
-            case self::TYPE_MSI_CHECKSUM:
-                $barcodeDataBuilder = new TypeMsiChecksum();
-                break;
-
-            case self::TYPE_POSTNET:
-                $barcodeDataBuilder = new TypePostnet();
-                break;
-
-            case self::TYPE_PLANET:
-                $barcodeDataBuilder = new TypePlanet();
-                break;
-
-            case self::TYPE_RMS4CC:
-                $barcodeDataBuilder = new TypeRms4cc();
-                break;
-
-            case self::TYPE_KIX:
-                $barcodeDataBuilder = new TypeKix();
-                break;
-
-            case self::TYPE_IMB:
-                $barcodeDataBuilder = new TypeIntelligentMailBarcode();
-                break;
-
-            case self::TYPE_CODABAR:
-                $barcodeDataBuilder = new TypeCodabar();
-                break;
-
-            case self::TYPE_CODE_11:
-                $barcodeDataBuilder = new TypeCode11();
-                break;
-
-            case self::TYPE_PHARMA_CODE:
-                $barcodeDataBuilder = new TypePharmacode();
-                break;
-
-            case self::TYPE_PHARMA_CODE_TWO_TRACKS:
-                $barcodeDataBuilder = new TypePharmacodeTwoCode();
-                break;
-
-            default:
-                throw new UnknownTypeException();
-        }
+        $barcodeDataBuilder = $this->createDataBuilderForType($type);
 
         $barcodeData = $barcodeDataBuilder->getBarcodeData($code);
 
-        if ( ! isset($barcodeData['maxWidth'])) {
+        if (! isset($barcodeData['maxWidth'])) {
             return OldBarcodeArrayConverter::convert($barcodeData);
         }
 
         return $barcodeData;
+    }
+
+    protected function createDataBuilderForType(string $type)
+    {
+        switch (strtoupper($type)) {
+            case self::TYPE_CODE_39:
+                return new TypeCode39();
+
+            case self::TYPE_CODE_39_CHECKSUM:
+                return new TypeCode39Checksum();
+
+            case self::TYPE_CODE_39E:
+                return new TypeCode39Extended();
+
+            case self::TYPE_CODE_39E_CHECKSUM:
+                return new TypeCode39ExtendedChecksum();
+
+            case self::TYPE_CODE_93:
+                return new TypeCode93();
+
+            case self::TYPE_STANDARD_2_5:
+                return new TypeStandard2of5();
+
+            case self::TYPE_STANDARD_2_5_CHECKSUM:
+                return new TypeStandard2of5Checksum();
+
+            case self::TYPE_INTERLEAVED_2_5:
+                return new TypeInterleaved25();
+
+            case self::TYPE_INTERLEAVED_2_5_CHECKSUM:
+                return new TypeInterleaved25Checksum();
+
+            case self::TYPE_CODE_128:
+                return new TypeCode128();
+
+            case self::TYPE_CODE_128_A:
+                return new TypeCode128A();
+
+            case self::TYPE_CODE_128_B:
+                return new TypeCode128B();
+
+            case self::TYPE_CODE_128_C:
+                return new TypeCode128C();
+
+            case self::TYPE_EAN_2:
+                return new TypeUpcExtension2();
+
+            case self::TYPE_EAN_5:
+                return new TypeUpcExtension5();
+
+            case self::TYPE_EAN_8:
+                return new TypeEan8();
+
+            case self::TYPE_EAN_13:
+                return new TypeEan13();
+
+            case self::TYPE_UPC_A:
+                return new TypeUpcA();
+
+            case self::TYPE_UPC_E:
+                return new TypeUpcE();
+
+            case self::TYPE_MSI:
+                return new TypeMsi();
+
+            case self::TYPE_MSI_CHECKSUM:
+                return new TypeMsiChecksum();
+
+            case self::TYPE_POSTNET:
+                return new TypePostnet();
+
+            case self::TYPE_PLANET:
+                return new TypePlanet();
+
+            case self::TYPE_RMS4CC:
+                return new TypeRms4cc();
+
+            case self::TYPE_KIX:
+                return new TypeKix();
+
+            case self::TYPE_IMB:
+                return new TypeIntelligentMailBarcode();
+
+            case self::TYPE_CODABAR:
+                return new TypeCodabar();
+
+            case self::TYPE_CODE_11:
+                return new TypeCode11();
+
+            case self::TYPE_PHARMA_CODE:
+                return new TypePharmacode();
+
+            case self::TYPE_PHARMA_CODE_TWO_TRACKS:
+                return new TypePharmacodeTwoCode();
+        }
+
+        throw new UnknownTypeException();
     }
 }

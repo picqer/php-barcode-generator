@@ -2,9 +2,6 @@
 
 namespace Picqer\Barcode\Types;
 
-use Picqer\Barcode\Exceptions\InvalidCharacterException;
-use Picqer\Barcode\Exceptions\InvalidLengthException;
-
 /*
  * C128 barcodes.
  * Very capable code, excellent density, high reliability; in very wide use world-wide
