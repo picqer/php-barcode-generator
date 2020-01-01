@@ -10,7 +10,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
  * Contains digits (0 to 9) and encodes the data in the width of both bars and spaces.
  */
 
-class TypeInterleaved25Checksum extends Type
+class TypeInterleaved25Checksum implements TypeInterface
 {
     public function getBarcodeData(string $code): array
     {

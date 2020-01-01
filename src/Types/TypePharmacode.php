@@ -9,7 +9,7 @@ use Picqer\Barcode\Helpers\BinarySequenceConverter;
  * Contains digits (0 to 9)
  */
 
-class TypePharmacode extends Type
+class TypePharmacode implements TypeInterface
 {
     public function getBarcodeData(string $code): array
     {

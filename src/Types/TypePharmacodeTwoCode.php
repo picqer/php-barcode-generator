@@ -7,7 +7,7 @@ namespace Picqer\Barcode\Types;
  * Contains digits (0 to 9)
  */
 
-class TypePharmacodeTwoCode extends Type
+class TypePharmacodeTwoCode implements TypeInterface
 {
     public function getBarcodeData(string $code): array
     {

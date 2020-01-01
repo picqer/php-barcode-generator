@@ -10,7 +10,7 @@ namespace Picqer\Barcode\Types;
  *     - in this case the house number must be sufficed with an X and placed at the end of the code.
  */
 
-class TypeRms4cc extends Type
+class TypeRms4cc implements TypeInterface
 {
     protected $kix = false;
 

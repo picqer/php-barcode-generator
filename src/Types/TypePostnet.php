@@ -11,7 +11,7 @@ namespace Picqer\Barcode\Types;
  * @param $planet (boolean) if true print the PLANET barcode, otherwise print POSTNET
  */
 
-class TypePostnet extends Type
+class TypePostnet implements TypeInterface
 {
     protected $barlen = Array(
         0 => Array(2, 2, 1, 1, 1),

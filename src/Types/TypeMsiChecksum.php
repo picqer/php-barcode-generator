@@ -14,7 +14,7 @@ use Picqer\Barcode\Helpers\BinarySequenceConverter;
  * @param $checksum (boolean) if true add a checksum to the code (modulo 11)
  */
 
-class TypeMsiChecksum extends Type
+class TypeMsiChecksum implements TypeInterface
 {
     protected $checksum = true;
 

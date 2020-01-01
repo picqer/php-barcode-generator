@@ -38,6 +38,10 @@ use Picqer\Barcode\Helpers\BinarySequenceConverter;
 use Picqer\Barcode\Helpers\OldBarcodeArrayConverter;
 use Picqer\Barcode\Types\TypeCodabar;
 use Picqer\Barcode\Types\TypeCode11;
+use Picqer\Barcode\Types\TypeCode39;
+use Picqer\Barcode\Types\TypeCode39Checksum;
+use Picqer\Barcode\Types\TypeCode39Extended;
+use Picqer\Barcode\Types\TypeCode39ExtendedChecksum;
 use Picqer\Barcode\Types\TypeCode93;
 use Picqer\Barcode\Types\TypeEan13;
 use Picqer\Barcode\Types\TypeEan8;
@@ -52,8 +56,12 @@ use Picqer\Barcode\Types\TypePharmacodeTwoCode;
 use Picqer\Barcode\Types\TypePlanet;
 use Picqer\Barcode\Types\TypePostnet;
 use Picqer\Barcode\Types\TypeRms4cc;
+use Picqer\Barcode\Types\TypeStandard2of5;
+use Picqer\Barcode\Types\TypeStandard2of5Checksum;
 use Picqer\Barcode\Types\TypeUpcA;
 use Picqer\Barcode\Types\TypeUpcE;
+use Picqer\Barcode\Types\TypeUpcExtension2;
+use Picqer\Barcode\Types\TypeUpcExtension5;
 
 abstract class BarcodeGenerator
 {
@@ -88,31 +96,23 @@ abstract class BarcodeGenerator
     const TYPE_PHARMA_CODE = 'PHARMA';
     const TYPE_PHARMA_CODE_TWO_TRACKS = 'PHARMA2T';
 
-    /**
-     * Get the barcode data
-     *
-     * @param string $code code to print
-     * @param string $type type of barcode
-     * @return array barcode array
-     * @public
-     */
-    protected function getBarcodeData($code, $type)
+    protected function getBarcodeData(string $code, string $type): array
     {
         switch (strtoupper($type)) {
             case self::TYPE_CODE_39:
-                $arrcode = $this->barcode_code39($code, false, false);
+                $barcodeDataBuilder = new TypeCode39();
                 break;
 
             case self::TYPE_CODE_39_CHECKSUM:
-                $arrcode = $this->barcode_code39($code, false, true);
+                $barcodeDataBuilder = new TypeCode39Checksum();
                 break;
 
             case self::TYPE_CODE_39E:
-                $arrcode = $this->barcode_code39($code, true, false);
+                $barcodeDataBuilder = new TypeCode39Extended();
                 break;
 
             case self::TYPE_CODE_39E_CHECKSUM:
-                $arrcode = $this->barcode_code39($code, true, true);
+                $barcodeDataBuilder = new TypeCode39ExtendedChecksum();
                 break;
 
             case self::TYPE_CODE_93:
@@ -120,11 +120,11 @@ abstract class BarcodeGenerator
                 break;
 
             case self::TYPE_STANDARD_2_5:
-                $arrcode = $this->barcode_s25($code, false);
+                $barcodeDataBuilder = new TypeStandard2of5();
                 break;
 
             case self::TYPE_STANDARD_2_5_CHECKSUM:
-                $arrcode = $this->barcode_s25($code, true);
+                $barcodeDataBuilder = new TypeStandard2of5Checksum();
                 break;
 
             case self::TYPE_INTERLEAVED_2_5:
@@ -152,11 +152,11 @@ abstract class BarcodeGenerator
                 break;
 
             case self::TYPE_EAN_2:
-                $arrcode = $this->barcode_eanext($code, 2);
+                $barcodeDataBuilder = new TypeUpcExtension2();
                 break;
 
             case self::TYPE_EAN_5:
-                $arrcode = $this->barcode_eanext($code, 5);
+                $barcodeDataBuilder = new TypeUpcExtension5();
                 break;
 
             case self::TYPE_EAN_8:
@@ -233,395 +233,6 @@ abstract class BarcodeGenerator
 
         return $arrcode;
     }
-
-    /**
-     * CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
-     * General-purpose code in very wide use world-wide
-     *
-     * @param $code (string) code to represent.
-     * @param $extended (boolean) if true uses the extended mode.
-     * @param $checksum (boolean) if true add a checksum to the code.
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_code39($code, $extended = false, $checksum = false)
-    {
-        $chr = [];
-        $chr['0'] = '111331311';
-        $chr['1'] = '311311113';
-        $chr['2'] = '113311113';
-        $chr['3'] = '313311111';
-        $chr['4'] = '111331113';
-        $chr['5'] = '311331111';
-        $chr['6'] = '113331111';
-        $chr['7'] = '111311313';
-        $chr['8'] = '311311311';
-        $chr['9'] = '113311311';
-        $chr['A'] = '311113113';
-        $chr['B'] = '113113113';
-        $chr['C'] = '313113111';
-        $chr['D'] = '111133113';
-        $chr['E'] = '311133111';
-        $chr['F'] = '113133111';
-        $chr['G'] = '111113313';
-        $chr['H'] = '311113311';
-        $chr['I'] = '113113311';
-        $chr['J'] = '111133311';
-        $chr['K'] = '311111133';
-        $chr['L'] = '113111133';
-        $chr['M'] = '313111131';
-        $chr['N'] = '111131133';
-        $chr['O'] = '311131131';
-        $chr['P'] = '113131131';
-        $chr['Q'] = '111111333';
-        $chr['R'] = '311111331';
-        $chr['S'] = '113111331';
-        $chr['T'] = '111131331';
-        $chr['U'] = '331111113';
-        $chr['V'] = '133111113';
-        $chr['W'] = '333111111';
-        $chr['X'] = '131131113';
-        $chr['Y'] = '331131111';
-        $chr['Z'] = '133131111';
-        $chr['-'] = '131111313';
-        $chr['.'] = '331111311';
-        $chr[' '] = '133111311';
-        $chr['$'] = '131313111';
-        $chr['/'] = '131311131';
-        $chr['+'] = '131113131';
-        $chr['%'] = '111313131';
-        $chr['*'] = '131131311';
-
-        $code = strtoupper($code);
-
-        if ($extended) {
-            // extended mode
-            $code = $this->encode_code39_ext($code);
-        }
-
-        if ($checksum) {
-            // checksum
-            $code .= $this->checksum_code39($code);
-        }
-
-        // add start and stop codes
-        $code = '*' . $code . '*';
-
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-        $k = 0;
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
-            $char = $code[$i];
-            if ( ! isset($chr[$char])) {
-                throw new InvalidCharacterException('Char ' . $char . ' is unsupported');
-            }
-            for ($j = 0; $j < 9; ++$j) {
-                if (($j % 2) == 0) {
-                    $t = true; // bar
-                } else {
-                    $t = false; // space
-                }
-                $w = $chr[$char][$j];
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
-            }
-            // intercharacter gap
-            $bararray['bcode'][$k] = array('t' => false, 'w' => 1, 'h' => 1, 'p' => 0);
-            $bararray['maxw'] += 1;
-            ++$k;
-        }
-
-        return $bararray;
-    }
-
-    /**
-     * Encode a string to be used for CODE 39 Extended mode.
-     *
-     * @param string $code code to represent.
-     * @return bool|string encoded string.
-     * @protected
-     */
-    protected function encode_code39_ext($code)
-    {
-        $encode = array(
-            chr(0)   => '%U',
-            chr(1)   => '$A',
-            chr(2)   => '$B',
-            chr(3)   => '$C',
-            chr(4)   => '$D',
-            chr(5)   => '$E',
-            chr(6)   => '$F',
-            chr(7)   => '$G',
-            chr(8)   => '$H',
-            chr(9)   => '$I',
-            chr(10)  => '$J',
-            chr(11)  => '£K',
-            chr(12)  => '$L',
-            chr(13)  => '$M',
-            chr(14)  => '$N',
-            chr(15)  => '$O',
-            chr(16)  => '$P',
-            chr(17)  => '$Q',
-            chr(18)  => '$R',
-            chr(19)  => '$S',
-            chr(20)  => '$T',
-            chr(21)  => '$U',
-            chr(22)  => '$V',
-            chr(23)  => '$W',
-            chr(24)  => '$X',
-            chr(25)  => '$Y',
-            chr(26)  => '$Z',
-            chr(27)  => '%A',
-            chr(28)  => '%B',
-            chr(29)  => '%C',
-            chr(30)  => '%D',
-            chr(31)  => '%E',
-            chr(32)  => ' ',
-            chr(33)  => '/A',
-            chr(34)  => '/B',
-            chr(35)  => '/C',
-            chr(36)  => '/D',
-            chr(37)  => '/E',
-            chr(38)  => '/F',
-            chr(39)  => '/G',
-            chr(40)  => '/H',
-            chr(41)  => '/I',
-            chr(42)  => '/J',
-            chr(43)  => '/K',
-            chr(44)  => '/L',
-            chr(45)  => '-',
-            chr(46)  => '.',
-            chr(47)  => '/O',
-            chr(48)  => '0',
-            chr(49)  => '1',
-            chr(50)  => '2',
-            chr(51)  => '3',
-            chr(52)  => '4',
-            chr(53)  => '5',
-            chr(54)  => '6',
-            chr(55)  => '7',
-            chr(56)  => '8',
-            chr(57)  => '9',
-            chr(58)  => '/Z',
-            chr(59)  => '%F',
-            chr(60)  => '%G',
-            chr(61)  => '%H',
-            chr(62)  => '%I',
-            chr(63)  => '%J',
-            chr(64)  => '%V',
-            chr(65)  => 'A',
-            chr(66)  => 'B',
-            chr(67)  => 'C',
-            chr(68)  => 'D',
-            chr(69)  => 'E',
-            chr(70)  => 'F',
-            chr(71)  => 'G',
-            chr(72)  => 'H',
-            chr(73)  => 'I',
-            chr(74)  => 'J',
-            chr(75)  => 'K',
-            chr(76)  => 'L',
-            chr(77)  => 'M',
-            chr(78)  => 'N',
-            chr(79)  => 'O',
-            chr(80)  => 'P',
-            chr(81)  => 'Q',
-            chr(82)  => 'R',
-            chr(83)  => 'S',
-            chr(84)  => 'T',
-            chr(85)  => 'U',
-            chr(86)  => 'V',
-            chr(87)  => 'W',
-            chr(88)  => 'X',
-            chr(89)  => 'Y',
-            chr(90)  => 'Z',
-            chr(91)  => '%K',
-            chr(92)  => '%L',
-            chr(93)  => '%M',
-            chr(94)  => '%N',
-            chr(95)  => '%O',
-            chr(96)  => '%W',
-            chr(97)  => '+A',
-            chr(98)  => '+B',
-            chr(99)  => '+C',
-            chr(100) => '+D',
-            chr(101) => '+E',
-            chr(102) => '+F',
-            chr(103) => '+G',
-            chr(104) => '+H',
-            chr(105) => '+I',
-            chr(106) => '+J',
-            chr(107) => '+K',
-            chr(108) => '+L',
-            chr(109) => '+M',
-            chr(110) => '+N',
-            chr(111) => '+O',
-            chr(112) => '+P',
-            chr(113) => '+Q',
-            chr(114) => '+R',
-            chr(115) => '+S',
-            chr(116) => '+T',
-            chr(117) => '+U',
-            chr(118) => '+V',
-            chr(119) => '+W',
-            chr(120) => '+X',
-            chr(121) => '+Y',
-            chr(122) => '+Z',
-            chr(123) => '%P',
-            chr(124) => '%Q',
-            chr(125) => '%R',
-            chr(126) => '%S',
-            chr(127) => '%T'
-        );
-        $code_ext = '';
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
-            if (ord($code[$i]) > 127) {
-                throw new InvalidCharacterException('Only supports till char 127');
-            }
-            $code_ext .= $encode[$code[$i]];
-        }
-
-        return $code_ext;
-    }
-
-    /**
-     * Calculate CODE 39 checksum (modulo 43).
-     *
-     * @param string $code code to represent.
-     * @return string char checksum.
-     * @protected
-     */
-    protected function checksum_code39($code)
-    {
-        $chars = array(
-            '0',
-            '1',
-            '2',
-            '3',
-            '4',
-            '5',
-            '6',
-            '7',
-            '8',
-            '9',
-            'A',
-            'B',
-            'C',
-            'D',
-            'E',
-            'F',
-            'G',
-            'H',
-            'I',
-            'J',
-            'K',
-            'L',
-            'M',
-            'N',
-            'O',
-            'P',
-            'Q',
-            'R',
-            'S',
-            'T',
-            'U',
-            'V',
-            'W',
-            'X',
-            'Y',
-            'Z',
-            '-',
-            '.',
-            ' ',
-            '$',
-            '/',
-            '+',
-            '%'
-        );
-        $sum = 0;
-        $codelength = strlen($code);
-        for ($i = 0; $i < $codelength; ++$i) {
-            $k = array_keys($chars, $code[$i]);
-            $sum += $k[0];
-        }
-        $j = ($sum % 43);
-
-        return $chars[$j];
-    }
-
-    /**
-     * Checksum for standard 2 of 5 barcodes.
-     *
-     * @param $code (string) code to process.
-     * @return int checksum.
-     * @protected
-     */
-    protected function checksum_s25($code)
-    {
-        $len = strlen($code);
-        $sum = 0;
-        for ($i = 0; $i < $len; $i += 2) {
-            $sum += $code[$i];
-        }
-        $sum *= 3;
-        for ($i = 1; $i < $len; $i += 2) {
-            $sum += ($code[$i]);
-        }
-        $r = $sum % 10;
-        if ($r > 0) {
-            $r = (10 - $r);
-        }
-
-        return $r;
-    }
-
-    /**
-     * Standard 2 of 5 barcodes.
-     * Used in airline ticket marking, photofinishing
-     * Contains digits (0 to 9) and encodes the data only in the width of bars.
-     *
-     * @param $code (string) code to represent.
-     * @param $checksum (boolean) if true add a checksum to the code
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_s25($code, $checksum = false)
-    {
-        $chr['0'] = '10101110111010';
-        $chr['1'] = '11101010101110';
-        $chr['2'] = '10111010101110';
-        $chr['3'] = '11101110101010';
-        $chr['4'] = '10101110101110';
-        $chr['5'] = '11101011101010';
-        $chr['6'] = '10111011101010';
-        $chr['7'] = '10101011101110';
-        $chr['8'] = '10101110111010';
-        $chr['9'] = '10111010111010';
-        if ($checksum) {
-            // add checksum
-            $code .= $this->checksum_s25($code);
-        }
-        if ((strlen($code) % 2) != 0) {
-            // add leading zero if code-length is odd
-            $code = '0' . $code;
-        }
-        $seq = '11011010';
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
-            $digit = $code[$i];
-            if ( ! isset($chr[$digit])) {
-                throw new InvalidCharacterException('Char ' . $digit . ' is unsupported');
-            }
-            $seq .= $chr[$digit];
-        }
-        $seq .= '1101011';
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-
-        return BinarySequenceConverter::convert($seq, $bararray);
-    }
-
 
     /**
      * C128 barcodes.
@@ -1007,87 +618,6 @@ abstract class BarcodeGenerator
         }
 
         return $sequence;
-    }
-
-    /**
-     * UPC-Based Extensions
-     * 2-Digit Ext.: Used to indicate magazines and newspaper issue numbers
-     * 5-Digit Ext.: Used to mark suggested retail price of books
-     *
-     * @param $code (string) code to represent.
-     * @param $len (string) barcode type: 2 = 2-Digit, 5 = 5-Digit
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_eanext($code, $len = 5)
-    {
-        //Padding
-        $code = str_pad($code, $len, '0', STR_PAD_LEFT);
-        // calculate check digit
-        if ($len == 2) {
-            $r = $code % 4;
-        } elseif ($len == 5) {
-            $r = (3 * ($code[0] + $code[2] + $code[4])) + (9 * ($code[1] + $code[3]));
-            $r %= 10;
-        } else {
-            throw new InvalidCheckDigitException();
-        }
-        //Convert digits to bars
-        $codes = array(
-            'A' => array( // left odd parity
-                '0' => '0001101',
-                '1' => '0011001',
-                '2' => '0010011',
-                '3' => '0111101',
-                '4' => '0100011',
-                '5' => '0110001',
-                '6' => '0101111',
-                '7' => '0111011',
-                '8' => '0110111',
-                '9' => '0001011'
-            ),
-            'B' => array( // left even parity
-                '0' => '0100111',
-                '1' => '0110011',
-                '2' => '0011011',
-                '3' => '0100001',
-                '4' => '0011101',
-                '5' => '0111001',
-                '6' => '0000101',
-                '7' => '0010001',
-                '8' => '0001001',
-                '9' => '0010111'
-            )
-        );
-        $parities = array();
-        $parities[2] = array(
-            '0' => array('A', 'A'),
-            '1' => array('A', 'B'),
-            '2' => array('B', 'A'),
-            '3' => array('B', 'B')
-        );
-        $parities[5] = array(
-            '0' => array('B', 'B', 'A', 'A', 'A'),
-            '1' => array('B', 'A', 'B', 'A', 'A'),
-            '2' => array('B', 'A', 'A', 'B', 'A'),
-            '3' => array('B', 'A', 'A', 'A', 'B'),
-            '4' => array('A', 'B', 'B', 'A', 'A'),
-            '5' => array('A', 'A', 'B', 'B', 'A'),
-            '6' => array('A', 'A', 'A', 'B', 'B'),
-            '7' => array('A', 'B', 'A', 'B', 'A'),
-            '8' => array('A', 'B', 'A', 'A', 'B'),
-            '9' => array('A', 'A', 'B', 'A', 'B')
-        );
-        $p = $parities[$len][$r];
-        $seq = '1011'; // left guard bar
-        $seq .= $codes[$p[0]][$code[0]];
-        for ($i = 1; $i < $len; ++$i) {
-            $seq .= '01'; // separator
-            $seq .= $codes[$p[$i]][$code[$i]];
-        }
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-
-        return BinarySequenceConverter::convert($seq, $bararray);
     }
 
     /**

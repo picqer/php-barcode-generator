@@ -9,7 +9,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
  * Used primarily for labeling telecommunications equipment
  */
 
-class TypeCode11 extends Type
+class TypeCode11 implements TypeInterface
 {
     public function getBarcodeData(string $code): array
     {

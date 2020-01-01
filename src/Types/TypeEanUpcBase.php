@@ -15,7 +15,7 @@ use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
  * @param $len (string) barcode type: 6 = UPC-E, 8 = EAN8, 13 = EAN13, 12 = UPC-A
  */
 
-abstract class TypeEanUpcBase extends Type
+abstract class TypeEanUpcBase implements TypeInterface
 {
     protected $length = 13;
     protected $upca = false;

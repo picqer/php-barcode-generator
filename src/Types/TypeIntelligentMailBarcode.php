@@ -30,7 +30,7 @@ use Picqer\Barcode\Exceptions\BarcodeException;
  *     (BarcodeID_ServiceTypeID_MailerID_SerialNumber-RoutingCode)
  */
 
-class TypeIntelligentMailBarcode extends Type
+class TypeIntelligentMailBarcode implements TypeInterface
 {
     public function getBarcodeData(string $code): array
     {

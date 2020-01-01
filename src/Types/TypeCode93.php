@@ -9,7 +9,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
  * Compact code similar to Code 39
  */
 
-class TypeCode93 extends Type
+class TypeCode93 implements TypeInterface
 {
     public function getBarcodeData(string $code): array
     {
