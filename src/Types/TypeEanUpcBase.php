@@ -173,7 +173,7 @@ abstract class TypeEanUpcBase implements TypeInterface
             }
             $seq .= '01010'; // center guard bar
             for ($i = $half_len; $i < $length; ++$i) {
-                if ( ! isset($codes['C'][$code[$i]])) {
+                if (! isset($codes['C'][$code[$i]])) {
                     throw new InvalidCharacterException('Char ' . $code[$i] . ' not allowed');
                 }
                 $seq .= $codes['C'][$code[$i]];
@@ -205,14 +205,14 @@ abstract class TypeEanUpcBase implements TypeInterface
     {
         // calculate check digit
         $sum_a = 0;
-        for ($i = 1; $i < $this->length-1; $i += 2) {
+        for ($i = 1; $i < $this->length - 1; $i += 2) {
             $sum_a += $code[$i];
         }
         if ($this->length > 12) {
             $sum_a *= 3;
         }
         $sum_b = 0;
-        for ($i = 0; $i < $this->length-1; $i += 2) {
+        for ($i = 0; $i < $this->length - 1; $i += 2) {
             $sum_b += intval(($code[$i]));
         }
         if ($this->length < 13) {

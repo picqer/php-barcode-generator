@@ -77,7 +77,7 @@ class TypeCode11 implements TypeInterface
         $code = 'S' . $code . 'S';
         $len += 3;
         for ($i = 0; $i < $len; ++$i) {
-            if ( ! isset($chr[$code[$i]])) {
+            if (! isset($chr[$code[$i]])) {
                 throw new InvalidCharacterException('Char ' . $code[$i] . ' is unsupported');
             }
             $seq = $chr[$code[$i]];

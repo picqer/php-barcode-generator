@@ -2,6 +2,9 @@
 
 namespace Picqer\Barcode;
 
+use Imagick;
+use imagickdraw;
+use imagickpixel;
 use Picqer\Barcode\Exceptions\BarcodeException;
 
 class BarcodeGeneratorPNG extends BarcodeGenerator
@@ -35,10 +38,10 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
             $colorForeground = imagecolorallocate($png, $color[0], $color[1], $color[2]);
         } elseif (extension_loaded('imagick')) {
             $imagick = true;
-            $colorForeground = new \imagickpixel('rgb(' . $color[0] . ',' . $color[1] . ',' . $color[2] . ')');
-            $png = new \Imagick();
+            $colorForeground = new imagickpixel('rgb(' . $color[0] . ',' . $color[1] . ',' . $color[2] . ')');
+            $png = new Imagick();
             $png->newImage($width, $height, 'none', 'png');
-            $imageMagickObject = new \imagickdraw();
+            $imageMagickObject = new imagickdraw();
             $imageMagickObject->setFillColor($colorForeground);
         } else {
             throw new BarcodeException('Neither gd-lib or imagick are installed!');

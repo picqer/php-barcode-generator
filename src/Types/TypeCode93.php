@@ -62,108 +62,110 @@ class TypeCode93 implements TypeInterface
         $chr[130] = '122211'; // (+)
         $chr[131] = '312111'; // (%)
         $chr[42] = '111141'; // start-stop
+
         $code = strtoupper($code);
-        $encode = array(
-            chr(0)   => chr(131) . 'U',
-            chr(1)   => chr(128) . 'A',
-            chr(2)   => chr(128) . 'B',
-            chr(3)   => chr(128) . 'C',
-            chr(4)   => chr(128) . 'D',
-            chr(5)   => chr(128) . 'E',
-            chr(6)   => chr(128) . 'F',
-            chr(7)   => chr(128) . 'G',
-            chr(8)   => chr(128) . 'H',
-            chr(9)   => chr(128) . 'I',
-            chr(10)  => chr(128) . 'J',
-            chr(11)  => '£K',
-            chr(12)  => chr(128) . 'L',
-            chr(13)  => chr(128) . 'M',
-            chr(14)  => chr(128) . 'N',
-            chr(15)  => chr(128) . 'O',
-            chr(16)  => chr(128) . 'P',
-            chr(17)  => chr(128) . 'Q',
-            chr(18)  => chr(128) . 'R',
-            chr(19)  => chr(128) . 'S',
-            chr(20)  => chr(128) . 'T',
-            chr(21)  => chr(128) . 'U',
-            chr(22)  => chr(128) . 'V',
-            chr(23)  => chr(128) . 'W',
-            chr(24)  => chr(128) . 'X',
-            chr(25)  => chr(128) . 'Y',
-            chr(26)  => chr(128) . 'Z',
-            chr(27)  => chr(131) . 'A',
-            chr(28)  => chr(131) . 'B',
-            chr(29)  => chr(131) . 'C',
-            chr(30)  => chr(131) . 'D',
-            chr(31)  => chr(131) . 'E',
-            chr(32)  => ' ',
-            chr(33)  => chr(129) . 'A',
-            chr(34)  => chr(129) . 'B',
-            chr(35)  => chr(129) . 'C',
-            chr(36)  => chr(129) . 'D',
-            chr(37)  => chr(129) . 'E',
-            chr(38)  => chr(129) . 'F',
-            chr(39)  => chr(129) . 'G',
-            chr(40)  => chr(129) . 'H',
-            chr(41)  => chr(129) . 'I',
-            chr(42)  => chr(129) . 'J',
-            chr(43)  => chr(129) . 'K',
-            chr(44)  => chr(129) . 'L',
-            chr(45)  => '-',
-            chr(46)  => '.',
-            chr(47)  => chr(129) . 'O',
-            chr(48)  => '0',
-            chr(49)  => '1',
-            chr(50)  => '2',
-            chr(51)  => '3',
-            chr(52)  => '4',
-            chr(53)  => '5',
-            chr(54)  => '6',
-            chr(55)  => '7',
-            chr(56)  => '8',
-            chr(57)  => '9',
-            chr(58)  => chr(129) . 'Z',
-            chr(59)  => chr(131) . 'F',
-            chr(60)  => chr(131) . 'G',
-            chr(61)  => chr(131) . 'H',
-            chr(62)  => chr(131) . 'I',
-            chr(63)  => chr(131) . 'J',
-            chr(64)  => chr(131) . 'V',
-            chr(65)  => 'A',
-            chr(66)  => 'B',
-            chr(67)  => 'C',
-            chr(68)  => 'D',
-            chr(69)  => 'E',
-            chr(70)  => 'F',
-            chr(71)  => 'G',
-            chr(72)  => 'H',
-            chr(73)  => 'I',
-            chr(74)  => 'J',
-            chr(75)  => 'K',
-            chr(76)  => 'L',
-            chr(77)  => 'M',
-            chr(78)  => 'N',
-            chr(79)  => 'O',
-            chr(80)  => 'P',
-            chr(81)  => 'Q',
-            chr(82)  => 'R',
-            chr(83)  => 'S',
-            chr(84)  => 'T',
-            chr(85)  => 'U',
-            chr(86)  => 'V',
-            chr(87)  => 'W',
-            chr(88)  => 'X',
-            chr(89)  => 'Y',
-            chr(90)  => 'Z',
-            chr(91)  => chr(131) . 'K',
-            chr(92)  => chr(131) . 'L',
-            chr(93)  => chr(131) . 'M',
-            chr(94)  => chr(131) . 'N',
-            chr(95)  => chr(131) . 'O',
-            chr(96)  => chr(131) . 'W',
-            chr(97)  => chr(130) . 'A',
-            chr(98)  => chr(130) . 'B',
-            chr(99)  => chr(130) . 'C',
+
+        $encode = [
+            chr(0) => chr(131) . 'U',
+            chr(1) => chr(128) . 'A',
+            chr(2) => chr(128) . 'B',
+            chr(3) => chr(128) . 'C',
+            chr(4) => chr(128) . 'D',
+            chr(5) => chr(128) . 'E',
+            chr(6) => chr(128) . 'F',
+            chr(7) => chr(128) . 'G',
+            chr(8) => chr(128) . 'H',
+            chr(9) => chr(128) . 'I',
+            chr(10) => chr(128) . 'J',
+            chr(11) => '£K',
+            chr(12) => chr(128) . 'L',
+            chr(13) => chr(128) . 'M',
+            chr(14) => chr(128) . 'N',
+            chr(15) => chr(128) . 'O',
+            chr(16) => chr(128) . 'P',
+            chr(17) => chr(128) . 'Q',
+            chr(18) => chr(128) . 'R',
+            chr(19) => chr(128) . 'S',
+            chr(20) => chr(128) . 'T',
+            chr(21) => chr(128) . 'U',
+            chr(22) => chr(128) . 'V',
+            chr(23) => chr(128) . 'W',
+            chr(24) => chr(128) . 'X',
+            chr(25) => chr(128) . 'Y',
+            chr(26) => chr(128) . 'Z',
+            chr(27) => chr(131) . 'A',
+            chr(28) => chr(131) . 'B',
+            chr(29) => chr(131) . 'C',
+            chr(30) => chr(131) . 'D',
+            chr(31) => chr(131) . 'E',
+            chr(32) => ' ',
+            chr(33) => chr(129) . 'A',
+            chr(34) => chr(129) . 'B',
+            chr(35) => chr(129) . 'C',
+            chr(36) => chr(129) . 'D',
+            chr(37) => chr(129) . 'E',
+            chr(38) => chr(129) . 'F',
+            chr(39) => chr(129) . 'G',
+            chr(40) => chr(129) . 'H',
+            chr(41) => chr(129) . 'I',
+            chr(42) => chr(129) . 'J',
+            chr(43) => chr(129) . 'K',
+            chr(44) => chr(129) . 'L',
+            chr(45) => '-',
+            chr(46) => '.',
+            chr(47) => chr(129) . 'O',
+            chr(48) => '0',
+            chr(49) => '1',
+            chr(50) => '2',
+            chr(51) => '3',
+            chr(52) => '4',
+            chr(53) => '5',
+            chr(54) => '6',
+            chr(55) => '7',
+            chr(56) => '8',
+            chr(57) => '9',
+            chr(58) => chr(129) . 'Z',
+            chr(59) => chr(131) . 'F',
+            chr(60) => chr(131) . 'G',
+            chr(61) => chr(131) . 'H',
+            chr(62) => chr(131) . 'I',
+            chr(63) => chr(131) . 'J',
+            chr(64) => chr(131) . 'V',
+            chr(65) => 'A',
+            chr(66) => 'B',
+            chr(67) => 'C',
+            chr(68) => 'D',
+            chr(69) => 'E',
+            chr(70) => 'F',
+            chr(71) => 'G',
+            chr(72) => 'H',
+            chr(73) => 'I',
+            chr(74) => 'J',
+            chr(75) => 'K',
+            chr(76) => 'L',
+            chr(77) => 'M',
+            chr(78) => 'N',
+            chr(79) => 'O',
+            chr(80) => 'P',
+            chr(81) => 'Q',
+            chr(82) => 'R',
+            chr(83) => 'S',
+            chr(84) => 'T',
+            chr(85) => 'U',
+            chr(86) => 'V',
+            chr(87) => 'W',
+            chr(88) => 'X',
+            chr(89) => 'Y',
+            chr(90) => 'Z',
+            chr(91) => chr(131) . 'K',
+            chr(92) => chr(131) . 'L',
+            chr(93) => chr(131) . 'M',
+            chr(94) => chr(131) . 'N',
+            chr(95) => chr(131) . 'O',
+            chr(96) => chr(131) . 'W',
+            chr(97) => chr(130) . 'A',
+            chr(98) => chr(130) . 'B',
+            chr(99) => chr(130) . 'C',
             chr(100) => chr(130) . 'D',
             chr(101) => chr(130) . 'E',
             chr(102) => chr(130) . 'F',
@@ -191,8 +193,9 @@ class TypeCode93 implements TypeInterface
             chr(124) => chr(131) . 'Q',
             chr(125) => chr(131) . 'R',
             chr(126) => chr(131) . 'S',
-            chr(127) => chr(131) . 'T'
-        );
+            chr(127) => chr(131) . 'T',
+        ];
+
         $code_ext = '';
         $clen = strlen($code);
         for ($i = 0; $i < $clen; ++$i) {
@@ -201,16 +204,19 @@ class TypeCode93 implements TypeInterface
             }
             $code_ext .= $encode[$code[$i]];
         }
+
         // checksum
         $code_ext .= $this->checksum_code93($code_ext);
+
         // add start and stop codes
         $code = '*' . $code_ext . '*';
+
         $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
         $k = 0;
         $clen = strlen($code);
         for ($i = 0; $i < $clen; ++$i) {
             $char = ord($code[$i]);
-            if ( ! isset($chr[$char])) {
+            if (! isset($chr[$char])) {
                 throw new InvalidCharacterException('Char ' . $char . ' is unsupported');
             }
             for ($j = 0; $j < 6; ++$j) {
@@ -225,12 +231,12 @@ class TypeCode93 implements TypeInterface
                 ++$k;
             }
         }
+
         $bararray['bcode'][$k] = array('t' => true, 'w' => 1, 'h' => 1, 'p' => 0);
         $bararray['maxw'] += 1;
 
         return $bararray;
     }
-
 
     /**
      * Calculate CODE 93 checksum (modulo 47).
@@ -241,7 +247,7 @@ class TypeCode93 implements TypeInterface
      */
     protected function checksum_code93($code)
     {
-        $chars = array(
+        $chars = [
             '0',
             '1',
             '2',
@@ -288,11 +294,13 @@ class TypeCode93 implements TypeInterface
             '<',
             '=',
             '>',
-            '?'
-        );
+            '?',
+        ];
+
         // translate special characters
         $code = strtr($code, chr(128) . chr(131) . chr(129) . chr(130), '<=>?');
         $len = strlen($code);
+
         // calculate check digit C
         $p = 1;
         $check = 0;
@@ -307,6 +315,7 @@ class TypeCode93 implements TypeInterface
         $check %= 47;
         $c = $chars[$check];
         $code .= $c;
+
         // calculate check digit K
         $p = 1;
         $check = 0;
@@ -320,7 +329,9 @@ class TypeCode93 implements TypeInterface
         }
         $check %= 47;
         $k = $chars[$check];
+
         $checksum = $c . $k;
+
         // resto respecial characters
         $checksum = strtr($checksum, '<=>?', chr(128) . chr(131) . chr(129) . chr(130));
 

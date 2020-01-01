@@ -43,7 +43,7 @@ class TypeInterleaved25Checksum implements TypeInterface
         for ($i = 0; $i < $clen; $i = ($i + 2)) {
             $char_bar = $code[$i];
             $char_space = $code[$i + 1];
-            if ( ! isset($chr[$char_bar]) || ! isset($chr[$char_space])) {
+            if (! isset($chr[$char_bar]) || ! isset($chr[$char_space])) {
                 throw new InvalidCharacterException();
             }
             // create a bar-space sequence

@@ -129,23 +129,29 @@ class TypeCode128 implements TypeInterface
             '233111', /* STOP */
             '200000'  /* END */
         );
+
         // ASCII characters for code A (ASCII 00 - 95)
         $keys_a = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_';
         $keys_a .= chr(0) . chr(1) . chr(2) . chr(3) . chr(4) . chr(5) . chr(6) . chr(7) . chr(8) . chr(9);
         $keys_a .= chr(10) . chr(11) . chr(12) . chr(13) . chr(14) . chr(15) . chr(16) . chr(17) . chr(18) . chr(19);
         $keys_a .= chr(20) . chr(21) . chr(22) . chr(23) . chr(24) . chr(25) . chr(26) . chr(27) . chr(28) . chr(29);
         $keys_a .= chr(30) . chr(31);
+
         // ASCII characters for code B (ASCII 32 - 127)
         $keys_b = ' !"#$%&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~' . chr(127);
+
         // special codes
         $fnc_a = array(241 => 102, 242 => 97, 243 => 96, 244 => 101);
         $fnc_b = array(241 => 102, 242 => 97, 243 => 96, 244 => 100);
+
         // array of symbols
         $code_data = array();
+
         // length of the code
         $len = strlen($code);
+
         switch (strtoupper($this->type)) {
-            case 'A': { // MODE A
+            case 'A':
                 $startid = 103;
                 for ($i = 0; $i < $len; ++$i) {
                     $char = $code[$i];
@@ -159,8 +165,8 @@ class TypeCode128 implements TypeInterface
                     }
                 }
                 break;
-            }
-            case 'B': { // MODE B
+
+            case 'B':
                 $startid = 104;
                 for ($i = 0; $i < $len; ++$i) {
                     $char = $code[$i];
@@ -174,8 +180,8 @@ class TypeCode128 implements TypeInterface
                     }
                 }
                 break;
-            }
-            case 'C': { // MODE C
+
+            case 'C':
                 $startid = 105;
                 if (ord($code[0]) == 241) {
                     $code_data[] = 102;
@@ -194,8 +200,8 @@ class TypeCode128 implements TypeInterface
                     }
                 }
                 break;
-            }
-            default: { // MODE AUTO
+
+            default:
                 // split code into sequences
                 $sequence = array();
                 // get numeric sequences (if any)
@@ -211,7 +217,7 @@ class TypeCode128 implements TypeInterface
                         if (($slen % 2) != 0) {
                             // the length must be even
                             ++$offset;
-                            $val[0] = substr($val[0],1);
+                            $val[0] = substr($val[0], 1);
                         }
 
                         if ($offset > $end_offset) {
@@ -235,19 +241,20 @@ class TypeCode128 implements TypeInterface
                     // text code (non C mode)
                     $sequence = array_merge($sequence, $this->get128ABsequence($code));
                 }
+
                 // process the sequence
                 foreach ($sequence as $key => $seq) {
                     switch ($seq[0]) {
-                        case 'A': {
+                        case 'A':
                             if ($key == 0) {
                                 $startid = 103;
                             } elseif ($sequence[($key - 1)][0] != 'A') {
-                                if (($seq[2] == 1) AND ($key > 0) AND ($sequence[($key - 1)][0] == 'B') AND ( ! isset($sequence[($key - 1)][3]))) {
+                                if (($seq[2] == 1) AND ($key > 0) AND ($sequence[($key - 1)][0] == 'B') AND (! isset($sequence[($key - 1)][3]))) {
                                     // single character shift
                                     $code_data[] = 98;
                                     // mark shift
                                     $sequence[$key][3] = true;
-                                } elseif ( ! isset($sequence[($key - 1)][3])) {
+                                } elseif (! isset($sequence[($key - 1)][3])) {
                                     $code_data[] = 101;
                                 }
                             }
@@ -261,19 +268,21 @@ class TypeCode128 implements TypeInterface
                                 }
                             }
                             break;
-                        }
-                        case 'B': {
+
+                        case 'B':
                             if ($key == 0) {
                                 $tmpchr = ord($seq[1][0]);
                                 if (($seq[2] == 1) AND ($tmpchr >= 241) AND ($tmpchr <= 244) AND isset($sequence[($key + 1)]) AND ($sequence[($key + 1)][0] != 'B')) {
                                     switch ($sequence[($key + 1)][0]) {
-                                        case 'A': {
+                                        case 'A':
+                                        {
                                             $startid = 103;
                                             $sequence[$key][0] = 'A';
                                             $code_data[] = $fnc_a[$tmpchr];
                                             break;
                                         }
-                                        case 'C': {
+                                        case 'C':
+                                        {
                                             $startid = 105;
                                             $sequence[$key][0] = 'C';
                                             $code_data[] = $fnc_a[$tmpchr];
@@ -285,12 +294,12 @@ class TypeCode128 implements TypeInterface
                                     $startid = 104;
                                 }
                             } elseif ($sequence[($key - 1)][0] != 'B') {
-                                if (($seq[2] == 1) AND ($key > 0) AND ($sequence[($key - 1)][0] == 'A') AND ( ! isset($sequence[($key - 1)][3]))) {
+                                if (($seq[2] == 1) AND ($key > 0) AND ($sequence[($key - 1)][0] == 'A') AND (! isset($sequence[($key - 1)][3]))) {
                                     // single character shift
                                     $code_data[] = 98;
                                     // mark shift
                                     $sequence[$key][3] = true;
-                                } elseif ( ! isset($sequence[($key - 1)][3])) {
+                                } elseif (! isset($sequence[($key - 1)][3])) {
                                     $code_data[] = 100;
                                 }
                             }
@@ -304,8 +313,8 @@ class TypeCode128 implements TypeInterface
                                 }
                             }
                             break;
-                        }
-                        case 'C': {
+
+                        case 'C':
                             if ($key == 0) {
                                 $startid = 105;
                             } elseif ($sequence[($key - 1)][0] != 'C') {
@@ -316,11 +325,10 @@ class TypeCode128 implements TypeInterface
                                 $code_data[] = intval($chrnum);
                             }
                             break;
-                        }
                     }
                 }
-            }
         }
+
         // calculate check character
         $sum = $startid;
         foreach ($code_data as $key => $val) {

@@ -116,41 +116,44 @@ class TypeRms4cc implements TypeInterface
             ++$len;
         }
         $k = 0;
+        
         if ($notkix) {
             // start bar
             $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 2, 'p' => 0);
             $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
             $bararray['maxw'] += 2;
         }
+
         for ($i = 0; $i < $len; ++$i) {
             for ($j = 0; $j < 4; ++$j) {
                 switch ($barmode[$code[$i]][$j]) {
-                    case 1: {
+                    case 1:
                         $p = 0;
                         $h = 2;
                         break;
-                    }
-                    case 2: {
+
+                    case 2:
                         $p = 0;
                         $h = 3;
                         break;
-                    }
-                    case 3: {
+
+                    case 3:
                         $p = 1;
                         $h = 1;
                         break;
-                    }
-                    case 4: {
+
+                    case 4:
                         $p = 1;
                         $h = 2;
                         break;
-                    }
                 }
+
                 $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => $h, 'p' => $p);
                 $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
                 $bararray['maxw'] += 2;
             }
         }
+
         if ($notkix) {
             // stop bar
             $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 3, 'p' => 0);

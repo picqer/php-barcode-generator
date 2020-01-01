@@ -58,7 +58,7 @@ class TypeMsiChecksum implements TypeInterface
         $clen = strlen($code);
         for ($i = 0; $i < $clen; ++$i) {
             $digit = $code[$i];
-            if ( ! isset($chr[$digit])) {
+            if (! isset($chr[$digit])) {
                 throw new InvalidCharacterException('Char ' . $digit . ' is unsupported');
             }
             $seq .= $chr[$digit];

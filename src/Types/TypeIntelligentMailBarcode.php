@@ -311,45 +311,50 @@ class TypeIntelligentMailBarcode implements TypeInterface
         }
         // Conversion of Routing Code
         switch (strlen($routing_code)) {
-            case 0: {
+            case 0:
                 $binary_code = 0;
                 break;
-            }
-            case 5: {
+
+            case 5:
                 $binary_code = bcadd($routing_code, '1');
                 break;
-            }
-            case 9: {
+
+            case 9:
                 $binary_code = bcadd($routing_code, '100001');
                 break;
-            }
-            case 11: {
+
+            case 11:
                 $binary_code = bcadd($routing_code, '1000100001');
                 break;
-            }
-            default: {
+
+            default:
                 throw new BarcodeException('Routing code unknown');
-                break;
-            }
         }
+
         $binary_code = bcmul($binary_code, 10);
         $binary_code = bcadd($binary_code, $tracking_number[0]);
         $binary_code = bcmul($binary_code, 5);
         $binary_code = bcadd($binary_code, $tracking_number[1]);
         $binary_code .= substr($tracking_number, 2, 18);
+
         // convert to hexadecimal
         $binary_code = $this->dec_to_hex($binary_code);
+
         // pad to get 13 bytes
         $binary_code = str_pad($binary_code, 26, '0', STR_PAD_LEFT);
+
         // convert string to array of bytes
         $binary_code_arr = chunk_split($binary_code, 2, "\r");
         $binary_code_arr = substr($binary_code_arr, 0, -1);
         $binary_code_arr = explode("\r", $binary_code_arr);
+
         // calculate frame check sequence
         $fcs = $this->imb_crc11fcs($binary_code_arr);
+
         // exclude first 2 bits from first byte
         $first_byte = sprintf('%2s', dechex((hexdec($binary_code_arr[0]) << 2) >> 2));
         $binary_code_102bit = $first_byte . substr($binary_code, 2);
+
         // convert binary data to codewords
         $codewords = array();
         $data = $this->hex_to_dec($binary_code_102bit);
@@ -363,9 +368,11 @@ class TypeIntelligentMailBarcode implements TypeInterface
         if (($fcs >> 10) == 1) {
             $codewords[9] += 659;
         }
+
         // generate lookup tables
         $table2of13 = $this->imb_tables(2, 78);
         $table5of13 = $this->imb_tables(5, 1287);
+
         // convert codewords to characters
         $characters = array();
         $bitmask = 512;
@@ -383,6 +390,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
             $bitmask /= 2;
         }
         $characters = array_reverse($characters);
+
         // build bars
         $k = 0;
         $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 3, 'bcode' => array());

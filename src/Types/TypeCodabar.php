@@ -42,7 +42,7 @@ class TypeCodabar implements TypeInterface
         $code = 'A' . strtoupper($code) . 'A';
         $len = strlen($code);
         for ($i = 0; $i < $len; ++$i) {
-            if ( ! isset($chr[$code[$i]])) {
+            if (! isset($chr[$code[$i]])) {
                 throw new InvalidCharacterException('Char ' . $code[$i] . ' is unsupported');
             }
             $seq = $chr[$code[$i]];
