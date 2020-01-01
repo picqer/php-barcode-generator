@@ -35,9 +35,18 @@ use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
 use Picqer\Barcode\Exceptions\InvalidFormatException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
 use Picqer\Barcode\Exceptions\UnknownTypeException;
+use Picqer\Barcode\Helpers\BinarySequenceConverter;
+use Picqer\Barcode\Helpers\OldBarcodeArrayConverter;
+use Picqer\Barcode\Types\TypeCodabar;
+use Picqer\Barcode\Types\TypeCode11;
 use Picqer\Barcode\Types\TypeCode93;
+use Picqer\Barcode\Types\TypeIntelligentMailBarcode;
 use Picqer\Barcode\Types\TypeInterleaved25;
 use Picqer\Barcode\Types\TypeInterleaved25Checksum;
+use Picqer\Barcode\Types\TypeKix;
+use Picqer\Barcode\Types\TypePharmacode;
+use Picqer\Barcode\Types\TypePharmacodeTwoCode;
+use Picqer\Barcode\Types\TypeRms4cc;
 
 abstract class BarcodeGenerator
 {
@@ -101,7 +110,6 @@ abstract class BarcodeGenerator
 
             case self::TYPE_CODE_93:
                 $barcodeDataBuilder = new TypeCode93();
-                $arrcode = $barcodeDataBuilder->getBarcodeData($code);
                 break;
 
             case self::TYPE_STANDARD_2_5:
@@ -114,12 +122,10 @@ abstract class BarcodeGenerator
 
             case self::TYPE_INTERLEAVED_2_5:
                 $barcodeDataBuilder = new TypeInterleaved25();
-                $arrcode = $barcodeDataBuilder->getBarcodeData($code);
                 break;
 
             case self::TYPE_INTERLEAVED_2_5_CHECKSUM:
                 $barcodeDataBuilder = new TypeInterleaved25Checksum();
-                $arrcode = $barcodeDataBuilder->getBarcodeData($code);
                 break;
 
             case self::TYPE_CODE_128:
@@ -179,39 +185,43 @@ abstract class BarcodeGenerator
                 break;
 
             case self::TYPE_RMS4CC:
-                $arrcode = $this->barcode_rms4cc($code, false);
+                $barcodeDataBuilder = new TypeRms4cc();
                 break;
 
             case self::TYPE_KIX:
-                $arrcode = $this->barcode_rms4cc($code, true);
+                $barcodeDataBuilder = new TypeKix();
                 break;
 
             case self::TYPE_IMB:
-                $arrcode = $this->barcode_imb($code);
+                $barcodeDataBuilder = new TypeIntelligentMailBarcode();
                 break;
 
             case self::TYPE_CODABAR:
-                $arrcode = $this->barcode_codabar($code);
+                $barcodeDataBuilder = new TypeCodabar();
                 break;
 
             case self::TYPE_CODE_11:
-                $arrcode = $this->barcode_code11($code);
+                $barcodeDataBuilder = new TypeCode11();
                 break;
 
             case self::TYPE_PHARMA_CODE:
-                $arrcode = $this->barcode_pharmacode($code);
+                $barcodeDataBuilder = new TypePharmacode();
                 break;
 
             case self::TYPE_PHARMA_CODE_TWO_TRACKS:
-                $arrcode = $this->barcode_pharmacode2t($code);
+                $barcodeDataBuilder = new TypePharmacodeTwoCode();
                 break;
 
             default:
                 throw new UnknownTypeException();
         }
 
+        if (! isset($arrcode) && isset($barcodeDataBuilder)) {
+            $arrcode = $barcodeDataBuilder->getBarcodeData($code);
+        }
+
         if ( ! isset($arrcode['maxWidth'])) {
-            $arrcode = $this->convertBarcodeArrayToNewStyle($arrcode);
+            return OldBarcodeArrayConverter::convert($arrcode);
         }
 
         return $arrcode;
@@ -618,7 +628,7 @@ abstract class BarcodeGenerator
         $seq .= '1001'; // right guard
         $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 
-        return $this->binseq_to_array($seq, $bararray);
+        return BinarySequenceConverter::convert($seq, $bararray);
     }
 
     /**
@@ -663,40 +673,9 @@ abstract class BarcodeGenerator
         $seq .= '1101011';
         $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 
-        return $this->binseq_to_array($seq, $bararray);
+        return BinarySequenceConverter::convert($seq, $bararray);
     }
 
-    /**
-     * Convert binary barcode sequence to TCPDF barcode array.
-     *
-     * @param $seq (string) barcode as binary sequence.
-     * @param $bararray (array) barcode array.
-     * òparam array $bararray TCPDF barcode array to fill up
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function binseq_to_array($seq, $bararray)
-    {
-        $len = strlen($seq);
-        $w = 0;
-        $k = 0;
-        for ($i = 0; $i < $len; ++$i) {
-            $w += 1;
-            if (($i == ($len - 1)) OR (($i < ($len - 1)) AND ($seq[$i] != $seq[($i + 1)]))) {
-                if ($seq[$i] == '1') {
-                    $t = true; // bar
-                } else {
-                    $t = false; // space
-                }
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
-                $w = 0;
-            }
-        }
-
-        return $bararray;
-    }
 
     /**
      * C128 barcodes.
@@ -1364,7 +1343,7 @@ abstract class BarcodeGenerator
         }
         $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 
-        return $this->binseq_to_array($seq, $bararray);
+        return BinarySequenceConverter::convert($seq, $bararray);
     }
 
     /**
@@ -1444,819 +1423,6 @@ abstract class BarcodeGenerator
     }
 
     /**
-     * RMS4CC - CBC - KIX
-     * RMS4CC (Royal Mail 4-state Customer Code) - CBC (Customer Bar Code) - KIX (Klant index - Customer index)
-     * RM4SCC is the name of the barcode symbology used by the Royal Mail for its Cleanmail service.
-     *
-     * @param $code (string) code to print
-     * @param $kix (boolean) if true prints the KIX variation (doesn't use the start and end symbols, and the checksum)
-     *     - in this case the house number must be sufficed with an X and placed at the end of the code.
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_rms4cc($code, $kix = false)
-    {
-        $notkix = ! $kix;
-        // bar mode
-        // 1 = pos 1, length 2
-        // 2 = pos 1, length 3
-        // 3 = pos 2, length 1
-        // 4 = pos 2, length 2
-        $barmode = array(
-            '0' => array(3, 3, 2, 2),
-            '1' => array(3, 4, 1, 2),
-            '2' => array(3, 4, 2, 1),
-            '3' => array(4, 3, 1, 2),
-            '4' => array(4, 3, 2, 1),
-            '5' => array(4, 4, 1, 1),
-            '6' => array(3, 1, 4, 2),
-            '7' => array(3, 2, 3, 2),
-            '8' => array(3, 2, 4, 1),
-            '9' => array(4, 1, 3, 2),
-            'A' => array(4, 1, 4, 1),
-            'B' => array(4, 2, 3, 1),
-            'C' => array(3, 1, 2, 4),
-            'D' => array(3, 2, 1, 4),
-            'E' => array(3, 2, 2, 3),
-            'F' => array(4, 1, 1, 4),
-            'G' => array(4, 1, 2, 3),
-            'H' => array(4, 2, 1, 3),
-            'I' => array(1, 3, 4, 2),
-            'J' => array(1, 4, 3, 2),
-            'K' => array(1, 4, 4, 1),
-            'L' => array(2, 3, 3, 2),
-            'M' => array(2, 3, 4, 1),
-            'N' => array(2, 4, 3, 1),
-            'O' => array(1, 3, 2, 4),
-            'P' => array(1, 4, 1, 4),
-            'Q' => array(1, 4, 2, 3),
-            'R' => array(2, 3, 1, 4),
-            'S' => array(2, 3, 2, 3),
-            'T' => array(2, 4, 1, 3),
-            'U' => array(1, 1, 4, 4),
-            'V' => array(1, 2, 3, 4),
-            'W' => array(1, 2, 4, 3),
-            'X' => array(2, 1, 3, 4),
-            'Y' => array(2, 1, 4, 3),
-            'Z' => array(2, 2, 3, 3)
-        );
-        $code = strtoupper($code);
-        $len = strlen($code);
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 3, 'bcode' => array());
-        if ($notkix) {
-            // table for checksum calculation (row,col)
-            $checktable = array(
-                '0' => array(1, 1),
-                '1' => array(1, 2),
-                '2' => array(1, 3),
-                '3' => array(1, 4),
-                '4' => array(1, 5),
-                '5' => array(1, 0),
-                '6' => array(2, 1),
-                '7' => array(2, 2),
-                '8' => array(2, 3),
-                '9' => array(2, 4),
-                'A' => array(2, 5),
-                'B' => array(2, 0),
-                'C' => array(3, 1),
-                'D' => array(3, 2),
-                'E' => array(3, 3),
-                'F' => array(3, 4),
-                'G' => array(3, 5),
-                'H' => array(3, 0),
-                'I' => array(4, 1),
-                'J' => array(4, 2),
-                'K' => array(4, 3),
-                'L' => array(4, 4),
-                'M' => array(4, 5),
-                'N' => array(4, 0),
-                'O' => array(5, 1),
-                'P' => array(5, 2),
-                'Q' => array(5, 3),
-                'R' => array(5, 4),
-                'S' => array(5, 5),
-                'T' => array(5, 0),
-                'U' => array(0, 1),
-                'V' => array(0, 2),
-                'W' => array(0, 3),
-                'X' => array(0, 4),
-                'Y' => array(0, 5),
-                'Z' => array(0, 0)
-            );
-            $row = 0;
-            $col = 0;
-            for ($i = 0; $i < $len; ++$i) {
-                $row += $checktable[$code[$i]][0];
-                $col += $checktable[$code[$i]][1];
-            }
-            $row %= 6;
-            $col %= 6;
-            $chk = array_keys($checktable, array($row, $col));
-            $code .= $chk[0];
-            ++$len;
-        }
-        $k = 0;
-        if ($notkix) {
-            // start bar
-            $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 2, 'p' => 0);
-            $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-            $bararray['maxw'] += 2;
-        }
-        for ($i = 0; $i < $len; ++$i) {
-            for ($j = 0; $j < 4; ++$j) {
-                switch ($barmode[$code[$i]][$j]) {
-                    case 1: {
-                        $p = 0;
-                        $h = 2;
-                        break;
-                    }
-                    case 2: {
-                        $p = 0;
-                        $h = 3;
-                        break;
-                    }
-                    case 3: {
-                        $p = 1;
-                        $h = 1;
-                        break;
-                    }
-                    case 4: {
-                        $p = 1;
-                        $h = 2;
-                        break;
-                    }
-                }
-                $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => $h, 'p' => $p);
-                $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-                $bararray['maxw'] += 2;
-            }
-        }
-        if ($notkix) {
-            // stop bar
-            $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 3, 'p' => 0);
-            $bararray['maxw'] += 1;
-        }
-
-        return $bararray;
-    }
-
-    /**
-     * CODABAR barcodes.
-     * Older code often used in library systems, sometimes in blood banks
-     *
-     * @param $code (string) code to represent.
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_codabar($code)
-    {
-        $chr = array(
-            '0' => '11111221',
-            '1' => '11112211',
-            '2' => '11121121',
-            '3' => '22111111',
-            '4' => '11211211',
-            '5' => '21111211',
-            '6' => '12111121',
-            '7' => '12112111',
-            '8' => '12211111',
-            '9' => '21121111',
-            '-' => '11122111',
-            '$' => '11221111',
-            ':' => '21112121',
-            '/' => '21211121',
-            '.' => '21212111',
-            '+' => '11222221',
-            'A' => '11221211',
-            'B' => '12121121',
-            'C' => '11121221',
-            'D' => '11122211'
-        );
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-        $k = 0;
-        $w = 0;
-        $seq = '';
-        $code = 'A' . strtoupper($code) . 'A';
-        $len = strlen($code);
-        for ($i = 0; $i < $len; ++$i) {
-            if ( ! isset($chr[$code[$i]])) {
-                throw new InvalidCharacterException('Char ' . $code[$i] . ' is unsupported');
-            }
-            $seq = $chr[$code[$i]];
-            for ($j = 0; $j < 8; ++$j) {
-                if (($j % 2) == 0) {
-                    $t = true; // bar
-                } else {
-                    $t = false; // space
-                }
-                $w = $seq[$j];
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
-            }
-        }
-
-        return $bararray;
-    }
-
-    /**
-     * CODE11 barcodes.
-     * Used primarily for labeling telecommunications equipment
-     *
-     * @param $code (string) code to represent.
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_code11($code)
-    {
-        $chr = array(
-            '0' => '111121',
-            '1' => '211121',
-            '2' => '121121',
-            '3' => '221111',
-            '4' => '112121',
-            '5' => '212111',
-            '6' => '122111',
-            '7' => '111221',
-            '8' => '211211',
-            '9' => '211111',
-            '-' => '112111',
-            'S' => '112211'
-        );
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-        $k = 0;
-        $w = 0;
-        $seq = '';
-        $len = strlen($code);
-        // calculate check digit C
-        $p = 1;
-        $check = 0;
-        for ($i = ($len - 1); $i >= 0; --$i) {
-            $digit = $code[$i];
-            if ($digit == '-') {
-                $dval = 10;
-            } else {
-                $dval = intval($digit);
-            }
-            $check += ($dval * $p);
-            ++$p;
-            if ($p > 10) {
-                $p = 1;
-            }
-        }
-        $check %= 11;
-        if ($check == 10) {
-            $check = '-';
-        }
-        $code .= $check;
-        if ($len > 10) {
-            // calculate check digit K
-            $p = 1;
-            $check = 0;
-            for ($i = $len; $i >= 0; --$i) {
-                $digit = $code[$i];
-                if ($digit == '-') {
-                    $dval = 10;
-                } else {
-                    $dval = intval($digit);
-                }
-                $check += ($dval * $p);
-                ++$p;
-                if ($p > 9) {
-                    $p = 1;
-                }
-            }
-            $check %= 11;
-            $code .= $check;
-            ++$len;
-        }
-        $code = 'S' . $code . 'S';
-        $len += 3;
-        for ($i = 0; $i < $len; ++$i) {
-            if ( ! isset($chr[$code[$i]])) {
-                throw new InvalidCharacterException('Char ' . $code[$i] . ' is unsupported');
-            }
-            $seq = $chr[$code[$i]];
-            for ($j = 0; $j < 6; ++$j) {
-                if (($j % 2) == 0) {
-                    $t = true; // bar
-                } else {
-                    $t = false; // space
-                }
-                $w = $seq[$j];
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
-            }
-        }
-
-        return $bararray;
-    }
-
-    /**
-     * Pharmacode
-     * Contains digits (0 to 9)
-     *
-     * @param $code (string) code to represent.
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_pharmacode($code)
-    {
-        $seq = '';
-        $code = intval($code);
-        while ($code > 0) {
-            if (($code % 2) == 0) {
-                $seq .= '11100';
-                $code -= 2;
-            } else {
-                $seq .= '100';
-                $code -= 1;
-            }
-            $code /= 2;
-        }
-        $seq = substr($seq, 0, -2);
-        $seq = strrev($seq);
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-
-        return $this->binseq_to_array($seq, $bararray);
-    }
-
-    /**
-     * Pharmacode two-track
-     * Contains digits (0 to 9)
-     *
-     * @param $code (string) code to represent.
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_pharmacode2t($code)
-    {
-        $seq = '';
-        $code = intval($code);
-        do {
-            switch ($code % 3) {
-                case 0: {
-                    $seq .= '3';
-                    $code = ($code - 3) / 3;
-                    break;
-                }
-                case 1: {
-                    $seq .= '1';
-                    $code = ($code - 1) / 3;
-                    break;
-                }
-                case 2: {
-                    $seq .= '2';
-                    $code = ($code - 2) / 3;
-                    break;
-                }
-            }
-        } while ($code != 0);
-        $seq = strrev($seq);
-        $k = 0;
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 2, 'bcode' => array());
-        $len = strlen($seq);
-        for ($i = 0; $i < $len; ++$i) {
-            switch ($seq[$i]) {
-                case '1': {
-                    $p = 1;
-                    $h = 1;
-                    break;
-                }
-                case '2': {
-                    $p = 0;
-                    $h = 1;
-                    break;
-                }
-                case '3': {
-                    $p = 0;
-                    $h = 2;
-                    break;
-                }
-            }
-            $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => $h, 'p' => $p);
-            $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-            $bararray['maxw'] += 2;
-        }
-        unset($bararray['bcode'][($k - 1)]);
-        --$bararray['maxw'];
-
-        return $bararray;
-    }
-
-    /**
-     * IMB - Intelligent Mail Barcode - Onecode - USPS-B-3200
-     * (requires PHP bcmath extension)
-     * Intelligent Mail barcode is a 65-bar code for use on mail in the United States.
-     * The fields are described as follows:<ul><li>The Barcode Identifier shall be assigned by USPS to encode the
-     * presort identification that is currently printed in human readable form on the optional endorsement line (OEL)
-     * as well as for future USPS use. This shall be two digits, with the second digit in the range of 0–4. The
-     * allowable encoding ranges shall be 00–04, 10–14, 20–24, 30–34, 40–44, 50–54, 60–64, 70–74, 80–84, and
-     * 90–94.</li><li>The Service Type Identifier shall be assigned by USPS for any combination of services requested
-     * on the mailpiece. The allowable encoding range shall be 000http://it2.php.net/manual/en/function.dechex.php–999.
-     * Each 3-digit value shall correspond to a particular mail class with a particular combination of service(s). Each
-     * service program, such as OneCode Confirm and OneCode ACS, shall provide the list of Service Type Identifier
-     * values.</li><li>The Mailer or Customer Identifier shall be assigned by USPS as a unique, 6 or 9 digit number
-     * that identifies a business entity. The allowable encoding range for the 6 digit Mailer ID shall be 000000-
-     * 899999, while the allowable encoding range for the 9 digit Mailer ID shall be 900000000-999999999.</li><li>The
-     * Serial or Sequence Number shall be assigned by the mailer for uniquely identifying and tracking mailpieces. The
-     * allowable encoding range shall be 000000000–999999999 when used with a 6 digit Mailer ID and 000000-999999 when
-     * used with a 9 digit Mailer ID. e. The Delivery Point ZIP Code shall be assigned by the mailer for routing the
-     * mailpiece. This shall replace POSTNET for routing the mailpiece to its final delivery point. The length may be
-     * 0, 5, 9, or 11 digits. The allowable encoding ranges shall be no ZIP Code, 00000–99999,  000000000–999999999,
-     * and 00000000000–99999999999.</li></ul>
-     *
-     * @param $code (string) code to print, separate the ZIP (routing code) from the rest using a minus char '-'
-     *     (BarcodeID_ServiceTypeID_MailerID_SerialNumber-RoutingCode)
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_imb($code)
-    {
-        $asc_chr = array(
-            4,
-            0,
-            2,
-            6,
-            3,
-            5,
-            1,
-            9,
-            8,
-            7,
-            1,
-            2,
-            0,
-            6,
-            4,
-            8,
-            2,
-            9,
-            5,
-            3,
-            0,
-            1,
-            3,
-            7,
-            4,
-            6,
-            8,
-            9,
-            2,
-            0,
-            5,
-            1,
-            9,
-            4,
-            3,
-            8,
-            6,
-            7,
-            1,
-            2,
-            4,
-            3,
-            9,
-            5,
-            7,
-            8,
-            3,
-            0,
-            2,
-            1,
-            4,
-            0,
-            9,
-            1,
-            7,
-            0,
-            2,
-            4,
-            6,
-            3,
-            7,
-            1,
-            9,
-            5,
-            8
-        );
-        $dsc_chr = array(
-            7,
-            1,
-            9,
-            5,
-            8,
-            0,
-            2,
-            4,
-            6,
-            3,
-            5,
-            8,
-            9,
-            7,
-            3,
-            0,
-            6,
-            1,
-            7,
-            4,
-            6,
-            8,
-            9,
-            2,
-            5,
-            1,
-            7,
-            5,
-            4,
-            3,
-            8,
-            7,
-            6,
-            0,
-            2,
-            5,
-            4,
-            9,
-            3,
-            0,
-            1,
-            6,
-            8,
-            2,
-            0,
-            4,
-            5,
-            9,
-            6,
-            7,
-            5,
-            2,
-            6,
-            3,
-            8,
-            5,
-            1,
-            9,
-            8,
-            7,
-            4,
-            0,
-            2,
-            6,
-            3
-        );
-        $asc_pos = array(
-            3,
-            0,
-            8,
-            11,
-            1,
-            12,
-            8,
-            11,
-            10,
-            6,
-            4,
-            12,
-            2,
-            7,
-            9,
-            6,
-            7,
-            9,
-            2,
-            8,
-            4,
-            0,
-            12,
-            7,
-            10,
-            9,
-            0,
-            7,
-            10,
-            5,
-            7,
-            9,
-            6,
-            8,
-            2,
-            12,
-            1,
-            4,
-            2,
-            0,
-            1,
-            5,
-            4,
-            6,
-            12,
-            1,
-            0,
-            9,
-            4,
-            7,
-            5,
-            10,
-            2,
-            6,
-            9,
-            11,
-            2,
-            12,
-            6,
-            7,
-            5,
-            11,
-            0,
-            3,
-            2
-        );
-        $dsc_pos = array(
-            2,
-            10,
-            12,
-            5,
-            9,
-            1,
-            5,
-            4,
-            3,
-            9,
-            11,
-            5,
-            10,
-            1,
-            6,
-            3,
-            4,
-            1,
-            10,
-            0,
-            2,
-            11,
-            8,
-            6,
-            1,
-            12,
-            3,
-            8,
-            6,
-            4,
-            4,
-            11,
-            0,
-            6,
-            1,
-            9,
-            11,
-            5,
-            3,
-            7,
-            3,
-            10,
-            7,
-            11,
-            8,
-            2,
-            10,
-            3,
-            5,
-            8,
-            0,
-            3,
-            12,
-            11,
-            8,
-            4,
-            5,
-            1,
-            3,
-            0,
-            7,
-            12,
-            9,
-            8,
-            10
-        );
-        $code_arr = explode('-', $code);
-        $tracking_number = $code_arr[0];
-        if (isset($code_arr[1])) {
-            $routing_code = $code_arr[1];
-        } else {
-            $routing_code = '';
-        }
-        // Conversion of Routing Code
-        switch (strlen($routing_code)) {
-            case 0: {
-                $binary_code = 0;
-                break;
-            }
-            case 5: {
-                $binary_code = bcadd($routing_code, '1');
-                break;
-            }
-            case 9: {
-                $binary_code = bcadd($routing_code, '100001');
-                break;
-            }
-            case 11: {
-                $binary_code = bcadd($routing_code, '1000100001');
-                break;
-            }
-            default: {
-                throw new BarcodeException('Routing code unknown');
-                break;
-            }
-        }
-        $binary_code = bcmul($binary_code, 10);
-        $binary_code = bcadd($binary_code, $tracking_number[0]);
-        $binary_code = bcmul($binary_code, 5);
-        $binary_code = bcadd($binary_code, $tracking_number[1]);
-        $binary_code .= substr($tracking_number, 2, 18);
-        // convert to hexadecimal
-        $binary_code = $this->dec_to_hex($binary_code);
-        // pad to get 13 bytes
-        $binary_code = str_pad($binary_code, 26, '0', STR_PAD_LEFT);
-        // convert string to array of bytes
-        $binary_code_arr = chunk_split($binary_code, 2, "\r");
-        $binary_code_arr = substr($binary_code_arr, 0, -1);
-        $binary_code_arr = explode("\r", $binary_code_arr);
-        // calculate frame check sequence
-        $fcs = $this->imb_crc11fcs($binary_code_arr);
-        // exclude first 2 bits from first byte
-        $first_byte = sprintf('%2s', dechex((hexdec($binary_code_arr[0]) << 2) >> 2));
-        $binary_code_102bit = $first_byte . substr($binary_code, 2);
-        // convert binary data to codewords
-        $codewords = array();
-        $data = $this->hex_to_dec($binary_code_102bit);
-        $codewords[0] = bcmod($data, 636) * 2;
-        $data = bcdiv($data, 636);
-        for ($i = 1; $i < 9; ++$i) {
-            $codewords[$i] = bcmod($data, 1365);
-            $data = bcdiv($data, 1365);
-        }
-        $codewords[9] = $data;
-        if (($fcs >> 10) == 1) {
-            $codewords[9] += 659;
-        }
-        // generate lookup tables
-        $table2of13 = $this->imb_tables(2, 78);
-        $table5of13 = $this->imb_tables(5, 1287);
-        // convert codewords to characters
-        $characters = array();
-        $bitmask = 512;
-        foreach ($codewords as $k => $val) {
-            if ($val <= 1286) {
-                $chrcode = $table5of13[$val];
-            } else {
-                $chrcode = $table2of13[($val - 1287)];
-            }
-            if (($fcs & $bitmask) > 0) {
-                // bitwise invert
-                $chrcode = ((~$chrcode) & 8191);
-            }
-            $characters[] = $chrcode;
-            $bitmask /= 2;
-        }
-        $characters = array_reverse($characters);
-        // build bars
-        $k = 0;
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 3, 'bcode' => array());
-        for ($i = 0; $i < 65; ++$i) {
-            $asc = (($characters[$asc_chr[$i]] & pow(2, $asc_pos[$i])) > 0);
-            $dsc = (($characters[$dsc_chr[$i]] & pow(2, $dsc_pos[$i])) > 0);
-            if ($asc AND $dsc) {
-                // full bar (F)
-                $p = 0;
-                $h = 3;
-            } elseif ($asc) {
-                // ascender (A)
-                $p = 0;
-                $h = 2;
-            } elseif ($dsc) {
-                // descender (D)
-                $p = 1;
-                $h = 2;
-            } else {
-                // tracker (T)
-                $p = 1;
-                $h = 1;
-            }
-            $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => $h, 'p' => $p);
-            $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-            $bararray['maxw'] += 2;
-        }
-        unset($bararray['bcode'][($k - 1)]);
-        --$bararray['maxw'];
-
-        return $bararray;
-    }
-
-    /**
      * IMB - Intelligent Mail Barcode - Onecode - USPS-B-3200
      *
      * @param $code (string) pre-formatted IMB barcode (65 chars "FADT")
@@ -2307,169 +1473,5 @@ abstract class BarcodeGenerator
         --$bararray['maxw'];
 
         return $bararray;
-    }
-
-    /**
-     * Convert large integer number to hexadecimal representation.
-     * (requires PHP bcmath extension)
-     *
-     * @param $number (string) number to convert specified as a string
-     * @return string hexadecimal representation
-     */
-    protected function dec_to_hex($number)
-    {
-        if ($number == 0) {
-            return '00';
-        }
-
-        $hex = [];
-
-        while ($number > 0) {
-            array_push($hex, strtoupper(dechex(bcmod($number, '16'))));
-            $number = bcdiv($number, '16', 0);
-        }
-        $hex = array_reverse($hex);
-
-        return implode($hex);
-    }
-
-    /**
-     * Convert large hexadecimal number to decimal representation (string).
-     * (requires PHP bcmath extension)
-     *
-     * @param $hex (string) hexadecimal number to convert specified as a string
-     * @return string hexadecimal representation
-     */
-    protected function hex_to_dec($hex)
-    {
-        $dec = 0;
-        $bitval = 1;
-        $len = strlen($hex);
-        for ($pos = ($len - 1); $pos >= 0; --$pos) {
-            $dec = bcadd($dec, bcmul(hexdec($hex[$pos]), $bitval));
-            $bitval = bcmul($bitval, 16);
-        }
-
-        return $dec;
-    }
-
-    /**
-     * Intelligent Mail Barcode calculation of Frame Check Sequence
-     *
-     * @param $code_arr (string) array of hexadecimal values (13 bytes holding 102 bits right justified).
-     * @return int 11 bit Frame Check Sequence as integer (decimal base)
-     * @protected
-     */
-    protected function imb_crc11fcs($code_arr)
-    {
-        $genpoly = 0x0F35; // generator polynomial
-        $fcs = 0x07FF; // Frame Check Sequence
-        // do most significant byte skipping the 2 most significant bits
-        $data = hexdec($code_arr[0]) << 5;
-        for ($bit = 2; $bit < 8; ++$bit) {
-            if (($fcs ^ $data) & 0x400) {
-                $fcs = ($fcs << 1) ^ $genpoly;
-            } else {
-                $fcs = ($fcs << 1);
-            }
-            $fcs &= 0x7FF;
-            $data <<= 1;
-        }
-        // do rest of bytes
-        for ($byte = 1; $byte < 13; ++$byte) {
-            $data = hexdec($code_arr[$byte]) << 3;
-            for ($bit = 0; $bit < 8; ++$bit) {
-                if (($fcs ^ $data) & 0x400) {
-                    $fcs = ($fcs << 1) ^ $genpoly;
-                } else {
-                    $fcs = ($fcs << 1);
-                }
-                $fcs &= 0x7FF;
-                $data <<= 1;
-            }
-        }
-
-        return $fcs;
-    }
-
-    /**
-     * Reverse unsigned short value
-     *
-     * @param $num (int) value to reversr
-     * @return int reversed value
-     * @protected
-     */
-    protected function imb_reverse_us($num)
-    {
-        $rev = 0;
-        for ($i = 0; $i < 16; ++$i) {
-            $rev <<= 1;
-            $rev |= ($num & 1);
-            $num >>= 1;
-        }
-
-        return $rev;
-    }
-
-    /**
-     * generate Nof13 tables used for Intelligent Mail Barcode
-     *
-     * @param $n (int) is the type of table: 2 for 2of13 table, 5 for 5of13table
-     * @param $size (int) size of table (78 for n=2 and 1287 for n=5)
-     * @return array requested table
-     * @protected
-     */
-    protected function imb_tables($n, $size)
-    {
-        $table = array();
-        $lli = 0; // LUT lower index
-        $lui = $size - 1; // LUT upper index
-        for ($count = 0; $count < 8192; ++$count) {
-            $bit_count = 0;
-            for ($bit_index = 0; $bit_index < 13; ++$bit_index) {
-                $bit_count += intval(($count & (1 << $bit_index)) != 0);
-            }
-            // if we don't have the right number of bits on, go on to the next value
-            if ($bit_count == $n) {
-                $reverse = ($this->imb_reverse_us($count) >> 3);
-                // if the reverse is less than count, we have already visited this pair before
-                if ($reverse >= $count) {
-                    // If count is symmetric, place it at the first free slot from the end of the list.
-                    // Otherwise, place it at the first free slot from the beginning of the list AND place $reverse ath the next free slot from the beginning of the list
-                    if ($reverse == $count) {
-                        $table[$lui] = $count;
-                        --$lui;
-                    } else {
-                        $table[$lli] = $count;
-                        ++$lli;
-                        $table[$lli] = $reverse;
-                        ++$lli;
-                    }
-                }
-            }
-        }
-
-        return $table;
-    }
-
-    protected function convertBarcodeArrayToNewStyle($oldBarcodeArray)
-    {
-        $newBarcodeArray = [];
-        $newBarcodeArray['code'] = $oldBarcodeArray['code'];
-        $newBarcodeArray['maxWidth'] = $oldBarcodeArray['maxw'];
-        $newBarcodeArray['maxHeight'] = $oldBarcodeArray['maxh'];
-        $newBarcodeArray['bars'] = [];
-        foreach ($oldBarcodeArray['bcode'] as $oldbar) {
-            $newBar = [];
-            $newBar['width'] = $oldbar['w'];
-            $newBar['height'] = $oldbar['h'];
-            $newBar['positionVertical'] = $oldbar['p'];
-            $newBar['drawBar'] = $oldbar['t'];
-            $newBar['drawSpacing'] = ! $oldbar['t'];
-
-            $newBarcodeArray['bars'][] = $newBar;
-        }
-
-        return $newBarcodeArray;
     }
 }
