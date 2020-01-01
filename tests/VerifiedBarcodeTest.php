@@ -52,7 +52,11 @@ class VerifiedBarcodeTest extends TestCase
             foreach ($barcodeTestSet['barcodes'] as $barcode) {
                 $result = $generator->getBarcode($barcode, $barcodeTestSet['type']);
 
-                $this->assertStringEqualsFile(sprintf('tests/verified-files/%s-%s.svg', $barcodeTestSet['type'], $barcode), $result);
+                $this->assertStringEqualsFile(
+                    sprintf('tests/verified-files/%s-%s.svg', $barcodeTestSet['type'], $barcode),
+                    $result,
+                    sprintf('%s x %s dynamic test failed', $barcodeTestSet['type'], $barcode)
+                );
             }
         }
     }

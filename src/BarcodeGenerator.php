@@ -29,7 +29,6 @@
 
 namespace Picqer\Barcode;
 
-use Picqer\Barcode\Exceptions\BarcodeException;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
 use Picqer\Barcode\Exceptions\InvalidFormatException;
@@ -40,13 +39,21 @@ use Picqer\Barcode\Helpers\OldBarcodeArrayConverter;
 use Picqer\Barcode\Types\TypeCodabar;
 use Picqer\Barcode\Types\TypeCode11;
 use Picqer\Barcode\Types\TypeCode93;
+use Picqer\Barcode\Types\TypeEan13;
+use Picqer\Barcode\Types\TypeEan8;
 use Picqer\Barcode\Types\TypeIntelligentMailBarcode;
 use Picqer\Barcode\Types\TypeInterleaved25;
 use Picqer\Barcode\Types\TypeInterleaved25Checksum;
 use Picqer\Barcode\Types\TypeKix;
+use Picqer\Barcode\Types\TypeMsi;
+use Picqer\Barcode\Types\TypeMsiChecksum;
 use Picqer\Barcode\Types\TypePharmacode;
 use Picqer\Barcode\Types\TypePharmacodeTwoCode;
+use Picqer\Barcode\Types\TypePlanet;
+use Picqer\Barcode\Types\TypePostnet;
 use Picqer\Barcode\Types\TypeRms4cc;
+use Picqer\Barcode\Types\TypeUpcA;
+use Picqer\Barcode\Types\TypeUpcE;
 
 abstract class BarcodeGenerator
 {
@@ -153,35 +160,35 @@ abstract class BarcodeGenerator
                 break;
 
             case self::TYPE_EAN_8:
-                $arrcode = $this->barcode_eanupc($code, 8);
+                $barcodeDataBuilder = new TypeEan8();
                 break;
 
             case self::TYPE_EAN_13:
-                $arrcode = $this->barcode_eanupc($code, 13);
+                $barcodeDataBuilder = new TypeEan13();
                 break;
 
             case self::TYPE_UPC_A:
-                $arrcode = $this->barcode_eanupc($code, 12);
+                $barcodeDataBuilder = new TypeUpcA();
                 break;
 
             case self::TYPE_UPC_E:
-                $arrcode = $this->barcode_eanupc($code, 6);
+                $barcodeDataBuilder = new TypeUpcE();
                 break;
 
             case self::TYPE_MSI:
-                $arrcode = $this->barcode_msi($code, false);
+                $barcodeDataBuilder = new TypeMsi();
                 break;
 
             case self::TYPE_MSI_CHECKSUM:
-                $arrcode = $this->barcode_msi($code, true);
+                $barcodeDataBuilder = new TypeMsiChecksum();
                 break;
 
             case self::TYPE_POSTNET:
-                $arrcode = $this->barcode_postnet($code, false);
+                $barcodeDataBuilder = new TypePostnet();
                 break;
 
             case self::TYPE_PLANET:
-                $arrcode = $this->barcode_postnet($code, true);
+                $barcodeDataBuilder = new TypePlanet();
                 break;
 
             case self::TYPE_RMS4CC:
@@ -568,67 +575,6 @@ abstract class BarcodeGenerator
         }
 
         return $r;
-    }
-
-    /**
-     * MSI.
-     * Variation of Plessey code, with similar applications
-     * Contains digits (0 to 9) and encodes the data only in the width of bars.
-     *
-     * @param $code (string) code to represent.
-     * @param $checksum (boolean) if true add a checksum to the code (modulo 11)
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_msi($code, $checksum = false)
-    {
-        $chr['0'] = '100100100100';
-        $chr['1'] = '100100100110';
-        $chr['2'] = '100100110100';
-        $chr['3'] = '100100110110';
-        $chr['4'] = '100110100100';
-        $chr['5'] = '100110100110';
-        $chr['6'] = '100110110100';
-        $chr['7'] = '100110110110';
-        $chr['8'] = '110100100100';
-        $chr['9'] = '110100100110';
-        $chr['A'] = '110100110100';
-        $chr['B'] = '110100110110';
-        $chr['C'] = '110110100100';
-        $chr['D'] = '110110100110';
-        $chr['E'] = '110110110100';
-        $chr['F'] = '110110110110';
-        if ($checksum) {
-            // add checksum
-            $clen = strlen($code);
-            $p = 2;
-            $check = 0;
-            for ($i = ($clen - 1); $i >= 0; --$i) {
-                $check += (hexdec($code[$i]) * $p);
-                ++$p;
-                if ($p > 7) {
-                    $p = 2;
-                }
-            }
-            $check %= 11;
-            if ($check > 0) {
-                $check = 11 - $check;
-            }
-            $code .= $check;
-        }
-        $seq = '110'; // left guard
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
-            $digit = $code[$i];
-            if ( ! isset($chr[$digit])) {
-                throw new InvalidCharacterException('Char ' . $digit . ' is unsupported');
-            }
-            $seq .= $chr[$digit];
-        }
-        $seq .= '1001'; // right guard
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-
-        return BinarySequenceConverter::convert($seq, $bararray);
     }
 
     /**
@@ -1064,208 +1010,6 @@ abstract class BarcodeGenerator
     }
 
     /**
-     * EAN13 and UPC-A barcodes.
-     * EAN13: European Article Numbering international retail product code
-     * UPC-A: Universal product code seen on almost all retail products in the USA and Canada
-     * UPC-E: Short version of UPC symbol
-     *
-     * @param $code (string) code to represent.
-     * @param $len (string) barcode type: 6 = UPC-E, 8 = EAN8, 13 = EAN13, 12 = UPC-A
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_eanupc($code, $len = 13)
-    {
-        $upce = false;
-        if ($len == 6) {
-            $len = 12; // UPC-A
-            $upce = true; // UPC-E mode
-        }
-        $data_len = $len - 1;
-        //Padding
-        $code = str_pad($code, $data_len, '0', STR_PAD_LEFT);
-        $code_len = strlen($code);
-        // calculate check digit
-        $sum_a = 0;
-        for ($i = 1; $i < $data_len; $i += 2) {
-            $sum_a += $code[$i];
-        }
-        if ($len > 12) {
-            $sum_a *= 3;
-        }
-        $sum_b = 0;
-        for ($i = 0; $i < $data_len; $i += 2) {
-            $sum_b += intval(($code[$i]));
-        }
-        if ($len < 13) {
-            $sum_b *= 3;
-        }
-        $r = ($sum_a + $sum_b) % 10;
-        if ($r > 0) {
-            $r = (10 - $r);
-        }
-        if ($code_len == $data_len) {
-            // add check digit
-            $code .= $r;
-        } elseif ($r !== intval($code[$data_len])) {
-            throw new InvalidCheckDigitException();
-        }
-        if ($len == 12) {
-            // UPC-A
-            $code = '0' . $code;
-            ++$len;
-        }
-        if ($upce) {
-            // convert UPC-A to UPC-E
-            $tmp = substr($code, 4, 3);
-            if (($tmp == '000') OR ($tmp == '100') OR ($tmp == '200')) {
-                // manufacturer code ends in 000, 100, or 200
-                $upce_code = substr($code, 2, 2) . substr($code, 9, 3) . substr($code, 4, 1);
-            } else {
-                $tmp = substr($code, 5, 2);
-                if ($tmp == '00') {
-                    // manufacturer code ends in 00
-                    $upce_code = substr($code, 2, 3) . substr($code, 10, 2) . '3';
-                } else {
-                    $tmp = substr($code, 6, 1);
-                    if ($tmp == '0') {
-                        // manufacturer code ends in 0
-                        $upce_code = substr($code, 2, 4) . substr($code, 11, 1) . '4';
-                    } else {
-                        // manufacturer code does not end in zero
-                        $upce_code = substr($code, 2, 5) . substr($code, 11, 1);
-                    }
-                }
-            }
-        }
-        //Convert digits to bars
-        $codes = array(
-            'A' => array( // left odd parity
-                '0' => '0001101',
-                '1' => '0011001',
-                '2' => '0010011',
-                '3' => '0111101',
-                '4' => '0100011',
-                '5' => '0110001',
-                '6' => '0101111',
-                '7' => '0111011',
-                '8' => '0110111',
-                '9' => '0001011'
-            ),
-            'B' => array( // left even parity
-                '0' => '0100111',
-                '1' => '0110011',
-                '2' => '0011011',
-                '3' => '0100001',
-                '4' => '0011101',
-                '5' => '0111001',
-                '6' => '0000101',
-                '7' => '0010001',
-                '8' => '0001001',
-                '9' => '0010111'
-            ),
-            'C' => array( // right
-                '0' => '1110010',
-                '1' => '1100110',
-                '2' => '1101100',
-                '3' => '1000010',
-                '4' => '1011100',
-                '5' => '1001110',
-                '6' => '1010000',
-                '7' => '1000100',
-                '8' => '1001000',
-                '9' => '1110100'
-            )
-        );
-        $parities = array(
-            '0' => array('A', 'A', 'A', 'A', 'A', 'A'),
-            '1' => array('A', 'A', 'B', 'A', 'B', 'B'),
-            '2' => array('A', 'A', 'B', 'B', 'A', 'B'),
-            '3' => array('A', 'A', 'B', 'B', 'B', 'A'),
-            '4' => array('A', 'B', 'A', 'A', 'B', 'B'),
-            '5' => array('A', 'B', 'B', 'A', 'A', 'B'),
-            '6' => array('A', 'B', 'B', 'B', 'A', 'A'),
-            '7' => array('A', 'B', 'A', 'B', 'A', 'B'),
-            '8' => array('A', 'B', 'A', 'B', 'B', 'A'),
-            '9' => array('A', 'B', 'B', 'A', 'B', 'A')
-        );
-        $upce_parities = array();
-        $upce_parities[0] = array(
-            '0' => array('B', 'B', 'B', 'A', 'A', 'A'),
-            '1' => array('B', 'B', 'A', 'B', 'A', 'A'),
-            '2' => array('B', 'B', 'A', 'A', 'B', 'A'),
-            '3' => array('B', 'B', 'A', 'A', 'A', 'B'),
-            '4' => array('B', 'A', 'B', 'B', 'A', 'A'),
-            '5' => array('B', 'A', 'A', 'B', 'B', 'A'),
-            '6' => array('B', 'A', 'A', 'A', 'B', 'B'),
-            '7' => array('B', 'A', 'B', 'A', 'B', 'A'),
-            '8' => array('B', 'A', 'B', 'A', 'A', 'B'),
-            '9' => array('B', 'A', 'A', 'B', 'A', 'B')
-        );
-        $upce_parities[1] = array(
-            '0' => array('A', 'A', 'A', 'B', 'B', 'B'),
-            '1' => array('A', 'A', 'B', 'A', 'B', 'B'),
-            '2' => array('A', 'A', 'B', 'B', 'A', 'B'),
-            '3' => array('A', 'A', 'B', 'B', 'B', 'A'),
-            '4' => array('A', 'B', 'A', 'A', 'B', 'B'),
-            '5' => array('A', 'B', 'B', 'A', 'A', 'B'),
-            '6' => array('A', 'B', 'B', 'B', 'A', 'A'),
-            '7' => array('A', 'B', 'A', 'B', 'A', 'B'),
-            '8' => array('A', 'B', 'A', 'B', 'B', 'A'),
-            '9' => array('A', 'B', 'B', 'A', 'B', 'A')
-        );
-        $k = 0;
-        $seq = '101'; // left guard bar
-        if ($upce) {
-            $bararray = array('code' => $upce_code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-            $p = $upce_parities[$code[1]][$r];
-            for ($i = 0; $i < 6; ++$i) {
-                $seq .= $codes[$p[$i]][$upce_code[$i]];
-            }
-            $seq .= '010101'; // right guard bar
-        } else {
-            $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-            $half_len = intval(ceil($len / 2));
-            if ($len == 8) {
-                for ($i = 0; $i < $half_len; ++$i) {
-                    $seq .= $codes['A'][$code[$i]];
-                }
-            } else {
-                $p = $parities[$code[0]];
-                for ($i = 1; $i < $half_len; ++$i) {
-                    $seq .= $codes[$p[$i - 1]][$code[$i]];
-                }
-            }
-            $seq .= '01010'; // center guard bar
-            for ($i = $half_len; $i < $len; ++$i) {
-                if ( ! isset($codes['C'][$code[$i]])) {
-                    throw new InvalidCharacterException('Char ' . $code[$i] . ' not allowed');
-                }
-                $seq .= $codes['C'][$code[$i]];
-            }
-            $seq .= '101'; // right guard bar
-        }
-        $clen = strlen($seq);
-        $w = 0;
-        for ($i = 0; $i < $clen; ++$i) {
-            $w += 1;
-            if (($i == ($clen - 1)) OR (($i < ($clen - 1)) AND ($seq[$i] != $seq[($i + 1)]))) {
-                if ($seq[$i] == '1') {
-                    $t = true; // bar
-                } else {
-                    $t = false; // space
-                }
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
-                $w = 0;
-            }
-        }
-
-        return $bararray;
-    }
-
-    /**
      * UPC-Based Extensions
      * 2-Digit Ext.: Used to indicate magazines and newspaper issue numbers
      * 5-Digit Ext.: Used to mark suggested retail price of books
@@ -1344,82 +1088,6 @@ abstract class BarcodeGenerator
         $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 
         return BinarySequenceConverter::convert($seq, $bararray);
-    }
-
-    /**
-     * POSTNET and PLANET barcodes.
-     * Used by U.S. Postal Service for automated mail sorting
-     *
-     * @param $code (string) zip code to represent. Must be a string containing a zip code of the form DDDDD or
-     *     DDDDD-DDDD.
-     * @param $planet (boolean) if true print the PLANET barcode, otherwise print POSTNET
-     * @return array barcode representation.
-     * @protected
-     */
-    protected function barcode_postnet($code, $planet = false)
-    {
-        // bar length
-        if ($planet) {
-            $barlen = Array(
-                0 => Array(1, 1, 2, 2, 2),
-                1 => Array(2, 2, 2, 1, 1),
-                2 => Array(2, 2, 1, 2, 1),
-                3 => Array(2, 2, 1, 1, 2),
-                4 => Array(2, 1, 2, 2, 1),
-                5 => Array(2, 1, 2, 1, 2),
-                6 => Array(2, 1, 1, 2, 2),
-                7 => Array(1, 2, 2, 2, 1),
-                8 => Array(1, 2, 2, 1, 2),
-                9 => Array(1, 2, 1, 2, 2)
-            );
-        } else {
-            $barlen = Array(
-                0 => Array(2, 2, 1, 1, 1),
-                1 => Array(1, 1, 1, 2, 2),
-                2 => Array(1, 1, 2, 1, 2),
-                3 => Array(1, 1, 2, 2, 1),
-                4 => Array(1, 2, 1, 1, 2),
-                5 => Array(1, 2, 1, 2, 1),
-                6 => Array(1, 2, 2, 1, 1),
-                7 => Array(2, 1, 1, 1, 2),
-                8 => Array(2, 1, 1, 2, 1),
-                9 => Array(2, 1, 2, 1, 1)
-            );
-        }
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 2, 'bcode' => array());
-        $k = 0;
-        $code = str_replace('-', '', $code);
-        $code = str_replace(' ', '', $code);
-        $len = strlen($code);
-        // calculate checksum
-        $sum = 0;
-        for ($i = 0; $i < $len; ++$i) {
-            $sum += intval($code[$i]);
-        }
-        $chkd = ($sum % 10);
-        if ($chkd > 0) {
-            $chkd = (10 - $chkd);
-        }
-        $code .= $chkd;
-        $len = strlen($code);
-        // start bar
-        $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 2, 'p' => 0);
-        $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-        $bararray['maxw'] += 2;
-        for ($i = 0; $i < $len; ++$i) {
-            for ($j = 0; $j < 5; ++$j) {
-                $h = $barlen[$code[$i]][$j];
-                $p = floor(1 / $h);
-                $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => $h, 'p' => $p);
-                $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-                $bararray['maxw'] += 2;
-            }
-        }
-        // end bar
-        $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 2, 'p' => 0);
-        $bararray['maxw'] += 1;
-
-        return $bararray;
     }
 
     /**
