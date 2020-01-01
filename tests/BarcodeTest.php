@@ -89,7 +89,7 @@ class BarcodeTest extends TestCase
         $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
         $result = $generator->getBarcode('1234567890abcABC', $generator::TYPE_CODE_39);
 
-        $this->assertGreaterThan(100, strlen($result));
+        $this->assertStringEqualsFile('tests/verified-files/C39-1234567890abcABC.svg', $result);
     }
 
     public function test_generator_can_generate_code_39_checksum_barcode()

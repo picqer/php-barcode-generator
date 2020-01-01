@@ -9,7 +9,7 @@
 
 // Copyright (C) 2002-2015 Nicola Asuni - Tecnick.com LTD
 //
-// This file is part of TCPDF software library.
+// This file was part of TCPDF software library.
 //
 // TCPDF is free software: you can redistribute it and/or modify it
 // under the terms of the GNU Lesser General Public License as
