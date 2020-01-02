@@ -9,22 +9,21 @@ use Picqer\Barcode\Exceptions\BarcodeException;
 
 class BarcodeGeneratorJPG extends BarcodeGenerator
 {
-
     /**
      * Return a JPG image representation of barcode (requires GD or Imagick library).
      *
-     * @param string $code code to print
+     * @param string $barcode code to print
      * @param string $type type of barcode:
      * @param int $widthFactor Width of a single bar element in pixels.
      * @param int $totalHeight Height of a single bar element in pixels.
-     * @param array $color RGB (0-255) foreground color for bar elements (background is transparent).
+     * @param array $foregroundColor RGB (0-255) foreground color for bar elements (background is transparent).
      * @return string image data or false in case of error.
      * @public
      * @throws BarcodeException
      */
-    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = array(0, 0, 0))
+    public function getBarcode($barcode, $type, int $widthFactor = 2, int $totalHeight = 30, array $foregroundColor = [0, 0, 0])
     {
-        $barcodeData = $this->getBarcodeData($code, $type);
+        $barcodeData = $this->getBarcodeData($barcode, $type);
 
         // calculate image size
         $width = ($barcodeData['maxWidth'] * $widthFactor);
@@ -36,10 +35,10 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
             $jpg = imagecreate($width, $height);
             $colorBackground = imagecolorallocate($jpg, 255, 255, 255);
             imagecolortransparent($jpg, $colorBackground);
-            $colorForeground = imagecolorallocate($jpg, $color[0], $color[1], $color[2]);
+            $colorForeground = imagecolorallocate($jpg, $foregroundColor[0], $foregroundColor[1], $foregroundColor[2]);
         } elseif (extension_loaded('imagick')) {
             $imagick = true;
-            $colorForeground = new imagickpixel('rgb(' . $color[0] . ',' . $color[1] . ',' . $color[2] . ')');
+            $colorForeground = new imagickpixel('rgb(' . $foregroundColor[0] . ',' . $foregroundColor[1] . ',' . $foregroundColor[2] . ')');
             $jpg = new Imagick();
             $jpg->newImage($width, $height, 'white', 'jpg');
             $imageMagickObject = new imagickdraw();
