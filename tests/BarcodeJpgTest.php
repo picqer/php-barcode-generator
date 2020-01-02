@@ -12,7 +12,7 @@ class BarcodeJpgTest extends TestCase
 
         $imageInfo = getimagesizefromstring($result);
 
-        $this->assertGreaterThan(1000, strlen($result));
+        $this->assertGreaterThan(100, strlen($result));
         $this->assertEquals(202, $imageInfo[0]); // Image width
         $this->assertEquals(30, $imageInfo[1]); // Image height
         $this->assertEquals('image/jpeg', $imageInfo['mime']);
@@ -26,7 +26,7 @@ class BarcodeJpgTest extends TestCase
 
         $imageInfo = getimagesizefromstring($result);
 
-        $this->assertGreaterThan(1000, strlen($result));
+        $this->assertGreaterThan(100, strlen($result));
         $this->assertEquals(224, $imageInfo[0]); // Image width
         $this->assertEquals(30, $imageInfo[1]); // Image height
         $this->assertEquals('image/jpeg', $imageInfo['mime']);
@@ -40,7 +40,7 @@ class BarcodeJpgTest extends TestCase
 
         $imageInfo = getimagesizefromstring($result);
 
-        $this->assertGreaterThan(1000, strlen($result));
+        $this->assertGreaterThan(100, strlen($result));
         $this->assertEquals(202, $imageInfo[0]); // Image width
         $this->assertEquals(45, $imageInfo[1]); // Image height
         $this->assertEquals('image/jpeg', $imageInfo['mime']);
@@ -54,7 +54,7 @@ class BarcodeJpgTest extends TestCase
 
         $imageInfo = getimagesizefromstring($result);
 
-        $this->assertGreaterThan(1000, strlen($result));
+        $this->assertGreaterThan(100, strlen($result));
         $this->assertEquals(505, $imageInfo[0]); // Image width
         $this->assertEquals('image/jpeg', $imageInfo['mime']);
     }
@@ -74,7 +74,7 @@ class BarcodeJpgTest extends TestCase
 
         $imageInfo = getimagesizefromstring($result);
 
-        $this->assertGreaterThan(1000, strlen($result));
+        $this->assertGreaterThan(100, strlen($result));
         $this->assertEquals(202, $imageInfo[0]); // Image width
         $this->assertEquals(30, $imageInfo[1]); // Image height
         $this->assertEquals('image/jpeg', $imageInfo['mime']);
@@ -92,7 +92,7 @@ class BarcodeJpgTest extends TestCase
 
         $imageInfo = getimagesizefromstring($result);
 
-        $this->assertGreaterThan(1000, strlen($result));
+        $this->assertGreaterThan(100, strlen($result));
         $this->assertEquals(224, $imageInfo[0]); // Image width
         $this->assertEquals(30, $imageInfo[1]); // Image height
         $this->assertEquals('image/jpeg', $imageInfo['mime']);
@@ -110,7 +110,7 @@ class BarcodeJpgTest extends TestCase
 
         $imageInfo = getimagesizefromstring($result);
 
-        $this->assertGreaterThan(1000, strlen($result));
+        $this->assertGreaterThan(100, strlen($result));
         $this->assertEquals(202, $imageInfo[0]); // Image width
         $this->assertEquals(45, $imageInfo[1]); // Image height
         $this->assertEquals('image/jpeg', $imageInfo['mime']);
@@ -128,7 +128,7 @@ class BarcodeJpgTest extends TestCase
 
         $imageInfo = getimagesizefromstring($result);
 
-        $this->assertGreaterThan(1000, strlen($result));
+        $this->assertGreaterThan(100, strlen($result));
         $this->assertEquals(505, $imageInfo[0]); // Image width
         $this->assertEquals('image/jpeg', $imageInfo['mime']);
     }
