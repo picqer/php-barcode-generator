@@ -13,7 +13,8 @@
         },
         {
             "name": "Casper Bakker",
-            "email": "info@picqer.com"
+            "email": "info@picqer.com",
+            "homepage": "https://picqer.com"
         }
     ],
     "require": {

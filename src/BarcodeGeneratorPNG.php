@@ -67,7 +67,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
         foreach ($barcodeData['bars'] as $bar) {
             $barWidth = round(($bar['width'] * $widthFactor), 3);
 
-            if ($bar['drawBar']) {
+            if ($bar['drawBar'] && $barWidth > 0) {
                 $y = round(($bar['positionVertical'] * $height / $barcodeData['maxHeight']), 3);
                 $barHeight = round(($bar['height'] * $height / $barcodeData['maxHeight']), 3);
 

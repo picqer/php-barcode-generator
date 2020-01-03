@@ -29,16 +29,19 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
         $svg .= '<svg width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" version="1.1" xmlns="http://www.w3.org/2000/svg">' . PHP_EOL;
         $svg .= "\t" . '<desc>' . strtr($barcodeData['code'], $repstr) . '</desc>' . PHP_EOL;
         $svg .= "\t" . '<g id="bars" fill="' . $foregroundColor . '" stroke="none">' . PHP_EOL;
+
         // print bars
         $positionHorizontal = 0;
         foreach ($barcodeData['bars'] as $bar) {
             $barWidth = round(($bar['width'] * $widthFactor), 3);
             $barHeight = round(($bar['height'] * $height / $barcodeData['maxHeight']), 3);
-            if ($bar['drawBar']) {
+
+            if ($bar['drawBar'] && $barWidth > 0) {
                 $positionVertical = round(($bar['positionVertical'] * $height / $barcodeData['maxHeight']), 3);
                 // draw a vertical bar
                 $svg .= "\t\t" . '<rect x="' . $positionHorizontal . '" y="' . $positionVertical . '" width="' . $barWidth . '" height="' . $barHeight . '" />' . PHP_EOL;
             }
+
             $positionHorizontal += $barWidth;
         }
         $svg .= "\t</g>" . PHP_EOL;

@@ -4,21 +4,21 @@ namespace Picqer\Barcode\Helpers;
 
 class OldBarcodeArrayConverter
 {
-    public static function convert($oldBarcodeArray): array
+    public static function convert(array $oldBarcodeArray): array
     {
         $newBarcodeArray = [];
-        $newBarcodeArray['code'] = $oldBarcodeArray['code'];
-        $newBarcodeArray['maxWidth'] = $oldBarcodeArray['maxw'];
-        $newBarcodeArray['maxHeight'] = $oldBarcodeArray['maxh'];
+        $newBarcodeArray['code'] = (string)$oldBarcodeArray['code'];
+        $newBarcodeArray['maxWidth'] = (int)$oldBarcodeArray['maxw'];
+        $newBarcodeArray['maxHeight'] = (int)$oldBarcodeArray['maxh'];
         $newBarcodeArray['bars'] = [];
 
         foreach ($oldBarcodeArray['bcode'] as $oldbar) {
             $newBar = [];
-            $newBar['width'] = $oldbar['w'];
-            $newBar['height'] = $oldbar['h'];
-            $newBar['positionVertical'] = $oldbar['p'];
-            $newBar['drawBar'] = $oldbar['t'];
-            $newBar['drawSpacing'] = ! $oldbar['t'];
+            $newBar['width'] = (int)$oldbar['w'];
+            $newBar['height'] = (int)$oldbar['h'];
+            $newBar['positionVertical'] = (int)$oldbar['p'];
+            $newBar['drawBar'] = (bool)$oldbar['t'];
+            $newBar['drawSpacing'] = ! (bool)$oldbar['t'];
 
             $newBarcodeArray['bars'][] = $newBar;
         }

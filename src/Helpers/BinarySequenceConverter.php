@@ -2,18 +2,12 @@
 
 namespace Picqer\Barcode\Helpers;
 
+/**
+ * Convert binary barcode sequence to barcode array.
+ */
 class BinarySequenceConverter
 {
-    /**
-     * Convert binary barcode sequence to TCPDF barcode array.
-     *
-     * @param $seq (string) barcode as binary sequence.
-     * @param $bararray (array) barcode array.
-     * òparam array $bararray TCPDF barcode array to fill up
-     * @return array barcode representation.
-     * @protected
-     */
-    public static function convert($seq, $bararray)
+    public static function convert(string $seq, array $bararray): array
     {
         $len = strlen($seq);
         $w = 0;
