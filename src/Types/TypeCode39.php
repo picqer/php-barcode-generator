@@ -3,6 +3,7 @@
 namespace Picqer\Barcode\Types;
 
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
+use Picqer\Barcode\Exceptions\InvalidLengthException;
 
 /*
  * CODE 39 - ANSI MH10.8M-1983 - USD-3 - 3 of 9.
@@ -16,6 +17,10 @@ class TypeCode39 implements TypeInterface
 
     public function getBarcodeData(string $code): array
     {
+        if (strlen(trim($code)) === 0) {
+            throw new InvalidLengthException('You should provide a barcode string.');
+        }
+
         $chr = [];
         $chr['0'] = '111331311';
         $chr['1'] = '311311113';

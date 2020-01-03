@@ -4,6 +4,7 @@ namespace Picqer\Barcode\Types;
 
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
+use Picqer\Barcode\Exceptions\InvalidLengthException;
 
 /*
  * EAN13 and UPC-A barcodes.
@@ -23,6 +24,10 @@ abstract class TypeEanUpcBase implements TypeInterface
 
     public function getBarcodeData(string $code): array
     {
+        if (strlen(trim($code)) === 0) {
+            throw new InvalidLengthException('You should provide a barcode string.');
+        }
+
         $length = $this->length;
 
         $dataLength = $length - 1;

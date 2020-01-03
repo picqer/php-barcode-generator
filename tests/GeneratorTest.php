@@ -4,6 +4,22 @@ use PHPUnit\Framework\TestCase;
 
 class GeneratorTest extends TestCase
 {
+    public function test_throws_exception_if_empty_barcode_is_used_in_ean13()
+    {
+        $this->expectException(Picqer\Barcode\Exceptions\InvalidLengthException::class);
+
+        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+        $generator->getBarcode('', $generator::TYPE_EAN_13);
+    }
+
+    public function test_throws_exception_if_empty_barcode_is_used_in_code128()
+    {
+        $this->expectException(Picqer\Barcode\Exceptions\InvalidLengthException::class);
+
+        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+        $generator->getBarcode('', $generator::TYPE_CODE_128);
+    }
+
     public function test_ean13_generator_throws_exception_if_invalid_chars_are_used()
     {
         $this->expectException(Picqer\Barcode\Exceptions\InvalidCharacterException::class);

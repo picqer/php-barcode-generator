@@ -19,6 +19,10 @@ class TypeCode128 implements TypeInterface
 
     public function getBarcodeData(string $code): array
     {
+        if (strlen(trim($code)) === 0) {
+            throw new InvalidLengthException('You should provide a barcode string.');
+        }
+
         $chr = array(
             '212222', /* 00 */
             '222122', /* 01 */
