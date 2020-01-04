@@ -1,7 +1,7 @@
 <?php
 
 require('vendor/autoload.php');
-require('tests/VerifiedBarcodeTest.php');
+require(__DIR__ . '/tests/VerifiedBarcodeTest.php');
 $verifiedFiles = VerifiedBarcodeTest::$supportedBarcodes;
 
 $result = [];

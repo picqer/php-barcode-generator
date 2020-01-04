@@ -16,18 +16,18 @@ use Picqer\Barcode\BarcodeBar;
 
 class TypePostnet implements TypeInterface
 {
-    protected $barlen = Array(
-        0 => Array(2, 2, 1, 1, 1),
-        1 => Array(1, 1, 1, 2, 2),
-        2 => Array(1, 1, 2, 1, 2),
-        3 => Array(1, 1, 2, 2, 1),
-        4 => Array(1, 2, 1, 1, 2),
-        5 => Array(1, 2, 1, 2, 1),
-        6 => Array(1, 2, 2, 1, 1),
-        7 => Array(2, 1, 1, 1, 2),
-        8 => Array(2, 1, 1, 2, 1),
-        9 => Array(2, 1, 2, 1, 1)
-    );
+    protected $barlen = [
+        0 => [2, 2, 1, 1, 1],
+        1 => [1, 1, 1, 2, 2],
+        2 => [1, 1, 2, 1, 2],
+        3 => [1, 1, 2, 2, 1],
+        4 => [1, 2, 1, 1, 2],
+        5 => [1, 2, 1, 2, 1],
+        6 => [1, 2, 2, 1, 1],
+        7 => [2, 1, 1, 1, 2],
+        8 => [2, 1, 1, 2, 1],
+        9 => [2, 1, 2, 1, 1]
+    ];
 
     public function getBarcodeData(string $code): Barcode
     {

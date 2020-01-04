@@ -13,7 +13,7 @@ file_put_contents('tests/verified-files/0049000004632-ean13.svg', $generatorSVG-
 
 
 // New style of verified files
-require('tests/VerifiedBarcodeTest.php');
+require(__DIR__ . '/tests/VerifiedBarcodeTest.php');
 $verifiedFiles = VerifiedBarcodeTest::$supportedBarcodes;
 
 $generatorSVG = new Picqer\Barcode\BarcodeGeneratorSVG();

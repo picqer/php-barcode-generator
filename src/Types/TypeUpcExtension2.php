@@ -34,8 +34,8 @@ class TypeUpcExtension2 implements TypeInterface
         }
 
         //Convert digits to bars
-        $codes = array(
-            'A' => array( // left odd parity
+        $codes = [
+            'A' => [ // left odd parity
                 '0' => '0001101',
                 '1' => '0011001',
                 '2' => '0010011',
@@ -46,8 +46,8 @@ class TypeUpcExtension2 implements TypeInterface
                 '7' => '0111011',
                 '8' => '0110111',
                 '9' => '0001011'
-            ),
-            'B' => array( // left even parity
+            ],
+            'B' => [ // left even parity
                 '0' => '0100111',
                 '1' => '0110011',
                 '2' => '0011011',
@@ -58,28 +58,29 @@ class TypeUpcExtension2 implements TypeInterface
                 '7' => '0010001',
                 '8' => '0001001',
                 '9' => '0010111'
-            )
-        );
+            ]
+        ];
 
-        $parities = array();
-        $parities[2] = array(
-            '0' => array('A', 'A'),
-            '1' => array('A', 'B'),
-            '2' => array('B', 'A'),
-            '3' => array('B', 'B')
-        );
-        $parities[5] = array(
-            '0' => array('B', 'B', 'A', 'A', 'A'),
-            '1' => array('B', 'A', 'B', 'A', 'A'),
-            '2' => array('B', 'A', 'A', 'B', 'A'),
-            '3' => array('B', 'A', 'A', 'A', 'B'),
-            '4' => array('A', 'B', 'B', 'A', 'A'),
-            '5' => array('A', 'A', 'B', 'B', 'A'),
-            '6' => array('A', 'A', 'A', 'B', 'B'),
-            '7' => array('A', 'B', 'A', 'B', 'A'),
-            '8' => array('A', 'B', 'A', 'A', 'B'),
-            '9' => array('A', 'A', 'B', 'A', 'B')
-        );
+        $parities = [
+            2 =>[
+                '0' => ['A', 'A'],
+                '1' => ['A', 'B'],
+                '2' => ['B', 'A'],
+                '3' => ['B', 'B']
+            ],
+            5 => [
+                '0' => ['B', 'B', 'A', 'A', 'A'],
+                '1' => ['B', 'A', 'B', 'A', 'A'],
+                '2' => ['B', 'A', 'A', 'B', 'A'],
+                '3' => ['B', 'A', 'A', 'A', 'B'],
+                '4' => ['A', 'B', 'B', 'A', 'A'],
+                '5' => ['A', 'A', 'B', 'B', 'A'],
+                '6' => ['A', 'A', 'A', 'B', 'B'],
+                '7' => ['A', 'B', 'A', 'B', 'A'],
+                '8' => ['A', 'B', 'A', 'A', 'B'],
+                '9' => ['A', 'A', 'B', 'A', 'B']
+            ]
+        ];
 
         $p = $parities[$len][$r];
         $seq = '1011'; // left guard bar

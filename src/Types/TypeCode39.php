@@ -17,57 +17,58 @@ class TypeCode39 implements TypeInterface
     protected $extended = false;
     protected $checksum = false;
 
+    protected $conversionTable = [
+        '0' => '111331311',
+        '1' => '311311113',
+        '2' => '113311113',
+        '3' => '313311111',
+        '4' => '111331113',
+        '5' => '311331111',
+        '6' => '113331111',
+        '7' => '111311313',
+        '8' => '311311311',
+        '9' => '113311311',
+        'A' => '311113113',
+        'B' => '113113113',
+        'C' => '313113111',
+        'D' => '111133113',
+        'E' => '311133111',
+        'F' => '113133111',
+        'G' => '111113313',
+        'H' => '311113311',
+        'I' => '113113311',
+        'J' => '111133311',
+        'K' => '311111133',
+        'L' => '113111133',
+        'M' => '313111131',
+        'N' => '111131133',
+        'O' => '311131131',
+        'P' => '113131131',
+        'Q' => '111111333',
+        'R' => '311111331',
+        'S' => '113111331',
+        'T' => '111131331',
+        'U' => '331111113',
+        'V' => '133111113',
+        'W' => '333111111',
+        'X' => '131131113',
+        'Y' => '331131111',
+        'Z' => '133131111',
+        '-' => '131111313',
+        '.' => '331111311',
+        ' ' => '133111311',
+        '$' => '131313111',
+        '/' => '131311131',
+        '+' => '131113131',
+        '%' => '111313131',
+        '*' => '131131311',
+    ];
+
     public function getBarcodeData(string $code): Barcode
     {
         if (strlen(trim($code)) === 0) {
             throw new InvalidLengthException('You should provide a barcode string.');
         }
-
-        $chr = [];
-        $chr['0'] = '111331311';
-        $chr['1'] = '311311113';
-        $chr['2'] = '113311113';
-        $chr['3'] = '313311111';
-        $chr['4'] = '111331113';
-        $chr['5'] = '311331111';
-        $chr['6'] = '113331111';
-        $chr['7'] = '111311313';
-        $chr['8'] = '311311311';
-        $chr['9'] = '113311311';
-        $chr['A'] = '311113113';
-        $chr['B'] = '113113113';
-        $chr['C'] = '313113111';
-        $chr['D'] = '111133113';
-        $chr['E'] = '311133111';
-        $chr['F'] = '113133111';
-        $chr['G'] = '111113313';
-        $chr['H'] = '311113311';
-        $chr['I'] = '113113311';
-        $chr['J'] = '111133311';
-        $chr['K'] = '311111133';
-        $chr['L'] = '113111133';
-        $chr['M'] = '313111131';
-        $chr['N'] = '111131133';
-        $chr['O'] = '311131131';
-        $chr['P'] = '113131131';
-        $chr['Q'] = '111111333';
-        $chr['R'] = '311111331';
-        $chr['S'] = '113111331';
-        $chr['T'] = '111131331';
-        $chr['U'] = '331111113';
-        $chr['V'] = '133111113';
-        $chr['W'] = '333111111';
-        $chr['X'] = '131131113';
-        $chr['Y'] = '331131111';
-        $chr['Z'] = '133131111';
-        $chr['-'] = '131111313';
-        $chr['.'] = '331111311';
-        $chr[' '] = '133111311';
-        $chr['$'] = '131313111';
-        $chr['/'] = '131311131';
-        $chr['+'] = '131113131';
-        $chr['%'] = '111313131';
-        $chr['*'] = '131131311';
 
         $code = strtoupper($code);
 
@@ -86,22 +87,23 @@ class TypeCode39 implements TypeInterface
 
         $barcode = new Barcode($code);
 
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
+        for ($i = 0; $i < strlen($code); ++$i) {
             $char = $code[$i];
-            if (! isset($chr[$char])) {
+            if (! isset($this->conversionTable[$char])) {
                 throw new InvalidCharacterException('Char ' . $char . ' is unsupported');
             }
+
             for ($j = 0; $j < 9; ++$j) {
                 if (($j % 2) == 0) {
                     $t = true; // bar
                 } else {
                     $t = false; // space
                 }
-                $w = $chr[$char][$j];
+                $w = $this->conversionTable[$char][$j];
                 $barcode->addBar(new BarcodeBar($w, 1, $t));
             }
-            // intercharacter gap
+
+            // inter character gap
             $barcode->addBar(new BarcodeBar(1, 1, false));
         }
 
@@ -118,7 +120,7 @@ class TypeCode39 implements TypeInterface
      */
     protected function encode_code39_ext($code)
     {
-        $encode = array(
+        $encode = [
             chr(0) => '%U',
             chr(1) => '$A',
             chr(2) => '$B',
@@ -247,13 +249,14 @@ class TypeCode39 implements TypeInterface
             chr(125) => '%R',
             chr(126) => '%S',
             chr(127) => '%T'
-        );
+        ];
+
         $code_ext = '';
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
+        for ($i = 0; $i < strlen($code); ++$i) {
             if (ord($code[$i]) > 127) {
                 throw new InvalidCharacterException('Only supports till char 127');
             }
+
             $code_ext .= $encode[$code[$i]];
         }
 
@@ -270,7 +273,7 @@ class TypeCode39 implements TypeInterface
      */
     protected function checksum_code39($code)
     {
-        $chars = array(
+        $chars = [
             '0',
             '1',
             '2',
@@ -314,10 +317,10 @@ class TypeCode39 implements TypeInterface
             '/',
             '+',
             '%'
-        );
+        ];
+
         $sum = 0;
-        $codelength = strlen($code);
-        for ($i = 0; $i < $codelength; ++$i) {
+        for ($i = 0; $i < strlen($code); ++$i) {
             $k = array_keys($chars, $code[$i]);
             $sum += $k[0];
         }

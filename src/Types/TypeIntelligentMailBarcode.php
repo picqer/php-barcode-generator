@@ -36,7 +36,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
 {
     public function getBarcodeData(string $code): Barcode
     {
-        $asc_chr = array(
+        $asc_chr = [
             4,
             0,
             2,
@@ -102,8 +102,8 @@ class TypeIntelligentMailBarcode implements TypeInterface
             9,
             5,
             8
-        );
-        $dsc_chr = array(
+        ];
+        $dsc_chr = [
             7,
             1,
             9,
@@ -169,8 +169,8 @@ class TypeIntelligentMailBarcode implements TypeInterface
             2,
             6,
             3
-        );
-        $asc_pos = array(
+        ];
+        $asc_pos = [
             3,
             0,
             8,
@@ -236,8 +236,8 @@ class TypeIntelligentMailBarcode implements TypeInterface
             0,
             3,
             2
-        );
-        $dsc_pos = array(
+        ];
+        $dsc_pos = [
             2,
             10,
             12,
@@ -303,7 +303,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
             9,
             8,
             10
-        );
+        ];
         $code_arr = explode('-', $code);
         $tracking_number = $code_arr[0];
         if (isset($code_arr[1])) {
@@ -358,7 +358,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
         $binary_code_102bit = $first_byte . substr($binary_code, 2);
 
         // convert binary data to codewords
-        $codewords = array();
+        $codewords = [];
         $data = $this->hex_to_dec($binary_code_102bit);
         $codewords[0] = bcmod($data, 636) * 2;
         $data = bcdiv($data, 636);
@@ -376,7 +376,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
         $table5of13 = $this->imb_tables(5, 1287);
 
         // convert codewords to characters
-        $characters = array();
+        $characters = [];
         $bitmask = 512;
         foreach ($codewords as $k => $val) {
             if ($val <= 1286) {
@@ -519,7 +519,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
      */
     protected function imb_tables($n, $size)
     {
-        $table = array();
+        $table = [];
         $lli = 0; // LUT lower index
         $lui = $size - 1; // LUT upper index
         for ($count = 0; $count < 8192; ++$count) {
