@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
+use Picqer\Barcode\BarcodeBar;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 /*
@@ -12,7 +14,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 class TypeInterleaved25Checksum implements TypeInterface
 {
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         $chr['0'] = '11221';
         $chr['1'] = '21112';
@@ -37,36 +39,33 @@ class TypeInterleaved25Checksum implements TypeInterface
         // add start and stop codes
         $code = 'AA' . strtolower($code) . 'ZA';
 
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-        $k = 0;
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; $i = ($i + 2)) {
+        $barcode = new Barcode($code);
+        for ($i = 0; $i < strlen($code); $i = ($i + 2)) {
             $char_bar = $code[$i];
             $char_space = $code[$i + 1];
             if (! isset($chr[$char_bar]) || ! isset($chr[$char_space])) {
                 throw new InvalidCharacterException();
             }
+
             // create a bar-space sequence
             $seq = '';
             $chrlen = strlen($chr[$char_bar]);
             for ($s = 0; $s < $chrlen; $s++) {
                 $seq .= $chr[$char_bar][$s] . $chr[$char_space][$s];
             }
-            $seqlen = strlen($seq);
-            for ($j = 0; $j < $seqlen; ++$j) {
+
+            for ($j = 0; $j < strlen($seq); ++$j) {
                 if (($j % 2) == 0) {
                     $t = true; // bar
                 } else {
                     $t = false; // space
                 }
                 $w = $seq[$j];
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
+                $barcode->addBar(new BarcodeBar($w, 1, $t));
             }
         }
 
-        return $bararray;
+        return $barcode;
     }
 
     protected function getChecksum(string $code): string

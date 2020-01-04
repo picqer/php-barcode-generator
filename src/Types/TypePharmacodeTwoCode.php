@@ -7,12 +7,16 @@ namespace Picqer\Barcode\Types;
  * Contains digits (0 to 9)
  */
 
+use Picqer\Barcode\Barcode;
+use Picqer\Barcode\BarcodeBar;
+
 class TypePharmacodeTwoCode implements TypeInterface
 {
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
-        $seq = '';
         $code = intval($code);
+
+        $seq = '';
 
         do {
             switch ($code % 3) {
@@ -34,11 +38,10 @@ class TypePharmacodeTwoCode implements TypeInterface
         } while ($code != 0);
 
         $seq = strrev($seq);
-        $k = 0;
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 2, 'bcode' => array());
-        $len = strlen($seq);
 
-        for ($i = 0; $i < $len; ++$i) {
+        $barcode = new Barcode($code);
+
+        for ($i = 0; $i < strlen($seq); ++$i) {
             switch ($seq[$i]) {
                 case '1':
                     $p = 1;
@@ -56,14 +59,12 @@ class TypePharmacodeTwoCode implements TypeInterface
                     break;
             }
 
-            $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => $h, 'p' => $p);
-            $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-            $bararray['maxw'] += 2;
+            $barcode->addBar(new BarcodeBar(1, $h, 1, $p));
+            if ($i < (strlen($seq) - 1)) {
+                $barcode->addBar(new BarcodeBar(1, 2, 0, 0));
+            }
         }
 
-        unset($bararray['bcode'][($k - 1)]);
-        --$bararray['maxw'];
-
-        return $bararray;
+        return $barcode;
     }
 }

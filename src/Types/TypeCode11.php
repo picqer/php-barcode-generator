@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
+use Picqer\Barcode\BarcodeBar;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 /*
@@ -11,7 +13,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 class TypeCode11 implements TypeInterface
 {
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         $chr = array(
             '0' => '111121',
@@ -27,10 +29,9 @@ class TypeCode11 implements TypeInterface
             '-' => '112111',
             'S' => '112211'
         );
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-        $k = 0;
-        $w = 0;
-        $seq = '';
+
+        $barcode = new Barcode($code);
+
         $len = strlen($code);
         // calculate check digit C
         $p = 1;
@@ -53,6 +54,7 @@ class TypeCode11 implements TypeInterface
             $check = '-';
         }
         $code .= $check;
+
         if ($len > 10) {
             // calculate check digit K
             $p = 1;
@@ -74,12 +76,15 @@ class TypeCode11 implements TypeInterface
             $code .= $check;
             ++$len;
         }
+
         $code = 'S' . $code . 'S';
         $len += 3;
+
         for ($i = 0; $i < $len; ++$i) {
             if (! isset($chr[$code[$i]])) {
                 throw new InvalidCharacterException('Char ' . $code[$i] . ' is unsupported');
             }
+
             $seq = $chr[$code[$i]];
             for ($j = 0; $j < 6; ++$j) {
                 if (($j % 2) == 0) {
@@ -88,12 +93,11 @@ class TypeCode11 implements TypeInterface
                     $t = false; // space
                 }
                 $w = $seq[$j];
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
+
+                $barcode->addBar(new BarcodeBar($w, 1, $t));
             }
         }
 
-        return $bararray;
+        return $barcode;
     }
 }

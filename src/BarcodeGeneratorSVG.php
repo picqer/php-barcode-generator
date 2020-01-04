@@ -22,22 +22,23 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
         // replace table for special characters
         $repstr = ["\0" => '', '&' => '&amp;', '<' => '&lt;', '>' => '&gt;'];
 
-        $width = round(($barcodeData['maxWidth'] * $widthFactor), 3);
+        $width = round(($barcodeData->getWidth() * $widthFactor), 3);
 
         $svg = '<?xml version="1.0" standalone="no" ?>' . PHP_EOL;
         $svg .= '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' . PHP_EOL;
         $svg .= '<svg width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" version="1.1" xmlns="http://www.w3.org/2000/svg">' . PHP_EOL;
-        $svg .= "\t" . '<desc>' . strtr($barcodeData['code'], $repstr) . '</desc>' . PHP_EOL;
+        $svg .= "\t" . '<desc>' . strtr($barcodeData->getBarcode(), $repstr) . '</desc>' . PHP_EOL;
         $svg .= "\t" . '<g id="bars" fill="' . $foregroundColor . '" stroke="none">' . PHP_EOL;
 
         // print bars
         $positionHorizontal = 0;
-        foreach ($barcodeData['bars'] as $bar) {
-            $barWidth = round(($bar['width'] * $widthFactor), 3);
-            $barHeight = round(($bar['height'] * $height / $barcodeData['maxHeight']), 3);
+        /** @var BarcodeBar $bar */
+        foreach ($barcodeData->getBars() as $bar) {
+            $barWidth = round(($bar->getWidth() * $widthFactor), 3);
+            $barHeight = round(($bar->getHeight() * $height / $barcodeData->getHeight()), 3);
 
-            if ($bar['drawBar'] && $barWidth > 0) {
-                $positionVertical = round(($bar['positionVertical'] * $height / $barcodeData['maxHeight']), 3);
+            if ($bar->isBar() && $barWidth > 0) {
+                $positionVertical = round(($bar->getPositionVertical() * $height / $barcodeData->getHeight()), 3);
                 // draw a vertical bar
                 $svg .= "\t\t" . '<rect x="' . $positionHorizontal . '" y="' . $positionVertical . '" width="' . $barWidth . '" height="' . $barHeight . '" />' . PHP_EOL;
             }

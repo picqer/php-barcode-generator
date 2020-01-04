@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
+use Picqer\Barcode\BarcodeBar;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
 
@@ -17,7 +19,7 @@ class TypeCode128 implements TypeInterface
 {
     protected $type = null;
 
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         if (strlen(trim($code)) === 0) {
             throw new InvalidLengthException('You should provide a barcode string.');
@@ -345,8 +347,9 @@ class TypeCode128 implements TypeInterface
         $code_data[] = 107;
         // add start code at the beginning
         array_unshift($code_data, $startid);
+
         // build barcode array
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
+        $barcode = new Barcode($code);
         foreach ($code_data as $val) {
             $seq = $chr[$val];
             for ($j = 0; $j < 6; ++$j) {
@@ -356,12 +359,12 @@ class TypeCode128 implements TypeInterface
                     $t = false; // space
                 }
                 $w = $seq[$j];
-                $bararray['bcode'][] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
+
+                $barcode->addBar(new BarcodeBar($w, 1, $t));
             }
         }
 
-        return $bararray;
+        return $barcode;
     }
 
 

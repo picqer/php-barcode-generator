@@ -2,6 +2,7 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
 use Picqer\Barcode\Helpers\BinarySequenceConverter;
 
 /*
@@ -11,10 +12,11 @@ use Picqer\Barcode\Helpers\BinarySequenceConverter;
 
 class TypePharmacode implements TypeInterface
 {
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
-        $seq = '';
         $code = intval($code);
+
+        $seq = '';
         while ($code > 0) {
             if (($code % 2) == 0) {
                 $seq .= '11100';
@@ -25,10 +27,10 @@ class TypePharmacode implements TypeInterface
             }
             $code /= 2;
         }
+
         $seq = substr($seq, 0, -2);
         $seq = strrev($seq);
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 
-        return BinarySequenceConverter::convert($seq, $bararray);
+        return BinarySequenceConverter::convert($code, $seq);
     }
 }

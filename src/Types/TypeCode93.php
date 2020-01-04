@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
+use Picqer\Barcode\BarcodeBar;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 /*
@@ -11,7 +13,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 class TypeCode93 implements TypeInterface
 {
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         $chr = [];
         $chr[48] = '131112'; // 0
@@ -211,14 +213,14 @@ class TypeCode93 implements TypeInterface
         // add start and stop codes
         $code = '*' . $code_ext . '*';
 
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
-        $k = 0;
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
+        $barcode = new Barcode($code);
+
+        for ($i = 0; $i < strlen($code); ++$i) {
             $char = ord($code[$i]);
             if (! isset($chr[$char])) {
                 throw new InvalidCharacterException('Char ' . $char . ' is unsupported');
             }
+
             for ($j = 0; $j < 6; ++$j) {
                 if (($j % 2) == 0) {
                     $t = true; // bar
@@ -226,16 +228,14 @@ class TypeCode93 implements TypeInterface
                     $t = false; // space
                 }
                 $w = $chr[$char][$j];
-                $bararray['bcode'][$k] = array('t' => $t, 'w' => $w, 'h' => 1, 'p' => 0);
-                $bararray['maxw'] += $w;
-                ++$k;
+
+                $barcode->addBar(new BarcodeBar($w, 1, $t));
             }
         }
 
-        $bararray['bcode'][$k] = array('t' => true, 'w' => 1, 'h' => 1, 'p' => 0);
-        $bararray['maxw'] += 1;
+        $barcode->addBar(new BarcodeBar(1, 1, true));
 
-        return $bararray;
+        return $barcode;
     }
 
     /**

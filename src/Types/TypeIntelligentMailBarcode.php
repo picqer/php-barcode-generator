@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
+use Picqer\Barcode\BarcodeBar;
 use Picqer\Barcode\Exceptions\BarcodeException;
 
 /*
@@ -32,7 +34,7 @@ use Picqer\Barcode\Exceptions\BarcodeException;
 
 class TypeIntelligentMailBarcode implements TypeInterface
 {
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         $asc_chr = array(
             4,
@@ -392,8 +394,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
         $characters = array_reverse($characters);
 
         // build bars
-        $k = 0;
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 3, 'bcode' => array());
+        $barcode = new Barcode($code);
         for ($i = 0; $i < 65; ++$i) {
             $asc = (($characters[$asc_chr[$i]] & pow(2, $asc_pos[$i])) > 0);
             $dsc = (($characters[$dsc_chr[$i]] & pow(2, $dsc_pos[$i])) > 0);
@@ -414,14 +415,13 @@ class TypeIntelligentMailBarcode implements TypeInterface
                 $p = 1;
                 $h = 1;
             }
-            $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => $h, 'p' => $p);
-            $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-            $bararray['maxw'] += 2;
+            $barcode->addBar(new BarcodeBar(1, $h, true, $p));
+            if ($i < 64) {
+                $barcode->addBar(new BarcodeBar(1, 2, false, 0));
+            }
         }
-        unset($bararray['bcode'][($k - 1)]);
-        --$bararray['maxw'];
 
-        return $bararray;
+        return $barcode;
     }
 
     /**

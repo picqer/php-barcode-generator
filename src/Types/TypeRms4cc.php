@@ -10,13 +10,17 @@ namespace Picqer\Barcode\Types;
  *     - in this case the house number must be sufficed with an X and placed at the end of the code.
  */
 
+use Picqer\Barcode\Barcode;
+use Picqer\Barcode\BarcodeBar;
+
 class TypeRms4cc implements TypeInterface
 {
     protected $kix = false;
 
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         $notkix = ! $this->kix;
+
         // bar mode
         // 1 = pos 1, length 2
         // 2 = pos 1, length 3
@@ -60,9 +64,12 @@ class TypeRms4cc implements TypeInterface
             'Y' => array(2, 1, 4, 3),
             'Z' => array(2, 2, 3, 3)
         );
+
         $code = strtoupper($code);
         $len = strlen($code);
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 3, 'bcode' => array());
+
+        $barcode = new Barcode($code);
+
         if ($notkix) {
             // table for checksum calculation (row,col)
             $checktable = array(
@@ -114,14 +121,10 @@ class TypeRms4cc implements TypeInterface
             $chk = array_keys($checktable, array($row, $col));
             $code .= $chk[0];
             ++$len;
-        }
-        $k = 0;
-        
-        if ($notkix) {
+
             // start bar
-            $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 2, 'p' => 0);
-            $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-            $bararray['maxw'] += 2;
+            $barcode->addBar(new BarcodeBar(1, 2, 1));
+            $barcode->addBar(new BarcodeBar(1, 2, 0));
         }
 
         for ($i = 0; $i < $len; ++$i) {
@@ -148,18 +151,16 @@ class TypeRms4cc implements TypeInterface
                         break;
                 }
 
-                $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => $h, 'p' => $p);
-                $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-                $bararray['maxw'] += 2;
+                $barcode->addBar(new BarcodeBar(1, $h, 1, $p));
+                $barcode->addBar(new BarcodeBar(1, 2, 0));
             }
         }
 
         if ($notkix) {
             // stop bar
-            $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 3, 'p' => 0);
-            $bararray['maxw'] += 1;
+            $barcode->addBar(new BarcodeBar(1, 3, 1));
         }
 
-        return $bararray;
+        return $barcode;
     }
 }

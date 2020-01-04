@@ -2,6 +2,7 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
 use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
 use Picqer\Barcode\Helpers\BinarySequenceConverter;
 
@@ -15,12 +16,13 @@ class TypeUpcExtension2 implements TypeInterface
 {
     protected $length = 2;
 
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         $len = $this->length;
 
         //Padding
         $code = str_pad($code, $len, '0', STR_PAD_LEFT);
+
         // calculate check digit
         if ($len == 2) {
             $r = $code % 4;
@@ -30,6 +32,7 @@ class TypeUpcExtension2 implements TypeInterface
         } else {
             throw new InvalidCheckDigitException();
         }
+
         //Convert digits to bars
         $codes = array(
             'A' => array( // left odd parity
@@ -57,6 +60,7 @@ class TypeUpcExtension2 implements TypeInterface
                 '9' => '0010111'
             )
         );
+
         $parities = array();
         $parities[2] = array(
             '0' => array('A', 'A'),
@@ -76,6 +80,7 @@ class TypeUpcExtension2 implements TypeInterface
             '8' => array('A', 'B', 'A', 'A', 'B'),
             '9' => array('A', 'A', 'B', 'A', 'B')
         );
+
         $p = $parities[$len][$r];
         $seq = '1011'; // left guard bar
         $seq .= $codes[$p[0]][$code[0]];
@@ -83,8 +88,7 @@ class TypeUpcExtension2 implements TypeInterface
             $seq .= '01'; // separator
             $seq .= $codes[$p[$i]][$code[$i]];
         }
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 
-        return BinarySequenceConverter::convert($seq, $bararray);
+        return BinarySequenceConverter::convert($code, $seq);
     }
 }

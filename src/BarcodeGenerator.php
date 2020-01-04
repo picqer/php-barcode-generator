@@ -30,7 +30,6 @@
 namespace Picqer\Barcode;
 
 use Picqer\Barcode\Exceptions\UnknownTypeException;
-use Picqer\Barcode\Helpers\OldBarcodeArrayConverter;
 use Picqer\Barcode\Types\TypeCodabar;
 use Picqer\Barcode\Types\TypeCode11;
 use Picqer\Barcode\Types\TypeCode128;
@@ -95,17 +94,11 @@ abstract class BarcodeGenerator
     const TYPE_PHARMA_CODE = 'PHARMA';
     const TYPE_PHARMA_CODE_TWO_TRACKS = 'PHARMA2T';
 
-    protected function getBarcodeData(string $code, string $type): array
+    protected function getBarcodeData(string $code, string $type): Barcode
     {
         $barcodeDataBuilder = $this->createDataBuilderForType($type);
 
-        $barcodeData = $barcodeDataBuilder->getBarcodeData($code);
-
-        if (! isset($barcodeData['maxWidth'])) {
-            return OldBarcodeArrayConverter::convert($barcodeData);
-        }
-
-        return $barcodeData;
+        return $barcodeDataBuilder->getBarcodeData($code);
     }
 
     protected function createDataBuilderForType(string $type)

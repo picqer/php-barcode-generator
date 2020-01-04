@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
+use Picqer\Barcode\BarcodeBar;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
@@ -22,7 +24,7 @@ abstract class TypeEanUpcBase implements TypeInterface
     protected $upca = false;
     protected $upce = false;
 
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         if (strlen(trim($code)) === 0) {
             throw new InvalidLengthException('You should provide a barcode string.');
@@ -49,7 +51,7 @@ abstract class TypeEanUpcBase implements TypeInterface
             $code = '0' . $code;
             ++$length;
         }
-
+        
         if ($this->upce) {
             // convert UPC-A to UPC-E
             $tmp = substr($code, 4, 3);
@@ -154,17 +156,16 @@ abstract class TypeEanUpcBase implements TypeInterface
             ],
         ];
 
-        $k = 0;
         $seq = '101'; // left guard bar
         if ($this->upce) {
-            $bararray = ['code' => $upce_code, 'maxw' => 0, 'maxh' => 1, 'bcode' => []];
+            $barcode = new Barcode($upce_code);
             $p = $upce_parities[$code[1]][$checksumDigit];
             for ($i = 0; $i < 6; ++$i) {
                 $seq .= $codes[$p[$i]][$upce_code[$i]];
             }
             $seq .= '010101'; // right guard bar
         } else {
-            $bararray = ['code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => []];
+            $barcode = new Barcode($code);
             $half_len = intval(ceil($length / 2));
             if ($length == 8) {
                 for ($i = 0; $i < $half_len; ++$i) {
@@ -196,14 +197,13 @@ abstract class TypeEanUpcBase implements TypeInterface
                 } else {
                     $t = false; // space
                 }
-                $bararray['bcode'][$k] = ['t' => $t, 'w' => $w, 'h' => 1, 'p' => 0];
-                $bararray['maxw'] += $w;
-                ++$k;
+
+                $barcode->addBar(new BarcodeBar($w, 1, $t));
                 $w = 0;
             }
         }
 
-        return $bararray;
+        return $barcode;
     }
 
     protected function calculateChecksumDigit(string $code)

@@ -11,6 +11,9 @@ namespace Picqer\Barcode\Types;
  * @param $planet (boolean) if true print the PLANET barcode, otherwise print POSTNET
  */
 
+use Picqer\Barcode\Barcode;
+use Picqer\Barcode\BarcodeBar;
+
 class TypePostnet implements TypeInterface
 {
     protected $barlen = Array(
@@ -26,13 +29,13 @@ class TypePostnet implements TypeInterface
         9 => Array(2, 1, 2, 1, 1)
     );
 
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 2, 'bcode' => array());
-        $k = 0;
-        $code = str_replace('-', '', $code);
-        $code = str_replace(' ', '', $code);
+        $code = str_replace(['-', ' '], '', $code);
         $len = strlen($code);
+
+        $barcode = new Barcode($code);
+
         // calculate checksum
         $sum = 0;
         for ($i = 0; $i < $len; ++$i) {
@@ -44,23 +47,23 @@ class TypePostnet implements TypeInterface
         }
         $code .= $chkd;
         $len = strlen($code);
+
         // start bar
-        $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 2, 'p' => 0);
-        $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-        $bararray['maxw'] += 2;
+        $barcode->addBar(new BarcodeBar(1, 2, 1));
+        $barcode->addBar(new BarcodeBar(1, 2, 0));
+
         for ($i = 0; $i < $len; ++$i) {
             for ($j = 0; $j < 5; ++$j) {
                 $h = $this->barlen[$code[$i]][$j];
                 $p = floor(1 / $h);
-                $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => $h, 'p' => $p);
-                $bararray['bcode'][$k++] = array('t' => 0, 'w' => 1, 'h' => 2, 'p' => 0);
-                $bararray['maxw'] += 2;
+                $barcode->addBar(new BarcodeBar(1, $h, 1, $p));
+                $barcode->addBar(new BarcodeBar(1, 2, 0));
             }
         }
-        // end bar
-        $bararray['bcode'][$k++] = array('t' => 1, 'w' => 1, 'h' => 2, 'p' => 0);
-        $bararray['maxw'] += 1;
 
-        return $bararray;
+        // end bar
+        $barcode->addBar(new BarcodeBar(1, 2, 1));
+
+        return $barcode;
     }
 }

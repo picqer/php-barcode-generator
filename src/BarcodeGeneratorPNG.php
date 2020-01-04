@@ -52,7 +52,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
     public function getBarcode($barcode, $type, int $widthFactor = 2, int $height = 30, array $foregroundColor = [0, 0, 0])
     {
         $barcodeData = $this->getBarcodeData($barcode, $type);
-        $width = round($barcodeData['maxWidth'] * $widthFactor);
+        $width = round($barcodeData->getWidth() * $widthFactor);
 
         if ($this->useImagick) {
             $imagickBarsShape = new imagickdraw();
@@ -64,12 +64,13 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
 
         // print bars
         $positionHorizontal = 0;
-        foreach ($barcodeData['bars'] as $bar) {
-            $barWidth = round(($bar['width'] * $widthFactor), 3);
+        /** @var BarcodeBar $bar */
+        foreach ($barcodeData->getBars() as $bar) {
+            $barWidth = round(($bar->getWidth() * $widthFactor), 3);
 
-            if ($bar['drawBar'] && $barWidth > 0) {
-                $y = round(($bar['positionVertical'] * $height / $barcodeData['maxHeight']), 3);
-                $barHeight = round(($bar['height'] * $height / $barcodeData['maxHeight']), 3);
+            if ($bar->isBar() && $barWidth > 0) {
+                $y = round(($bar->getPositionVertical() * $height / $barcodeData->getHeight()), 3);
+                $barHeight = round(($bar->getHeight() * $height / $barcodeData->getHeight()), 3);
 
                 // draw a vertical bar
                 if ($this->useImagick && isset($imagickBarsShape)) {

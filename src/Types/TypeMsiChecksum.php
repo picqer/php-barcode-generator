@@ -2,6 +2,7 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Helpers\BinarySequenceConverter;
 
@@ -18,7 +19,7 @@ class TypeMsiChecksum implements TypeInterface
 {
     protected $checksum = true;
 
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         $chr['0'] = '100100100100';
         $chr['1'] = '100100100110';
@@ -64,8 +65,7 @@ class TypeMsiChecksum implements TypeInterface
             $seq .= $chr[$digit];
         }
         $seq .= '1001'; // right guard
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 
-        return BinarySequenceConverter::convert($seq, $bararray);
+        return BinarySequenceConverter::convert($code, $seq);
     }
 }

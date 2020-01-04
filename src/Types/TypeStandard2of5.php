@@ -2,6 +2,7 @@
 
 namespace Picqer\Barcode\Types;
 
+use Picqer\Barcode\Barcode;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Helpers\BinarySequenceConverter;
 
@@ -15,7 +16,7 @@ class TypeStandard2of5 implements TypeInterface
 {
     protected $checksum = false;
 
-    public function getBarcodeData(string $code): array
+    public function getBarcodeData(string $code): Barcode
     {
         $chr['0'] = '10101110111010';
         $chr['1'] = '11101010101110';
@@ -36,8 +37,8 @@ class TypeStandard2of5 implements TypeInterface
             $code = '0' . $code;
         }
         $seq = '11011010';
-        $clen = strlen($code);
-        for ($i = 0; $i < $clen; ++$i) {
+
+        for ($i = 0; $i < strlen($code); ++$i) {
             $digit = $code[$i];
             if (! isset($chr[$digit])) {
                 throw new InvalidCharacterException('Char ' . $digit . ' is unsupported');
@@ -45,9 +46,8 @@ class TypeStandard2of5 implements TypeInterface
             $seq .= $chr[$digit];
         }
         $seq .= '1101011';
-        $bararray = array('code' => $code, 'maxw' => 0, 'maxh' => 1, 'bcode' => array());
 
-        return BinarySequenceConverter::convert($seq, $bararray);
+        return BinarySequenceConverter::convert($code, $seq);
     }
 
     /**

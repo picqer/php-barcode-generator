@@ -18,15 +18,16 @@ class BarcodeGeneratorHTML extends BarcodeGenerator
     {
         $barcodeData = $this->getBarcodeData($barcode, $type);
 
-        $html = '<div style="font-size:0;position:relative;width:' . ($barcodeData['maxWidth'] * $widthFactor) . 'px;height:' . ($height) . 'px;">' . PHP_EOL;
+        $html = '<div style="font-size:0;position:relative;width:' . ($barcodeData->getWidth() * $widthFactor) . 'px;height:' . ($height) . 'px;">' . PHP_EOL;
 
         $positionHorizontal = 0;
-        foreach ($barcodeData['bars'] as $bar) {
-            $barWidth = round(($bar['width'] * $widthFactor), 3);
-            $barHeight = round(($bar['height'] * $height / $barcodeData['maxHeight']), 3);
+        /** @var BarcodeBar $bar */
+        foreach ($barcodeData->getBars() as $bar) {
+            $barWidth = round(($bar->getWidth() * $widthFactor), 3);
+            $barHeight = round(($bar->getHeight() * $height / $barcodeData->getHeight()), 3);
 
-            if ($bar['drawBar'] && $barWidth > 0) {
-                $positionVertical = round(($bar['positionVertical'] * $height / $barcodeData['maxHeight']), 3);
+            if ($bar->isBar() && $barWidth > 0) {
+                $positionVertical = round(($bar->getPositionVertical() * $height / $barcodeData->getHeight()), 3);
                 // draw a vertical bar
                 $html .= '<div style="background-color:' . $foregroundColor . ';width:' . $barWidth . 'px;height:' . $barHeight . 'px;position:absolute;left:' . $positionHorizontal . 'px;top:' . $positionVertical . 'px;">&nbsp;</div>' . PHP_EOL;
             }
