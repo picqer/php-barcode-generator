@@ -14,10 +14,10 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
     public function __construct()
     {
         // Auto switch between GD and Imagick based on what is installed
-        if (function_exists('imagecreate')) {
-            $this->useImagick = false;
-        } elseif (extension_loaded('imagick')) {
+        if (extension_loaded('imagick')) {
             $this->useImagick = true;
+        } elseif (function_exists('imagecreate')) {
+            $this->useImagick = false;
         } else {
             throw new BarcodeException('Neither gd-lib or imagick are installed!');
         }
