@@ -38,6 +38,8 @@ The `getBarcode()` method accepts the following parameters:
 - `$height` The total height of the barcode in pixels
 - `$foregroundColor` Hex code as string, or array of RGB, of the colors of the bars (the foreground color)
 
+Example of usage of all parameters:
+
 ```php
 <?php
 
@@ -97,8 +99,6 @@ Most used types are TYPE_CODE_128 and TYPE_CODE_39. Because of the best scanner 
 
 ## A note about PNG and JPG images
 If you want to use PNG or JPG images, you need to install [Imagick](https://www.php.net/manual/en/intro.imagick.php) or the [GD library](https://www.php.net/manual/en/intro.image.php). This package will use Imagick if that is installed, or fall back to GD. If you have both installed but you want a specific method, you can use `$generator->useGd()` or `$generator->useImagick()` to force your preference.
-
-We use Imagick as standard because the size of the output is factor 10 smaller.
 
 ## Examples
 
