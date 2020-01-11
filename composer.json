@@ -13,14 +13,21 @@
         },
         {
             "name": "Casper Bakker",
-            "email": "info@picqer.com"
+            "email": "info@picqer.com",
+            "homepage": "https://picqer.com"
         }
     ],
     "require": {
-        "php": ">=7.2.0"
+        "php": ">=7.2.0",
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^8.5"
+    },
+    "suggest": {
+        "ext-bcmath": "Barcode IMB (Intelligent Mail Barcode) needs bcmath extension",
+        "ext-gd": "For JPG and PNG generators, GD or Imagick is required",
+        "ext-imagick": "For JPG and PNG generators, GD or Imagick is required"
     },
     "autoload": {
         "psr-4": {

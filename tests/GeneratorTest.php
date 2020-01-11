@@ -2,38 +2,22 @@
 
 use PHPUnit\Framework\TestCase;
 
-class BarcodeTest extends TestCase
+class GeneratorTest extends TestCase
 {
-    public function test_png_barcode_generator_can_generate_code_128_barcode()
+    public function test_throws_exception_if_empty_barcode_is_used_in_ean13()
     {
-        $generator = new Picqer\Barcode\BarcodeGeneratorPNG();
-        $generated = $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
+        $this->expectException(Picqer\Barcode\Exceptions\InvalidLengthException::class);
 
-        $this->assertEquals('PNG', substr($generated, 1, 3));
-    }
-
-    public function test_svg_barcode_generator_can_generate_ean_13_barcode()
-    {
         $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-        $generated = $generator->getBarcode('081231723897', $generator::TYPE_EAN_13);
-
-        $this->assertStringEqualsFile('tests/verified-files/081231723897-ean13.svg', $generated);
+        $generator->getBarcode('', $generator::TYPE_EAN_13);
     }
 
-    public function test_html_barcode_generator_can_generate_code_128_barcode()
+    public function test_throws_exception_if_empty_barcode_is_used_in_code128()
     {
-        $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
-        $generated = $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
+        $this->expectException(Picqer\Barcode\Exceptions\InvalidLengthException::class);
 
-        $this->assertStringEqualsFile('tests/verified-files/081231723897-code128.html', $generated);
-    }
-
-    public function test_jpg_barcode_generator_can_generate_code_128_barcode()
-    {
-        $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
-        $result = $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
-
-        $this->assertGreaterThan(1000, strlen($result));
+        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+        $generator->getBarcode('', $generator::TYPE_CODE_128);
     }
 
     public function test_ean13_generator_throws_exception_if_invalid_chars_are_used()

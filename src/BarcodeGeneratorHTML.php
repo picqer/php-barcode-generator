@@ -4,39 +4,38 @@ namespace Picqer\Barcode;
 
 class BarcodeGeneratorHTML extends BarcodeGenerator
 {
-
     /**
      * Return an HTML representation of barcode.
      *
-     * @param string $code code to print
+     * @param string $barcode code to print
      * @param string $type type of barcode
      * @param int $widthFactor Width of a single bar element in pixels.
-     * @param int $totalHeight Height of a single bar element in pixels.
-     * @param int|string $color Foreground color for bar elements (background is transparent).
+     * @param int $height Height of a single bar element in pixels.
+     * @param string $foregroundColor Foreground color for bar elements as '#333' or 'orange' for example (background is transparent).
      * @return string HTML code.
-     * @public
      */
-    public function getBarcode($code, $type, $widthFactor = 2, $totalHeight = 30, $color = 'black')
+    public function getBarcode($barcode, $type, int $widthFactor = 2, int $height = 30, string $foregroundColor = 'black')
     {
-        $barcodeData = $this->getBarcodeData($code, $type);
+        $barcodeData = $this->getBarcodeData($barcode, $type);
 
-        $html = '<div style="font-size:0;position:relative;width:' . ($barcodeData['maxWidth'] * $widthFactor) . 'px;height:' . ($totalHeight) . 'px;">' . "\n";
+        $html = '<div style="font-size:0;position:relative;width:' . ($barcodeData->getWidth() * $widthFactor) . 'px;height:' . ($height) . 'px;">' . PHP_EOL;
 
         $positionHorizontal = 0;
-        foreach ($barcodeData['bars'] as $bar) {
-            $barWidth = round(($bar['width'] * $widthFactor), 3);
-            $barHeight = round(($bar['height'] * $totalHeight / $barcodeData['maxHeight']), 3);
+        /** @var BarcodeBar $bar */
+        foreach ($barcodeData->getBars() as $bar) {
+            $barWidth = round(($bar->getWidth() * $widthFactor), 3);
+            $barHeight = round(($bar->getHeight() * $height / $barcodeData->getHeight()), 3);
 
-            if ($bar['drawBar']) {
-                $positionVertical = round(($bar['positionVertical'] * $totalHeight / $barcodeData['maxHeight']), 3);
+            if ($bar->isBar() && $barWidth > 0) {
+                $positionVertical = round(($bar->getPositionVertical() * $height / $barcodeData->getHeight()), 3);
                 // draw a vertical bar
-                $html .= '<div style="background-color:' . $color . ';width:' . $barWidth . 'px;height:' . $barHeight . 'px;position:absolute;left:' . $positionHorizontal . 'px;top:' . $positionVertical . 'px;">&nbsp;</div>' . "\n";
+                $html .= '<div style="background-color:' . $foregroundColor . ';width:' . $barWidth . 'px;height:' . $barHeight . 'px;position:absolute;left:' . $positionHorizontal . 'px;top:' . $positionVertical . 'px;">&nbsp;</div>' . PHP_EOL;
             }
 
             $positionHorizontal += $barWidth;
         }
 
-        $html .= '</div>' . "\n";
+        $html .= '</div>' . PHP_EOL;
 
         return $html;
     }
