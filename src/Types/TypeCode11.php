@@ -45,13 +45,13 @@ class TypeCode11 implements TypeInterface
             $seq = $this->conversionTable[$code[$i]];
             for ($j = 0; $j < strlen($seq); ++$j) {
                 if (($j % 2) == 0) {
-                    $t = true; // bar
+                    $drawBar = true;
                 } else {
-                    $t = false; // space
+                    $drawBar = false;
                 }
-                $w = $seq[$j];
+                $barWidth = $seq[$j];
 
-                $barcode->addBar(new BarcodeBar($w, 1, $t));
+                $barcode->addBar(new BarcodeBar($barWidth, 1, $drawBar));
             }
         }
 

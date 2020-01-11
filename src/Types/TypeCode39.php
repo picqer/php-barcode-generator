@@ -95,12 +95,12 @@ class TypeCode39 implements TypeInterface
 
             for ($j = 0; $j < 9; ++$j) {
                 if (($j % 2) == 0) {
-                    $t = true; // bar
+                    $drawBar = true;
                 } else {
-                    $t = false; // space
+                    $drawBar = false;
                 }
-                $w = $this->conversionTable[$char][$j];
-                $barcode->addBar(new BarcodeBar($w, 1, $t));
+                $barWidth = $this->conversionTable[$char][$j];
+                $barcode->addBar(new BarcodeBar($barWidth, 1, $drawBar));
             }
 
             // inter character gap

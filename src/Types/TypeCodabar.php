@@ -50,12 +50,12 @@ class TypeCodabar implements TypeInterface
             $seq = $this->conversionTable[(string)$code[$i]];
             for ($j = 0; $j < 8; ++$j) {
                 if (($j % 2) == 0) {
-                    $t = true; // bar
+                    $drawBar = true;
                 } else {
-                    $t = false; // space
+                    $drawBar = false;
                 }
-                $w = $seq[$j];
-                $barcode->addBar(new BarcodeBar($w, 1, $t));
+                $barWidth = $seq[$j];
+                $barcode->addBar(new BarcodeBar($barWidth, 1, $drawBar));
             }
         }
 

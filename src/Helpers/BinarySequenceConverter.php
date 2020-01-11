@@ -15,18 +15,18 @@ class BinarySequenceConverter
         $barcode = new Barcode($code);
 
         $len = strlen($sequence);
-        $w = 0;
+        $barWidth = 0;
         for ($i = 0; $i < $len; ++$i) {
-            $w += 1;
-            if (($i == ($len - 1)) OR (($i < ($len - 1)) AND ($sequence[$i] != $sequence[($i + 1)]))) {
+            $barWidth += 1;
+            if (($i == ($len - 1)) || (($i < ($len - 1)) && ($sequence[$i] != $sequence[($i + 1)]))) {
                 if ($sequence[$i] == '1') {
-                    $t = true; // bar
+                    $drawBar = true;
                 } else {
-                    $t = false; // space
+                    $drawBar = false;
                 }
 
-                $barcode->addBar(new BarcodeBar($w, 1, $t));
-                $w = 0;
+                $barcode->addBar(new BarcodeBar($barWidth, 1, $drawBar));
+                $barWidth = 0;
             }
         }
 

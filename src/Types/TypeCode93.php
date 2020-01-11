@@ -224,13 +224,13 @@ class TypeCode93 implements TypeInterface
 
             for ($j = 0; $j < 6; ++$j) {
                 if (($j % 2) == 0) {
-                    $t = true; // bar
+                    $drawBar = true;
                 } else {
-                    $t = false; // space
+                    $drawBar = false;
                 }
-                $w = $this->conversionTable[$char][$j];
+                $barWidth = $this->conversionTable[$char][$j];
 
-                $barcode->addBar(new BarcodeBar($w, 1, $t));
+                $barcode->addBar(new BarcodeBar($barWidth, 1, $drawBar));
             }
         }
 
