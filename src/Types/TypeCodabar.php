@@ -43,11 +43,11 @@ class TypeCodabar implements TypeInterface
         $code = 'A' . strtoupper($code) . 'A';
 
         for ($i = 0; $i < strlen($code); ++$i) {
-            if (! isset($this->conversionTable[$code[$i]])) {
+            if (! isset($this->conversionTable[(string)$code[$i]])) {
                 throw new InvalidCharacterException('Char ' . $code[$i] . ' is unsupported');
             }
 
-            $seq = $this->conversionTable[$code[$i]];
+            $seq = $this->conversionTable[(string)$code[$i]];
             for ($j = 0; $j < 8; ++$j) {
                 if (($j % 2) == 0) {
                     $t = true; // bar
