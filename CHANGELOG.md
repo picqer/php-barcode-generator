@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.1] - 2020-01-28
+### Fixed
+- Removed special chars from filenames we use for test validation #94
+
 ## [2.0.0] - 2020-01-11
 ### Added
 - Introduced Barcode and BarcodeBar classes to standardise generator output.
