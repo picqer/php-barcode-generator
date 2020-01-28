@@ -73,7 +73,7 @@ class TypesTest extends TestCase
         $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
         $result = $generator->getBarcode('1234567890abcABC-283*33', $generator::TYPE_CODE_128);
 
-        $this->assertStringEqualsFile('tests/verified-files/C128-1234567890abcABC-283*33.svg', $result);
+        $this->assertStringEqualsFile('tests/verified-files/C128-1234567890abcABC-283-33.svg', $result);
     }
 
     public function test_generator_can_generate_code_128_a_barcode()
@@ -89,7 +89,7 @@ class TypesTest extends TestCase
         $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
         $result = $generator->getBarcode('1234567890abcABC-283*33', $generator::TYPE_CODE_128_B);
 
-        $this->assertStringEqualsFile('tests/verified-files/C128B-1234567890abcABC-283*33.svg', $result);
+        $this->assertStringEqualsFile('tests/verified-files/C128B-1234567890abcABC-283-33.svg', $result);
     }
 
     public function test_generator_can_generate_ean_2_barcode()

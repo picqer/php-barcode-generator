@@ -53,11 +53,15 @@ class VerifiedBarcodeTest extends TestCase
                 $result = $generator->getBarcode($barcode, $barcodeTestSet['type']);
 
                 $this->assertStringEqualsFile(
-                    sprintf('tests/verified-files/%s-%s.svg', $barcodeTestSet['type'], $barcode),
+                    sprintf('tests/verified-files/%s.svg', $this->getSaveFilename($barcodeTestSet['type'] . '-' . $barcode)),
                     $result,
                     sprintf('%s x %s dynamic test failed', $barcodeTestSet['type'], $barcode)
                 );
             }
         }
+    }
+
+    protected function getSaveFilename($value) {
+        return preg_replace('/[^a-zA-Z0-9_ \-+]/s', '-', $value);
     }
 }

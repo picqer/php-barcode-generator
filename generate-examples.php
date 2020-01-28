@@ -1,5 +1,9 @@
 <?php
 
+function getSaveFilename($value) {
+    return preg_replace('/[^a-zA-Z0-9_ \-+]/s', '-', $value);
+}
+
 require('vendor/autoload.php');
 require(__DIR__ . '/tests/VerifiedBarcodeTest.php');
 $verifiedFiles = VerifiedBarcodeTest::$supportedBarcodes;
@@ -12,7 +16,7 @@ $result[] = '';
 foreach ($verifiedFiles as $verifiedFile) {
     $result[] = '### ' . $verifiedFile['type'];
     foreach ($verifiedFile['barcodes'] as $barcode) {
-        $result[] = sprintf('![Barcode %s as %s](tests/verified-files/%s-%s.svg)', $barcode, $verifiedFile['type'], $verifiedFile['type'], $barcode);
+        $result[] = sprintf('![Barcode %s as %s](tests/verified-files/%s.svg)', $barcode, $verifiedFile['type'], getSaveFilename($verifiedFile['type'] . '-' . $barcode));
     }
 }
 

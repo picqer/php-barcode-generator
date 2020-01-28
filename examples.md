@@ -48,7 +48,7 @@ These are examples of supported barcodes with this library.
 
 ![Barcode 081231723897 as C128](tests/verified-files/C128-081231723897.svg)
 
-![Barcode 1234567890abcABC-283*33 as C128](tests/verified-files/C128-1234567890abcABC-283*33.svg)
+![Barcode 1234567890abcABC-283*33 as C128](tests/verified-files/C128-1234567890abcABC-283-33.svg)
 
 ### C128A
 
@@ -58,7 +58,7 @@ These are examples of supported barcodes with this library.
 
 ![Barcode 081231723897 as C128B](tests/verified-files/C128B-081231723897.svg)
 
-![Barcode 1234567890abcABC-283*33 as C128B](tests/verified-files/C128B-1234567890abcABC-283*33.svg)
+![Barcode 1234567890abcABC-283*33 as C128B](tests/verified-files/C128B-1234567890abcABC-283-33.svg)
 
 ### EAN2
 
@@ -66,7 +66,7 @@ These are examples of supported barcodes with this library.
 
 ### EAN5
 
-![Barcode 1234567890abcABC-283*33 as EAN5](tests/verified-files/EAN5-1234567890abcABC-283*33.svg)
+![Barcode 1234567890abcABC-283*33 as EAN5](tests/verified-files/EAN5-1234567890abcABC-283-33.svg)
 
 ### EAN8
 
