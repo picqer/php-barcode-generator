@@ -1,5 +1,5 @@
 # PHP Barcode Generator 
-[![Build Status](https://travis-ci.org/picqer/php-barcode-generator.svg?branch=master)](https://travis-ci.org/picqer/php-barcode-generator) [![Github Actions](https://github.com/picqer/php-barcode-generator/workflows/phpunit/badge.svg)](https://travis-ci.org/picqer/php-barcode-generator) [![Total Downloads](https://poser.pugx.org/picqer/php-barcode-generator/downloads)](https://packagist.org/packages/picqer/php-barcode-generator)
+[![Build Status](https://travis-ci.org/picqer/php-barcode-generator.svg?branch=main)](https://travis-ci.org/picqer/php-barcode-generator) [![Github Actions](https://github.com/picqer/php-barcode-generator/workflows/phpunit/badge.svg)](https://travis-ci.org/picqer/php-barcode-generator) [![Total Downloads](https://poser.pugx.org/picqer/php-barcode-generator/downloads)](https://packagist.org/packages/picqer/php-barcode-generator)
 
 This is an easy to use, non-bloated, framework independent, barcode generator in PHP.
 
