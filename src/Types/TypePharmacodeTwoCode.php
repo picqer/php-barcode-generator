@@ -9,12 +9,17 @@ namespace Picqer\Barcode\Types;
 
 use Picqer\Barcode\Barcode;
 use Picqer\Barcode\BarcodeBar;
+use Picqer\Barcode\Exceptions\InvalidLengthException;
 
 class TypePharmacodeTwoCode implements TypeInterface
 {
     public function getBarcodeData(string $code): Barcode
     {
         $code = intval($code);
+
+        if ($code < 1) {
+            throw new InvalidLengthException('Pharmacode 2 needs a number of 1 or larger');
+        }
 
         $seq = '';
 
