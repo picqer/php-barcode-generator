@@ -57,6 +57,7 @@ $generatorSVG = new Picqer\Barcode\BarcodeGeneratorSVG();
 $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
 $generatorJPG = new Picqer\Barcode\BarcodeGeneratorJPG();
 $generatorHTML = new Picqer\Barcode\BarcodeGeneratorHTML();
+$generatorHTML = new Picqer\Barcode\BarcodeGeneratorDynamicHTML();
 ```
 
 ## Accepted barcode types
