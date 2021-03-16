@@ -23,7 +23,7 @@ class BarcodeGeneratorDynamicHTML extends BarcodeGenerator
         $positionHorizontal = 0;
         /** @var BarcodeBar $bar */
         foreach ($barcodeData->getBars() as $bar) {
-            $barWidth = $bar->getWidth() / $widthFactor;
+            $barWidth = $bar->getWidth() * $widthFactor;
 
             if ($bar->isBar() && $barWidth > 0) {
                 // draw a vertical bar
