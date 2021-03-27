@@ -8,6 +8,7 @@ class BarcodeGeneratorDynamicHTML extends BarcodeGenerator
 
     /**
      * Return an HTML representation of barcode.
+     * This 'dynamic' version uses percentage based widths and heights, resulting in a vector-y qualitative result.
      *
      * @param string $barcode code to print
      * @param string $type type of barcode

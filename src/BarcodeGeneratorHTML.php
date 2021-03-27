@@ -6,6 +6,7 @@ class BarcodeGeneratorHTML extends BarcodeGenerator
 {
     /**
      * Return an HTML representation of barcode.
+     * This original version uses pixel based widths and heights. Use Dynamic HTML version for better quality representation.
      *
      * @param string $barcode code to print
      * @param string $type type of barcode
