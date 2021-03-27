@@ -53,10 +53,11 @@ file_put_contents('barcode.png', $generator->getBarcode('081231723897', $generat
 
 ## Image types
 ```php
-$generatorSVG = new Picqer\Barcode\BarcodeGeneratorSVG();
-$generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG();
-$generatorJPG = new Picqer\Barcode\BarcodeGeneratorJPG();
-$generatorHTML = new Picqer\Barcode\BarcodeGeneratorHTML();
+$generatorSVG = new Picqer\Barcode\BarcodeGeneratorSVG(); // Vector based SVG
+$generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG(); // Pixel based PNG
+$generatorJPG = new Picqer\Barcode\BarcodeGeneratorJPG(); // Pixel based JPG
+$generatorHTML = new Picqer\Barcode\BarcodeGeneratorHTML(); // Pixel based HTML
+$generatorHTML = new Picqer\Barcode\BarcodeGeneratorDynamicHTML(); // Vector based HTML
 ```
 
 ## Accepted barcode types
