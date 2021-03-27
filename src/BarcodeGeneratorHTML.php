@@ -30,7 +30,7 @@ class BarcodeGeneratorHTML extends BarcodeGenerator
                 $positionVertical = round(($bar->getPositionVertical() * $height / $barcodeData->getHeight()), 3);
 
                 // draw a vertical bar
-                $html .= '<div style="background-color:' . $foregroundColor . ';width:' . $barWidth . 'px;height:' . $barHeight . 'px;position:absolute;left:' . $positionHorizontal . 'px;top:' . $positionVertical . 'px;">&nbsp;</div>' . PHP_EOL;
+                $html .= '<div style="background-color:' . $foregroundColor . ';width:' . $barWidth . 'px;height:' . $barHeight . 'px;position:absolute;left:' . $positionHorizontal . 'px;top:' . $positionVertical . (($positionVertical > 0) ? 'px' : '') . '">&nbsp;</div>' . PHP_EOL;
             }
 
             $positionHorizontal += $barWidth;
