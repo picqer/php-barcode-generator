@@ -1,6 +1,4 @@
-<?php 
-
-namespace Picqer\Barcode\Types;
+<?php namespace Igor\BaseCode\Classes\Barcode\Types;
 
 use Picqer\Barcode\Barcode;
 use Picqer\Barcode\BarcodeBar;
@@ -8,14 +6,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
 use Picqer\Barcode\Types\TypeInterface;
 
-/**
- * ITF-14 is the GS1 implementation of an Interleaved 2 of 5 (ITF) bar code 
- * to encode a Global Trade Item Number. ITF-14 symbols are generally used 
- * on packaging levels of a product, such as a case box of 24 cans of soup. 
- * The ITF-14 will always encode 14 digits.
- */
-
-class TypeITF14 implements TypeInterface
+class TypeCodeITF14 implements TypeInterface
 {
     /**
      * @throws InvalidLengthException
@@ -37,8 +28,7 @@ class TypeITF14 implements TypeInterface
         $chr['8'] = '21121';
         $chr['9'] = '12121';
 
-
-        if (strlen($code) == 13) {
+        if (strlen($code) === 13) {
             $total = 0;
 
             for ($i = 0; $i <= strlen($code) - 1; $i++) {
@@ -48,8 +38,9 @@ class TypeITF14 implements TypeInterface
 
             $cs = $total % 10;
             $cs = 10 - $cs;
-            if ($cs === 10)
+            if ($cs === 10) {
                 $cs = 0;
+            }
 
             $code .= (string) $cs;
         }
@@ -71,8 +62,7 @@ class TypeITF14 implements TypeInterface
         }
 
         for ($i = 0; $i < strlen($code); $i += 2) {
-
-            if (!isset($chr[$code{$i}]) || !isset($chr[$code{$i + 1}])) {
+            if (!isset($chr[$code[$i]]) || !isset($chr[$code[$i + 1]])) {
                 throw new InvalidCharacterException();
             }
 
@@ -93,14 +83,13 @@ class TypeITF14 implements TypeInterface
             foreach ($pmixedarr as $x) {
                 if ($bars) {
                     $t = true;
-                    $w = ($x === '1') ? '1' : '2';
                 } else {
                     $t = false;
-                    $w = ($x === '1') ? '1' : '2';
                 }
+                $w = ($x === '1') ? '1' : '2';
 
                 $barcode->addBar(new BarcodeBar($w, 1, $t));
-                $bars                  = !$bars;
+                $bars = !$bars;
                 ++$k;
             }
         }
