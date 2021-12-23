@@ -4,5 +4,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [v0.5.0] - 2021-12-23
 ### Added
 - Artifactory integration
