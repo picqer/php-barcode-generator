@@ -9,6 +9,8 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 /*
  * CODE 93 - USS-93
  * Compact code similar to Code 39
+ * 
+ * reference: https://en.wikipedia.org/wiki/Code_93#Full_ASCII_Code_93
  */
 
 class TypeCode93 implements TypeInterface
