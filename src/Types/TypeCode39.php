@@ -132,7 +132,7 @@ class TypeCode39 implements TypeInterface
             chr(8) => '$H',
             chr(9) => '$I',
             chr(10) => '$J',
-            chr(11) => '£K',
+            chr(11) => '$K',
             chr(12) => '$L',
             chr(13) => '$M',
             chr(14) => '$N',
