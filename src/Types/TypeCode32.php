@@ -3,14 +3,14 @@
 namespace Picqer\Barcode\Types;
 
 use Picqer\Barcode\Barcode;
+
 /*
  * CODE 32 - italian pharmaceutical
  * General-purpose code in very wide use world-wide
  */
-
 class TypeCode32 extends TypeCode39
 {
-	protected $conversionTable32 = [
+    protected $conversionTable32 = [
         '0' => '0',
         '1' => '1',
         '2' => '2',
@@ -44,18 +44,17 @@ class TypeCode32 extends TypeCode39
         '30' => 'Y',
         '31' => 'Z'
     ];
-	
-	
-	
-	public function getBarcodeData(string $code): Barcode
-	{
-	   $code39="";
-	   $codeElab=$code;
-	   for($e=5;$e>=0;$e--)
-	   {
-			$code39.=$this->conversionTable32[intval($codeElab / pow(32,$e))];
-			$codeElab=intval($codeElab % pow(32,$e));
-	   }
-	   return parent::getBarcodeData($code39);
+
+    public function getBarcodeData(string $code): Barcode
+    {
+        $code39 = '';
+        $codeElab = $code;
+        
+        for ($e = 5; $e >= 0; $e--) {
+            $code39 .= $this->conversionTable32[intval($codeElab / pow(32,$e))];
+            $codeElab = intval($codeElab % pow(32,$e));
+	    }
+        
+        return parent::getBarcodeData($code39);
 	}
 }
