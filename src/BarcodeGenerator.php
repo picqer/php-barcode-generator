@@ -36,6 +36,7 @@ use Picqer\Barcode\Types\TypeCode128;
 use Picqer\Barcode\Types\TypeCode128A;
 use Picqer\Barcode\Types\TypeCode128B;
 use Picqer\Barcode\Types\TypeCode128C;
+use Picqer\Barcode\Types\TypeCode32;
 use Picqer\Barcode\Types\TypeCode39;
 use Picqer\Barcode\Types\TypeCode39Checksum;
 use Picqer\Barcode\Types\TypeCode39Extended;
@@ -63,6 +64,7 @@ use Picqer\Barcode\Types\TypeUpcExtension5;
 
 abstract class BarcodeGenerator
 {
+    const TYPE_CODE_32 = 'C32';
     const TYPE_CODE_39 = 'C39';
     const TYPE_CODE_39_CHECKSUM = 'C39+';
     const TYPE_CODE_39E = 'C39E'; // CODE 39 EXTENDED
@@ -104,6 +106,9 @@ abstract class BarcodeGenerator
     protected function createDataBuilderForType(string $type)
     {
         switch (strtoupper($type)) {
+            case self::TYPE_CODE_32:
+                return new TypeCode32();
+                
             case self::TYPE_CODE_39:
                 return new TypeCode39();
 

@@ -65,6 +65,7 @@ These barcode types are supported. All types support different character sets or
 
 Most used types are TYPE_CODE_128 and TYPE_CODE_39. Because of the best scanner support, variable length and most chars supported.
 
+- TYPE_CODE_32 (italian pharmaceutical code 'MINSAN')
 - TYPE_CODE_39
 - TYPE_CODE_39_CHECKSUM
 - TYPE_CODE_39E
