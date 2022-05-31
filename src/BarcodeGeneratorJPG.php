@@ -9,7 +9,7 @@ class BarcodeGeneratorJPG extends BarcodeGeneratorPNG
     protected function createImagickImageObject(int $width, int $height): Imagick
     {
         $image = new Imagick();
-        $image->newImage($width, $height, 'none', 'JPG');
+        $image->newImage($width, $height, 'white', 'JPG');
 
         return $image;
     }
