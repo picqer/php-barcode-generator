@@ -91,7 +91,7 @@ class TypeCode11 implements TypeInterface
 
         $p = 1;
         $check = 0;
-        for ($i = strlen($code); $i >= 0; --$i) {
+        for ($i = (strlen($code) - 1); $i >= 0; --$i) {
             $digit = $code[$i];
             if ($digit == '-') {
                 $dval = 10;
