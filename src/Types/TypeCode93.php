@@ -59,66 +59,64 @@ class TypeCode93 implements TypeInterface
         47 => '112131', // /
         43 => '113121', // +
         37 => '211131', // %
-        128 => '121221', // ($)
-        129 => '311121', // (/)
-        130 => '122211', // (+)
-        131 => '312111', // (%)
+        97 => '121221', // ($)
+        98 => '312111', // (%)
+        99 => '311121', // (/)
+        100 => '122211', // (+)
         42 => '111141', // start-stop
     ];
 
     public function getBarcodeData(string $code): Barcode
     {
-        $code = strtoupper($code);
-
         $encode = [
-            chr(0) => chr(131) . 'U',
-            chr(1) => chr(128) . 'A',
-            chr(2) => chr(128) . 'B',
-            chr(3) => chr(128) . 'C',
-            chr(4) => chr(128) . 'D',
-            chr(5) => chr(128) . 'E',
-            chr(6) => chr(128) . 'F',
-            chr(7) => chr(128) . 'G',
-            chr(8) => chr(128) . 'H',
-            chr(9) => chr(128) . 'I',
-            chr(10) => chr(128) . 'J',
-            chr(11) => '£K',
-            chr(12) => chr(128) . 'L',
-            chr(13) => chr(128) . 'M',
-            chr(14) => chr(128) . 'N',
-            chr(15) => chr(128) . 'O',
-            chr(16) => chr(128) . 'P',
-            chr(17) => chr(128) . 'Q',
-            chr(18) => chr(128) . 'R',
-            chr(19) => chr(128) . 'S',
-            chr(20) => chr(128) . 'T',
-            chr(21) => chr(128) . 'U',
-            chr(22) => chr(128) . 'V',
-            chr(23) => chr(128) . 'W',
-            chr(24) => chr(128) . 'X',
-            chr(25) => chr(128) . 'Y',
-            chr(26) => chr(128) . 'Z',
-            chr(27) => chr(131) . 'A',
-            chr(28) => chr(131) . 'B',
-            chr(29) => chr(131) . 'C',
-            chr(30) => chr(131) . 'D',
-            chr(31) => chr(131) . 'E',
+            chr(0) => 'bU',
+            chr(1) => 'aA',
+            chr(2) => 'aB',
+            chr(3) => 'aC',
+            chr(4) => 'aD',
+            chr(5) => 'aE',
+            chr(6) => 'aF',
+            chr(7) => 'aG',
+            chr(8) => 'aH',
+            chr(9) => 'aI',
+            chr(10) => 'aJ',
+            chr(11) => 'aK',
+            chr(12) => 'aL',
+            chr(13) => 'aM',
+            chr(14) => 'aN',
+            chr(15) => 'aO',
+            chr(16) => 'aP',
+            chr(17) => 'aQ',
+            chr(18) => 'aR',
+            chr(19) => 'aS',
+            chr(20) => 'aT',
+            chr(21) => 'aU',
+            chr(22) => 'aV',
+            chr(23) => 'aW',
+            chr(24) => 'aX',
+            chr(25) => 'aY',
+            chr(26) => 'aZ',
+            chr(27) => 'bA',
+            chr(28) => 'bB',
+            chr(29) => 'bC',
+            chr(30) => 'bD',
+            chr(31) => 'bE',
             chr(32) => ' ',
-            chr(33) => chr(129) . 'A',
-            chr(34) => chr(129) . 'B',
-            chr(35) => chr(129) . 'C',
-            chr(36) => chr(36), // "$"
-            chr(37) => chr(37), // "%"
-            chr(38) => chr(129) . 'F',
-            chr(39) => chr(129) . 'G',
-            chr(40) => chr(129) . 'H',
-            chr(41) => chr(129) . 'I',
-            chr(42) => chr(129) . 'J',
-            chr(43) => chr(43), // "+"
-            chr(44) => chr(129) . 'L',
+            chr(33) => 'cA',
+            chr(34) => 'cB',
+            chr(35) => 'cC',
+            chr(36) => '$',
+            chr(37) => '%',
+            chr(38) => 'cF',
+            chr(39) => 'cG',
+            chr(40) => 'cH',
+            chr(41) => 'cI',
+            chr(42) => 'cJ',
+            chr(43) => '+',
+            chr(44) => 'cL',
             chr(45) => '-',
             chr(46) => '.',
-            chr(47) => chr(47), // "/"
+            chr(47) => '/',
             chr(48) => '0',
             chr(49) => '1',
             chr(50) => '2',
@@ -129,13 +127,13 @@ class TypeCode93 implements TypeInterface
             chr(55) => '7',
             chr(56) => '8',
             chr(57) => '9',
-            chr(58) => chr(129) . 'Z',
-            chr(59) => chr(131) . 'F',
-            chr(60) => chr(131) . 'G',
-            chr(61) => chr(131) . 'H',
-            chr(62) => chr(131) . 'I',
-            chr(63) => chr(131) . 'J',
-            chr(64) => chr(131) . 'V',
+            chr(58) => 'cZ',
+            chr(59) => 'bF',
+            chr(60) => 'bG',
+            chr(61) => 'bH',
+            chr(62) => 'bI',
+            chr(63) => 'bJ',
+            chr(64) => 'bV',
             chr(65) => 'A',
             chr(66) => 'B',
             chr(67) => 'C',
@@ -162,43 +160,43 @@ class TypeCode93 implements TypeInterface
             chr(88) => 'X',
             chr(89) => 'Y',
             chr(90) => 'Z',
-            chr(91) => chr(131) . 'K',
-            chr(92) => chr(131) . 'L',
-            chr(93) => chr(131) . 'M',
-            chr(94) => chr(131) . 'N',
-            chr(95) => chr(131) . 'O',
-            chr(96) => chr(131) . 'W',
-            chr(97) => chr(130) . 'A',
-            chr(98) => chr(130) . 'B',
-            chr(99) => chr(130) . 'C',
-            chr(100) => chr(130) . 'D',
-            chr(101) => chr(130) . 'E',
-            chr(102) => chr(130) . 'F',
-            chr(103) => chr(130) . 'G',
-            chr(104) => chr(130) . 'H',
-            chr(105) => chr(130) . 'I',
-            chr(106) => chr(130) . 'J',
-            chr(107) => chr(130) . 'K',
-            chr(108) => chr(130) . 'L',
-            chr(109) => chr(130) . 'M',
-            chr(110) => chr(130) . 'N',
-            chr(111) => chr(130) . 'O',
-            chr(112) => chr(130) . 'P',
-            chr(113) => chr(130) . 'Q',
-            chr(114) => chr(130) . 'R',
-            chr(115) => chr(130) . 'S',
-            chr(116) => chr(130) . 'T',
-            chr(117) => chr(130) . 'U',
-            chr(118) => chr(130) . 'V',
-            chr(119) => chr(130) . 'W',
-            chr(120) => chr(130) . 'X',
-            chr(121) => chr(130) . 'Y',
-            chr(122) => chr(130) . 'Z',
-            chr(123) => chr(131) . 'P',
-            chr(124) => chr(131) . 'Q',
-            chr(125) => chr(131) . 'R',
-            chr(126) => chr(131) . 'S',
-            chr(127) => chr(131) . 'T',
+            chr(91) => 'bK',
+            chr(92) => 'bL',
+            chr(93) => 'bM',
+            chr(94) => 'bN',
+            chr(95) => 'bO',
+            chr(96) => 'bW',
+            chr(97) => 'dA',
+            chr(98) => 'dB',
+            chr(99) => 'dC',
+            chr(100) => 'dD',
+            chr(101) => 'dE',
+            chr(102) => 'dF',
+            chr(103) => 'dG',
+            chr(104) => 'dH',
+            chr(105) => 'dI',
+            chr(106) => 'dJ',
+            chr(107) => 'dK',
+            chr(108) => 'dL',
+            chr(109) => 'dM',
+            chr(110) => 'dN',
+            chr(111) => 'dO',
+            chr(112) => 'dP',
+            chr(113) => 'dQ',
+            chr(114) => 'dR',
+            chr(115) => 'dS',
+            chr(116) => 'dT',
+            chr(117) => 'dU',
+            chr(118) => 'dV',
+            chr(119) => 'dW',
+            chr(120) => 'dX',
+            chr(121) => 'dY',
+            chr(122) => 'dZ',
+            chr(123) => 'bP',
+            chr(124) => 'bQ',
+            chr(125) => 'bR',
+            chr(126) => 'bS',
+            chr(127) => 'bT',
         ];
 
         $code_ext = '';
@@ -250,13 +248,10 @@ class TypeCode93 implements TypeInterface
      */
     protected function checksum_code93($code)
     {
-        $chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%', '<', '=', '>', '?'];
-
-        // translate special characters
-        $code = strtr($code, chr(128) . chr(131) . chr(129) . chr(130), '<=>?');
-        $len = strlen($code);
+        $chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%', 'a', 'b', 'c', 'd'];
 
         // calculate check digit C
+        $len = strlen($code);
         $p = 1;
         $check = 0;
         for ($i = ($len - 1); $i >= 0; --$i) {
@@ -286,9 +281,6 @@ class TypeCode93 implements TypeInterface
         $k = $chars[$check];
 
         $checksum = $c . $k;
-
-        // resto respecial characters
-        $checksum = strtr($checksum, '<=>?', chr(128) . chr(131) . chr(129) . chr(130));
 
         return $checksum;
     }
