@@ -14,8 +14,9 @@ use Picqer\Barcode\BarcodeGenerator;
 class VerifiedBarcodeTest extends TestCase
 {
     public static $supportedBarcodes = [
-        ['type' => BarcodeGenerator::TYPE_CODE_39, 'barcodes' => ['1234567890abcABC']],
-        ['type' => BarcodeGenerator::TYPE_CODE_39_CHECKSUM, 'barcodes' => ['1234567890abcABC']],
+        ['type' => BarcodeGenerator::TYPE_CODE_39, 'barcodes' => ['1234567890ABC']],
+        ['type' => BarcodeGenerator::TYPE_CODE_39_CHECKSUM, 'barcodes' => ['1234567890ABC']],
+        ['type' => BarcodeGenerator::TYPE_CODE_39E, 'barcodes' => ['1234567890abcABC']],
         ['type' => BarcodeGenerator::TYPE_CODE_39E_CHECKSUM, 'barcodes' => ['1234567890abcABC']],
         ['type' => BarcodeGenerator::TYPE_CODE_93, 'barcodes' => ['1234567890abcABC']],
         ['type' => BarcodeGenerator::TYPE_STANDARD_2_5, 'barcodes' => ['1234567890']],

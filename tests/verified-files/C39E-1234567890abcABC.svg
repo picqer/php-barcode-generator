@@ -1,7 +1,7 @@
 <?xml version="1.0" standalone="no" ?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="704" height="30" viewBox="0 0 704 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
-	<desc>*1234567890+A+B+CABCJ*</desc>
+<svg width="672" height="30" viewBox="0 0 672 30" version="1.1" xmlns="http://www.w3.org/2000/svg">
+	<desc>*1234567890+A+B+CABC*</desc>
 	<g id="bars" fill="black" stroke="none">
 		<rect x="0" y="0" width="2" height="30" />
 		<rect x="8" y="0" width="2" height="30" />
@@ -104,14 +104,9 @@
 		<rect x="632" y="0" width="2" height="30" />
 		<rect x="636" y="0" width="2" height="30" />
 		<rect x="640" y="0" width="2" height="30" />
-		<rect x="644" y="0" width="2" height="30" />
-		<rect x="648" y="0" width="6" height="30" />
+		<rect x="648" y="0" width="2" height="30" />
+		<rect x="652" y="0" width="6" height="30" />
 		<rect x="660" y="0" width="6" height="30" />
 		<rect x="668" y="0" width="2" height="30" />
-		<rect x="672" y="0" width="2" height="30" />
-		<rect x="680" y="0" width="2" height="30" />
-		<rect x="684" y="0" width="6" height="30" />
-		<rect x="692" y="0" width="6" height="30" />
-		<rect x="700" y="0" width="2" height="30" />
 	</g>
 </svg>
