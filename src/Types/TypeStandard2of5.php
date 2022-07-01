@@ -26,15 +26,11 @@ class TypeStandard2of5 implements TypeInterface
         $chr['5'] = '11101011101010';
         $chr['6'] = '10111011101010';
         $chr['7'] = '10101011101110';
-        $chr['8'] = '10101110111010';
+        $chr['8'] = '11101010111010';
         $chr['9'] = '10111010111010';
         if ($this->checksum) {
             // add checksum
             $code .= $this->checksum_s25($code);
-        }
-        if ((strlen($code) % 2) != 0) {
-            // add leading zero if code-length is odd
-            $code = '0' . $code;
         }
         $seq = '11011010';
 
