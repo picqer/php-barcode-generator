@@ -7,17 +7,25 @@ class TypesTest extends TestCase
     public function test_generator_can_generate_code_39_barcode()
     {
         $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-        $result = $generator->getBarcode('1234567890abcABC', $generator::TYPE_CODE_39);
+        $result = $generator->getBarcode('1234567890ABC', $generator::TYPE_CODE_39);
 
-        $this->assertStringEqualsFile('tests/verified-files/C39-1234567890abcABC.svg', $result);
+        $this->assertStringEqualsFile('tests/verified-files/C39-1234567890ABC.svg', $result);
     }
 
     public function test_generator_can_generate_code_39_checksum_barcode()
     {
         $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-        $result = $generator->getBarcode('1234567890abcABC', $generator::TYPE_CODE_39_CHECKSUM);
+        $result = $generator->getBarcode('1234567890ABC', $generator::TYPE_CODE_39_CHECKSUM);
 
         $this->assertGreaterThan(100, strlen($result));
+    }
+
+    public function test_generator_can_generate_code_39_extended_barcode()
+    {
+        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+        $result = $generator->getBarcode('1234567890abcABC', $generator::TYPE_CODE_39E);
+
+        $this->assertStringEqualsFile('tests/verified-files/C39E-1234567890abcABC.svg', $result);
     }
 
     public function test_generator_can_generate_code_39_extended_checksum_barcode()

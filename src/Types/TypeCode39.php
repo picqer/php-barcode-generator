@@ -70,8 +70,6 @@ class TypeCode39 implements TypeInterface
             throw new InvalidLengthException('You should provide a barcode string.');
         }
 
-        $code = strtoupper($code);
-
         if ($this->extended) {
             // extended mode
             $code = $this->encode_code39_ext($code);
