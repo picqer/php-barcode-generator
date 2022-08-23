@@ -44,6 +44,7 @@ use Picqer\Barcode\Types\TypeCode39ExtendedChecksum;
 use Picqer\Barcode\Types\TypeCode93;
 use Picqer\Barcode\Types\TypeEan13;
 use Picqer\Barcode\Types\TypeEan8;
+use Picqer\Barcode\Types\TypeFebraban;
 use Picqer\Barcode\Types\TypeIntelligentMailBarcode;
 use Picqer\Barcode\Types\TypeInterleaved25;
 use Picqer\Barcode\Types\TypeInterleaved25Checksum;
@@ -82,6 +83,7 @@ abstract class BarcodeGenerator
     const TYPE_EAN_5 = 'EAN5'; // 5-Digits UPC-Based Extention
     const TYPE_EAN_8 = 'EAN8';
     const TYPE_EAN_13 = 'EAN13';
+    const TYPE_FEBRABAN = 'FEBRABAN';
     const TYPE_UPC_A = 'UPCA';
     const TYPE_UPC_E = 'UPCE';
     const TYPE_MSI = 'MSI'; // MSI (Variation of Plessey code)
@@ -135,6 +137,9 @@ abstract class BarcodeGenerator
 
             case self::TYPE_INTERLEAVED_2_5_CHECKSUM:
                 return new TypeInterleaved25Checksum();
+
+            case self::TYPE_FEBRABAN:
+                return new TypeFebraban();
 
             case self::TYPE_CODE_128:
                 return new TypeCode128();
