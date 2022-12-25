@@ -6,6 +6,10 @@ class BarcodeJpgTest extends TestCase
 {
     public function test_jpg_barcode_generator_can_generate_code_128_barcode()
     {
+		if (! extension_loaded('gd')) {
+			$this->markTestSkipped();
+		}
+
         $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
         $generator->useGd();
         $result = $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
@@ -20,6 +24,10 @@ class BarcodeJpgTest extends TestCase
 
     public function test_jpg_barcode_generator_can_generate_code_39_barcode()
     {
+		if (! extension_loaded('gd')) {
+			$this->markTestSkipped();
+		}
+
         $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
         $generator->useGd();
         $result = $generator->getBarcode('081231723897', $generator::TYPE_CODE_39, 1);
@@ -34,6 +42,10 @@ class BarcodeJpgTest extends TestCase
 
     public function test_jpg_barcode_generator_can_use_different_height()
     {
+		if (! extension_loaded('gd')) {
+			$this->markTestSkipped();
+		}
+
         $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
         $generator->useGd();
         $result = $generator->getBarcode('081231723897', $generator::TYPE_CODE_128, 2, 45);
@@ -48,6 +60,10 @@ class BarcodeJpgTest extends TestCase
 
     public function test_jpg_barcode_generator_can_use_different_width_factor()
     {
+		if (! extension_loaded('gd')) {
+			$this->markTestSkipped();
+		}
+
         $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
         $generator->useGd();
         $result = $generator->getBarcode('081231723897', $generator::TYPE_CODE_128, 5);

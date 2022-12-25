@@ -2,21 +2,14 @@
 
 namespace Picqer\Barcode;
 
-use Imagick;
-
-class BarcodeGeneratorJPG extends BarcodeGeneratorPNG
+class BarcodeGeneratorJPG extends BarcodeGeneratorImage
 {
-    protected function createImagickImageObject(int $width, int $height): Imagick
-    {
-        $image = new Imagick();
-        $image->newImage($width, $height, 'white', 'JPG');
-
-        return $image;
-    }
+	const EXTENSION = 'JPG';
+	const DEFAULT_BACKGROUND_COLOR = 'white';
 
     protected function generateGdImage($image)
     {
         imagejpeg($image);
-        imagedestroy($image);
+		parent::generateGdImage($image);
     }
 }
