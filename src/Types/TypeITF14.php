@@ -8,7 +8,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
 use Picqer\Barcode\Types\TypeInterface;
 
-class TypeCodeITF14 implements TypeInterface
+class TypeITF14 implements TypeInterface
 {
     /**
      * @throws InvalidLengthException
