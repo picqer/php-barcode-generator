@@ -1,4 +1,6 @@
-<?php namespace Igor\BaseCode\Classes\Barcode\Types;
+<?php
+
+namespace Picqer\Barcode\Types;
 
 use Picqer\Barcode\Barcode;
 use Picqer\Barcode\BarcodeBar;
