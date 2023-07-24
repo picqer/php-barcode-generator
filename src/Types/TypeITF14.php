@@ -29,12 +29,12 @@ class TypeITF14 implements TypeInterface
         $chr['A'] = '11';
         $chr['Z'] = '21';
 
-        if (strlen($code) === 13) {
-            $code .= $this->getChecksum($code);
+        if (strlen($code) < 13 || strlen($code) > 14) {
+            throw new InvalidLengthException();
         }
 
-        if (strlen($code) > 14 || strlen($code) < 13) {
-            throw new InvalidLengthException();
+        if (strlen($code) === 13) {
+            $code .= $this->getChecksum($code);
         }
 
         $barcode = new Barcode($code);
@@ -42,12 +42,13 @@ class TypeITF14 implements TypeInterface
         // Add start and stop codes
         $code = 'AA' . strtolower($code) . 'ZA';
 
+        // Loop through 2 chars at once
         for ($charIndex = 0; $charIndex < strlen($code); $charIndex += 2) {
             if (! isset($chr[$code[$charIndex]]) || ! isset($chr[$code[$charIndex + 1]])) {
                 throw new InvalidCharacterException();
             }
 
-            $bars = true;
+            $drawBar = true;
             $pbars = $chr[$code[$charIndex]];
             $pspaces = $chr[$code[$charIndex + 1]];
             $pmixed = '';
@@ -58,18 +59,9 @@ class TypeITF14 implements TypeInterface
                 $pspaces = substr($pspaces, 1);
             }
 
-            $pmixedarr = str_split($pmixed);
-
-            foreach ($pmixedarr as $x) {
-                if ($bars) {
-                    $t = true;
-                } else {
-                    $t = false;
-                }
-                $width = ($x === '1') ? '1' : '2';
-
-                $barcode->addBar(new BarcodeBar($width, 1, $t));
-                $bars = ! $bars;
+            foreach (str_split($pmixed) as $width) {
+                $barcode->addBar(new BarcodeBar($width, 1, $drawBar));
+                $drawBar = ! $drawBar;
             }
         }
 

@@ -37,6 +37,7 @@ class TypeInterleaved25Checksum implements TypeInterface
             // add leading zero if code-length is odd
             $code = '0' . $code;
         }
+
         // add start and stop codes
         $code = 'AA' . strtolower($code) . 'ZA';
 
