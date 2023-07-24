@@ -84,6 +84,7 @@ Most used types are TYPE_CODE_128 and TYPE_CODE_39. Because of the best scanner 
 - TYPE_EAN_5
 - TYPE_EAN_8
 - TYPE_EAN_13
+- TYPE_ITF14 (Also known as GTIN-14)
 - TYPE_UPC_A
 - TYPE_UPC_E
 - TYPE_MSI
