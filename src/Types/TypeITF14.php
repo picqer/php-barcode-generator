@@ -6,7 +6,6 @@ use Picqer\Barcode\Barcode;
 use Picqer\Barcode\BarcodeBar;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
-use Picqer\Barcode\Types\TypeInterface;
 
 class TypeITF14 implements TypeInterface
 {
@@ -16,9 +15,7 @@ class TypeITF14 implements TypeInterface
      */
     public function getBarcodeData(string $code): Barcode
     {
-        $barcode = new Barcode($code);
-
-        $chr      = array();
+        $chr = [];
         $chr['0'] = '11221';
         $chr['1'] = '21112';
         $chr['2'] = '12112';
@@ -29,54 +26,35 @@ class TypeITF14 implements TypeInterface
         $chr['7'] = '11122';
         $chr['8'] = '21121';
         $chr['9'] = '12121';
+        $chr['A'] = '11';
+        $chr['Z'] = '21';
 
         if (strlen($code) === 13) {
-            $total = 0;
-
-            for ($i = 0; $i <= strlen($code) - 1; $i++) {
-                $temp  = intval($code . substr($i, 1));
-                $total += $temp * (($i === 0 || $i % 2 === 0) ? 3 : 1);
-            }
-
-            $cs = $total % 10;
-            $cs = 10 - $cs;
-            if ($cs === 10) {
-                $cs = 0;
-            }
-
-            $code .= (string) $cs;
+            $code .= $this->getChecksum($code);
         }
 
         if (strlen($code) > 14 || strlen($code) < 13) {
             throw new InvalidLengthException();
         }
 
-        $k         = 0;
-        $pbegin    = "1010";
-        $pbeginarr = str_split($pbegin);
+        $barcode = new Barcode($code);
 
-        foreach ($pbeginarr as $x) {
-            $t = $x === '1';
-            $w = 1;
+        // Add start and stop codes
+        $code = 'AA' . strtolower($code) . 'ZA';
 
-            $barcode->addBar(new BarcodeBar($w, 1, $t));
-            ++$k;
-        }
-
-        for ($i = 0; $i < strlen($code); $i += 2) {
-            if (!isset($chr[$code[$i]]) || !isset($chr[$code[$i + 1]])) {
+        for ($charIndex = 0; $charIndex < strlen($code); $charIndex += 2) {
+            if (! isset($chr[$code[$charIndex]]) || ! isset($chr[$code[$charIndex + 1]])) {
                 throw new InvalidCharacterException();
             }
 
-            $bars    = true;
-            $pbars   = $chr[$code[$i]];
-            $pspaces = $chr[$code[$i + 1]];
-            $pmixed  = "";
-
+            $bars = true;
+            $pbars = $chr[$code[$charIndex]];
+            $pspaces = $chr[$code[$charIndex + 1]];
+            $pmixed = '';
 
             while (strlen($pbars) > 0) {
-                $pmixed  .= $pbars[0] . $pspaces[0];
-                $pbars   = substr($pbars, 1);
+                $pmixed .= $pbars[0] . $pspaces[0];
+                $pbars = substr($pbars, 1);
                 $pspaces = substr($pspaces, 1);
             }
 
@@ -88,25 +66,30 @@ class TypeITF14 implements TypeInterface
                 } else {
                     $t = false;
                 }
-                $w = ($x === '1') ? '1' : '2';
+                $width = ($x === '1') ? '1' : '2';
 
-                $barcode->addBar(new BarcodeBar($w, 1, $t));
-                $bars = !$bars;
-                ++$k;
+                $barcode->addBar(new BarcodeBar($width, 1, $t));
+                $bars = ! $bars;
             }
         }
 
-        $pend    = "1101";
-        $pendarr = str_split($pend);
+        return $barcode;
+    }
 
-        foreach ($pendarr as $x) {
-            $t = $x == '1';
-            $w = 1;
+    private function getChecksum(string $code): string
+    {
+        $total = 0;
 
-            $barcode->addBar(new BarcodeBar($w, 1, $t));
-            ++$k;
+        for ($charIndex = 0; $charIndex <= (strlen($code) - 1); $charIndex++) {
+            $integerOfChar = intval($code . substr($charIndex, 1));
+            $total += $integerOfChar * (($charIndex === 0 || $charIndex % 2 === 0) ? 3 : 1);
         }
 
-        return $barcode;
+        $checksum = 10 - ($total % 10);
+        if ($checksum === 10) {
+            $checksum = 0;
+        }
+
+        return (string)$checksum;
     }
 }

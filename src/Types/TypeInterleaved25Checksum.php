@@ -16,6 +16,7 @@ class TypeInterleaved25Checksum implements TypeInterface
 {
     public function getBarcodeData(string $code): Barcode
     {
+        $chr = [];
         $chr['0'] = '11221';
         $chr['1'] = '21112';
         $chr['2'] = '12112';
