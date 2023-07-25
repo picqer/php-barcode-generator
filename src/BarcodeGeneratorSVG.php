@@ -10,17 +10,22 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
      * @param $barcode (string) code to print
      * @param BarcodeGenerator::Type_* $type (string) type of barcode
      * @param $widthFactor (float) Minimum width of a single bar in user units.
-     * @param $height (int) Height of barcode in user units.
+     * @param $height (float) Height of barcode in user units.
      * @param $foregroundColor (string) Foreground color (in SVG format) for bar elements (background is transparent).
      * @return string SVG code.
      * @public
      */
-    public function getBarcode(string $barcode, $type, float $widthFactor = 2, int $height = 30, string $foregroundColor = 'black')
+    public function getBarcode(string $barcode, $type, float $widthFactor = 2, float $height = 30, string $foregroundColor = 'black')
     {
         $barcodeData = $this->getBarcodeData($barcode, $type);
 
         // replace table for special characters
-        $repstr = ["\0" => '', '&' => '&amp;', '<' => '&lt;', '>' => '&gt;'];
+        $repstr = [
+            "\0" => '',
+            '&' => '&amp;',
+            '<' => '&lt;',
+            '>' => '&gt;',
+        ];
 
         $width = round(($barcodeData->getWidth() * $widthFactor), 3);
 
@@ -45,6 +50,7 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
 
             $positionHorizontal += $barWidth;
         }
+
         $svg .= "\t</g>" . PHP_EOL;
         $svg .= '</svg>' . PHP_EOL;
 
