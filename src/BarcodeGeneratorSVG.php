@@ -8,14 +8,14 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
      * Return a SVG string representation of barcode.
      *
      * @param $barcode (string) code to print
-     * @param $type (const) type of barcode
+     * @param BarcodeGenerator::Type_* $type (string) type of barcode
      * @param $widthFactor (float) Minimum width of a single bar in user units.
      * @param $height (int) Height of barcode in user units.
      * @param $foregroundColor (string) Foreground color (in SVG format) for bar elements (background is transparent).
      * @return string SVG code.
      * @public
      */
-    public function getBarcode($barcode, $type, float $widthFactor = 2, int $height = 30, string $foregroundColor = 'black')
+    public function getBarcode(string $barcode, $type, float $widthFactor = 2, int $height = 30, string $foregroundColor = 'black')
     {
         $barcodeData = $this->getBarcodeData($barcode, $type);
 
