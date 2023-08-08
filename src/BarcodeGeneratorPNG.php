@@ -46,7 +46,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
      * Return a PNG image representation of barcode (requires GD or Imagick library).
      *
      * @param string $barcode code to print
-     * @param BarcodeGenerator::Type_* $type (string) type of barcode
+     * @param BarcodeGenerator::TYPE_* $type (string) type of barcode
      * @param int $widthFactor Width of a single bar element in pixels.
      * @param int $height Height of a single bar element in pixels.
      * @param array $foregroundColor RGB (0-255) foreground color for bar elements (background is transparent).

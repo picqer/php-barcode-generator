@@ -9,7 +9,7 @@ class BarcodeGeneratorHTML extends BarcodeGenerator
      * This original version uses pixel based widths and heights. Use Dynamic HTML version for better quality representation.
      *
      * @param string $barcode code to print
-     * @param BarcodeGenerator::Type_* $type (string) type of barcode
+     * @param BarcodeGenerator::TYPE_* $type (string) type of barcode
      * @param int $widthFactor Width of a single bar element in pixels.
      * @param int $height Height of a single bar element in pixels.
      * @param string $foregroundColor Foreground color for bar elements as '#333' or 'orange' for example (background is transparent).
