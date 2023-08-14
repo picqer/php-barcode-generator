@@ -11,7 +11,7 @@ class BarcodeGeneratorDynamicHTML extends BarcodeGenerator
      * This 'dynamic' version uses percentage based widths and heights, resulting in a vector-y qualitative result.
      *
      * @param string $barcode code to print
-     * @param BarcodeGenerator::Type_* $type (string) type of barcode
+     * @param BarcodeGenerator::TYPE_* $type (string) type of barcode
      * @param string $foregroundColor Foreground color for bar elements as '#333' or 'orange' for example (background is transparent).
      * @return string HTML code.
      */
