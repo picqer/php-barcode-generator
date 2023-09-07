@@ -58,6 +58,7 @@ use Picqer\Barcode\Types\TypePostnet;
 use Picqer\Barcode\Types\TypeRms4cc;
 use Picqer\Barcode\Types\TypeStandard2of5;
 use Picqer\Barcode\Types\TypeStandard2of5Checksum;
+use Picqer\Barcode\Types\TypeTelepen;
 use Picqer\Barcode\Types\TypeUpcA;
 use Picqer\Barcode\Types\TypeUpcE;
 use Picqer\Barcode\Types\TypeUpcExtension2;
@@ -90,6 +91,8 @@ abstract class BarcodeGenerator
     const TYPE_MSI_CHECKSUM = 'MSI+'; // MSI + CHECKSUM (modulo 11)
     const TYPE_POSTNET = 'POSTNET';
     const TYPE_PLANET = 'PLANET';
+    const TYPE_TELEPEN_ALPHA = 'TELEPENALPHA';
+    const TYPE_TELEPEN_NUMERIC = 'TELEPENNUMERIC';
     const TYPE_RMS4CC = 'RMS4CC'; // RMS4CC (Royal Mail 4-state Customer Code) - CBC (Customer Bar Code)
     const TYPE_KIX = 'KIX'; // KIX (Klant index - Customer index)
     const TYPE_IMB = 'IMB'; // IMB - Intelligent Mail Barcode - Onecode - USPS-B-3200
@@ -203,6 +206,13 @@ abstract class BarcodeGenerator
 
             case self::TYPE_PHARMA_CODE_TWO_TRACKS:
                 return new TypePharmacodeTwoCode();
+            
+            case self::TYPE_TELEPEN_ALPHA:
+                return new TypeTelepen();
+            
+            case self::TYPE_TELEPEN_NUMERIC:
+                return new TypeTelepen('numeric');
+            
         }
 
         throw new UnknownTypeException();
