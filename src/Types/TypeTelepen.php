@@ -1,9 +1,8 @@
 <?php
 /**
- * Adapated from Java implementation of Telepen
- * by <rstuart114@gmail.com> Robin Stuart by
- * Darren Stephens <darren.stephens@durham.ac.uk>
- * at https://github.com/woo-j/OkapiBarcode which used the 
+ * Adapted by Darren Stephens <darren.stephens@durham.ac.uk>
+ * from Java implementation of Telepen by <rstuart114@gmail.com> Robin Stuart 
+ * at https://github.com/woo-j/OkapiBarcode which uses the 
  * Apache License 2.0 http://www.apache.org/licenses/LICENSE-2.0
  *
  * Implements Telepen (also known as Telepen Alpha), and Telepen Numeric.
@@ -22,7 +21,7 @@ use Picqer\Barcode\Exceptions\InvalidFormatException;
 
 define('TELEPEN_START_CHAR', '_');
 define('TELEPEN_STOP_CHAR',  'z');
-define('TELEPEN_ALPHA',   '');
+define('TELEPEN_ALPHA',   'alpha');
 define('TELEPEN_NUMERIC', 'numeric');
 
 class TypeTelepen implements TypeInterface
@@ -73,7 +72,7 @@ class TypeTelepen implements TypeInterface
     protected function encodeAlpha($code) : string
     {
 
-        if (!preg_match('/[ -~]+/', $code)) { // everything from ASCII0-ASCII127
+        if (!preg_match('/[ -~]+/', $code)) { // everything from ASCII32-ASCII127
             throw new InvalidFormatException("Invalid characters in data");
         }
 
