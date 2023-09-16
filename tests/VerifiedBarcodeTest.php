@@ -44,6 +44,8 @@ class VerifiedBarcodeTest extends TestCase
         ['type' => BarcodeGenerator::TYPE_CODE_11, 'barcodes' => ['123456789']],
         ['type' => BarcodeGenerator::TYPE_PHARMA_CODE, 'barcodes' => ['123456789']],
         ['type' => BarcodeGenerator::TYPE_PHARMA_CODE_TWO_TRACKS, 'barcodes' => ['123456789']],
+        ['type' => BarcodeGenerator::TYPE_TELEPEN_ALPHA, 'barcodes' => ['1234567890ASCD']],
+        ['type' => BarcodeGenerator::TYPE_TELEPEN_NUMERIC, 'barcodes' => ['1234567890']]
     ];
 
     public function testAllSupportedBarcodeTypes()
