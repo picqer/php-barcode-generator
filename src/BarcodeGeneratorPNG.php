@@ -76,7 +76,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
                 $barHeight = round(($bar->getHeight() * $height / $barcodeData->getHeight()), 3);
 
                 // draw a vertical bar
-                if ($this->useImagick && isset($imagickBarsShape)) {
+                if ($this->useImagick) {
                     $imagickBarsShape->rectangle($positionHorizontal, $y, ($positionHorizontal + $barWidth - 1), ($y + $barHeight));
                 } else {
                     imagefilledrectangle($image, $positionHorizontal, $y, ($positionHorizontal + $barWidth - 1), ($y + $barHeight), $gdForegroundColor);
@@ -85,7 +85,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
             $positionHorizontal += $barWidth;
         }
 
-        if ($this->useImagick && isset($imagickBarsShape)) {
+        if ($this->useImagick) {
             $image = $this->createImagickImageObject($width, $height);
             $image->drawImage($imagickBarsShape);
             return $image->getImageBlob();

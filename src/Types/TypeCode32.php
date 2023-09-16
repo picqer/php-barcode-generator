@@ -109,6 +109,6 @@ class TypeCode32 extends TypeCode39
             }
         }
 
-        return (string)$s % 10;
+        return (string)($s % 10);
     }
 }
