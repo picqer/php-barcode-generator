@@ -4,6 +4,7 @@ namespace Picqer\Barcode\Types;
 
 use Picqer\Barcode\Barcode;
 use Picqer\Barcode\BarcodeBar;
+use Picqer\Barcode\Exceptions\BarcodeException;
 use Picqer\Barcode\Exceptions\InvalidCharacterException;
 use Picqer\Barcode\Exceptions\InvalidLengthException;
 
@@ -331,11 +332,18 @@ class TypeCode128 implements TypeInterface
                                 $code_data[] = intval($chrnum);
                             }
                             break;
+
+                        default:
+                            throw new InvalidCharacterException('Do not support different mode then A, B or C.');
                     }
                 }
         }
 
         // calculate check character
+        if (! isset($startid)) {
+            throw new BarcodeException('Could not determine start char for barcode.');
+        }
+
         $sum = $startid;
         foreach ($code_data as $key => $val) {
             $sum += ($val * ($key + 1));
