@@ -86,6 +86,6 @@ class TypeInterleaved25Checksum implements TypeInterface
             $r = (10 - $r);
         }
 
-        return $r;
+        return (string)$r;
     }
 }
