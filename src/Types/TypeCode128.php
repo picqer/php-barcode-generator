@@ -165,7 +165,7 @@ class TypeCode128 implements TypeInterface
                     $char_id = ord($char);
                     if (($char_id >= 241) AND ($char_id <= 244)) {
                         $code_data[] = $fnc_a[$char_id];
-                    } elseif (($char_id >= 0) AND ($char_id <= 95)) {
+                    } elseif ($char_id <= 95) {
                         $code_data[] = strpos($keys_a, $char);
                     } else {
                         throw new InvalidCharacterException('Char ' . $char . ' is unsupported');

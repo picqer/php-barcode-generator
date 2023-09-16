@@ -22,4 +22,4 @@ jobs:
       run: composer install --prefer-dist --no-progress --no-interaction
 
     - name: Run analysis
-      run: vendor/bin/phpstan analyse src --level 2
+      run: vendor/bin/phpstan analyse src --level 4
