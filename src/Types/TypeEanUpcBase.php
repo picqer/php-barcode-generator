@@ -34,6 +34,74 @@ abstract class TypeEanUpcBase implements TypeInterface
 
         $dataLength = $length - 1;
 
+        // Convert proper UPC-E codes into UPC-A codes.
+        if ($this->upce) {
+            $strLen = strlen($code);
+
+            if ($strLen === 8) {
+                // Parity and checksum digits are provided. Store them for later usage.
+                $checksumDigit = $code[7];
+                $parityDigit   = $code[0];
+                $code          = substr($code, 1, 6);
+                $strLen       -= 2;
+            }
+            if ($strLen === 7) {
+                // Either parity or checksum digit is provided.
+                if (($code[0] === '0') || ($code[0] === '1')) {
+                    // Assume parity digit.
+                    $parityDigit = $code[0];
+                    $code        = substr($code, 1, 6);
+                } else {
+                    // Assume checksum digit.
+                    $checksumDigit = $code[6];
+                    $code          = substr($code, 0, 6);
+                }
+
+                --$strLen;
+            }
+            if ($strLen === 6) {
+                // Store original UPC-E code for later usage.
+                $upce_code = $code; // Neither parity digit nor checksum digit are printed in UPC-E barcode.
+
+                // Convert UPC-E code into UPC-A code.
+                $conversionData = array (
+                    '0' => array (2, '00000'),
+                    '1' => array (2, '10000'),
+                    '2' => array (2, '20000'),
+                    '3' => array (3, '00000'),
+                    '4' => array (4, '00000'),
+                    '5' => array (5, '00005'),
+                    '6' => array (5, '00006'),
+                    '7' => array (5, '00007'),
+                    '8' => array (5, '00008'),
+                    '9' => array (5, '00009')
+                );
+                $lastUpcEDigit  = $code[5];
+
+                if (!isset ($conversionData[$lastUpcEDigit])) {
+                    throw new InvalidCharacterException('Char ' . $lastUpcEDigit . ' not allowed');
+                }
+
+                $conversionData = $conversionData[$lastUpcEDigit];
+                $code           = substr($upce_code, 0, $conversionData[0]);                      // Add all Xs.
+                $code          .= $conversionData[1];                                             // Add constant number.
+                $code          .= substr($upce_code, $conversionData[0], 5 - $conversionData[0]); // Add all Ns.
+
+                // Add parity digit.
+                if (!isset ($parityDigit)) {
+                    // Provide '0' as default parity digit.
+                    $parityDigit = '0';
+                }
+
+                $code = $parityDigit . $code;
+
+                // Add checksum digit.
+                if (isset ($checksumDigit)) {
+                    $code .= $checksumDigit;
+                } // else { The checksum digit will be calculated and added, later. }
+            }
+        }
+
         // Add zero padding in front
         $code = str_pad($code, $dataLength, '0', STR_PAD_LEFT);
 
@@ -44,16 +112,27 @@ abstract class TypeEanUpcBase implements TypeInterface
         } elseif ($checksumDigit !== intval($code[$dataLength])) {
             // If length of given barcode is same as final length, barcode is including checksum
             // Make sure that checksum is the same as we calculated
-            throw new InvalidCheckDigitException();
+            if ($this->upce && isset ($upce_code)) {
+                // It's possible that parity digit was not provided and the assumed '0' is wrong. Try again with '1'.
+                $parityDigit = '1';
+                $code[0]     = $parityDigit;
+                $checksumDigit = $this->calculateChecksumDigit($code);
+
+                if ($checksumDigit !== intval($code[$dataLength])) {
+                    throw new InvalidCheckDigitException();
+                }
+            } else {
+                throw new InvalidCheckDigitException();
+            }
         }
 
         if ($this->upca || $this->upce) {
             $code = '0' . $code;
             ++$length;
         }
-        
-        if ($this->upce) {
-            // convert UPC-A to UPC-E
+
+        if ($this->upce && !isset ($upce_code)) {
+            // UPC-A code shall be printed as UPC-E code. Convert UPC-A into UPC-E:
             $tmp = substr($code, 4, 3);
             if (($tmp == '000') OR ($tmp == '100') OR ($tmp == '200')) {
                 // manufacturer code ends in 000, 100, or 200
