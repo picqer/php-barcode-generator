@@ -23,10 +23,10 @@ If you want to generate PNG or JPG images, you need the GD library or Imagick in
 ## Usage
 You want a barcode for a specific "type" (for example Code 128 or UPC) in a specific image format (for example PNG or SVG).
 
-> The "type" is a standard that defines which characters you can encode and which bars represent which character. The most used types are [code 128](https://en.wikipedia.org/wiki/Code_128) and [EAN/UPC](https://en.wikipedia.org/wiki/International_Article_Number). Not all characters can be encoded into each barcode type, and not all barcode scanners can read all types.
+- First, encode the string you want the barcode of into a `Barcode` object with one of the barcode types.
+- Then, use one of the renderers to render the image of the bars in the `Barcode` object.
 
-First, encode the string you want the barcode of into a `Barcode` object with one of the barcode types.
-Then, use one of the renderers to render the image of the bars in the `Barcode` object.
+> The "type" is a standard that defines which characters you can encode and which bars represent which character. The most used types are [code 128](https://en.wikipedia.org/wiki/Code_128) and [EAN/UPC](https://en.wikipedia.org/wiki/International_Article_Number). Not all characters can be encoded into each barcode type, and not all barcode scanners can read all types.
 
 ```php
 <?php
