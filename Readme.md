@@ -81,6 +81,7 @@ $renderer = new Picqer\Barcode\Renderers\PngRenderer();
 $renderer->setForegroundColor([255, 0, 0]); // Give a color for the bars, the background is always white. Give it as 3 times 0-255 values for red, green and blue. 
 $renderer->useGd(); // If you have Imagick and GD installed, but want to use GD
 $renderer->useImagick(); // If you have Imagick and GD installed, but want to use Imagick
+
 $renderer->render($barcode, 5, 40); // Width factor (how many pixel wide every bar is), and the height in pixels
 ````
 
