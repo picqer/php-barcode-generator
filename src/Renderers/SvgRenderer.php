@@ -4,28 +4,27 @@ namespace Picqer\Barcode\Renderers;
 
 use Picqer\Barcode\Barcode;
 use Picqer\Barcode\BarcodeBar;
+use Picqer\Barcode\Exceptions\InvalidOptionException;
 
 class SvgRenderer
 {
     protected string $foregroundColor = 'black';
+    protected string $svgType = self::TYPE_SVG_STANDALONE;
+
+    public const TYPE_SVG_STANDALONE = 'standalone';
+    public const TYPE_SVG_INLINE = 'inline';
 
     public function render(Barcode $barcode, float $width = 200, float $height = 30): string
     {
-        // replace table for special characters
-        $repstr = [
-            "\0" => '',
-            '&' => '&amp;',
-            '<' => '&lt;',
-            '>' => '&gt;',
-        ];
-
-//        $width = round(($barcode->getWidth() * $widthFactor), 3);
         $widthFactor = $width / $barcode->getWidth();
 
-        $svg = '<?xml version="1.0" standalone="no" ?>' . PHP_EOL;
-        $svg .= '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' . PHP_EOL;
+        $svg = '';
+        if ($this->svgType === self::TYPE_SVG_STANDALONE) {
+            $svg .= '<?xml version="1.0" standalone="no" ?>' . PHP_EOL;
+            $svg .= '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' . PHP_EOL;
+        }
         $svg .= '<svg width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" version="1.1" xmlns="http://www.w3.org/2000/svg">' . PHP_EOL;
-        $svg .= "\t" . '<desc>' . strtr($barcode->getBarcode(), $repstr) . '</desc>' . PHP_EOL;
+        $svg .= "\t" . '<desc>' . htmlspecialchars($barcode->getBarcode()) . '</desc>' . PHP_EOL;
         $svg .= "\t" . '<g id="bars" fill="' . $this->foregroundColor . '" stroke="none">' . PHP_EOL;
 
         // print bars
@@ -50,8 +49,17 @@ class SvgRenderer
         return $svg;
     }
 
-    public function setForegroundColor(string $color)
+    public function setForegroundColor(string $color): void
     {
         $this->foregroundColor = $color;
+    }
+
+    public function setSvgType(string $svgType): void
+    {
+        if (! in_array($svgType, [self::TYPE_SVG_INLINE, self::TYPE_SVG_STANDALONE])) {
+            throw new InvalidOptionException();
+        }
+
+        $this->svgType = $svgType;
     }
 }

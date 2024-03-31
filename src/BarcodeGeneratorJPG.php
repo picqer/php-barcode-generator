@@ -2,21 +2,51 @@
 
 namespace Picqer\Barcode;
 
-use Imagick;
-
-class BarcodeGeneratorJPG extends BarcodeGeneratorPNG
+class BarcodeGeneratorJPG extends BarcodeGenerator
 {
-    protected function createImagickImageObject(int $width, int $height): Imagick
-    {
-        $image = new Imagick();
-        $image->newImage($width, $height, 'white', 'JPG');
+    protected ?bool $useImagick = null;
 
-        return $image;
+    /**
+     * Return a PNG image representation of barcode (requires GD or Imagick library).
+     *
+     * @param string $barcode code to print
+     * @param BarcodeGenerator::TYPE_* $type (string) type of barcode
+     * @param int $widthFactor Width of a single bar element in pixels.
+     * @param int $height Height of a single bar element in pixels.
+     * @param array $foregroundColor RGB (0-255) foreground color for bar elements (background is transparent).
+     * @return string image data or false in case of error.
+     */
+    public function getBarcode(string $barcode, $type, int $widthFactor = 2, int $height = 30, array $foregroundColor = [0, 0, 0]): string
+    {
+        $barcodeData = $this->getBarcodeData($barcode, $type);
+
+        $renderer = new \Picqer\Barcode\Renderers\JpgRenderer();
+        $renderer->setForegroundColor($foregroundColor);
+
+        if (! is_null($this->useImagick)) {
+            if ($this->useImagick) {
+                $renderer->useImagick();
+            } else {
+                $renderer->useGd();
+            }
+        }
+
+        return $renderer->render($barcodeData, $widthFactor, $height);
     }
 
-    protected function generateGdImage($image)
+    /**
+     * Force the use of Imagick image extension
+     */
+    public function useImagick()
     {
-        imagejpeg($image);
-        imagedestroy($image);
+        $this->useImagick = true;
+    }
+
+    /**
+     * Force the use of the GD image library
+     */
+    public function useGd()
+    {
+        $this->useImagick = false;
     }
 }
