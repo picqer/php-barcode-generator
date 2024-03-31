@@ -59,18 +59,12 @@ file_put_contents('barcode.png', $renderer->render($barcode, 3, 50));
 ```
 
 ## Image renderers
-These are the available renderers:
-```php
-$renderer = new Picqer\Barcode\Renderers\SvgRenderer(); // Vector based SVG
-$renderer = new Picqer\Barcode\Renderers\PngRenderer(); // Pixel based PNG
-$renderer = new Picqer\Barcode\Renderers\JpgRenderer(); // Pixel based JPG
-$renderer = new Picqer\Barcode\Renderers\HtmlRenderer(); // Pixel based HTML
-$renderer = new Picqer\Barcode\Renderers\DynamicHtmlRenderer(); // Vector based HTML (full 'page' width and height)
-```
+Available image renderers: SVG, PNG, JPG and HTML.
 
 Each renderer has their own options. Only the barcode is required, the rest is optional. Here are all the options for each renderers:
 
 ### SVG
+A vector based SVG image. Gives the best quality to print.
 ```php
 $renderer = new Picqer\Barcode\Renderers\SvgRenderer();
 $renderer->setForegroundColor('red'); // Give a color for the bars, the background is always white
