@@ -60,7 +60,7 @@ class TypeITF14 implements TypeInterface
             }
 
             foreach (str_split($pmixed) as $width) {
-                $barcode->addBar(new BarcodeBar($width, 1, $drawBar));
+                $barcode->addBar(new BarcodeBar(intval($width), 1, $drawBar));
                 $drawBar = ! $drawBar;
             }
         }
@@ -73,7 +73,7 @@ class TypeITF14 implements TypeInterface
         $total = 0;
 
         for ($charIndex = 0; $charIndex <= (strlen($code) - 1); $charIndex++) {
-            $integerOfChar = intval($code . substr($charIndex, 1));
+            $integerOfChar = intval($code . substr(strval($charIndex), 1));
             $total += $integerOfChar * (($charIndex === 0 || $charIndex % 2 === 0) ? 3 : 1);
         }
 

@@ -50,7 +50,7 @@ class TypeTelepen implements TypeInterface
         $drawBar = true;
         for ($i = 0; $i < strlen($encoded); ++$i) {
             $barWidth = $encoded[$i];
-            $barcode->addBar(new BarcodeBar($barWidth, 250, $drawBar));
+            $barcode->addBar(new BarcodeBar(intval($barWidth), 250, $drawBar));
             $drawBar = !$drawBar; //flip to other colour
         }
 
@@ -101,7 +101,7 @@ class TypeTelepen implements TypeInterface
             $check_digit = 0;
         }
 
-        $dest .= $this->telepen_lookup_table[ord($check_digit)];
+        $dest .= $this->telepen_lookup_table[ord(strval($check_digit))];
         $dest .= $this->telepen_lookup_table[ord(self::TELEPEN_STOP_CHAR)]; // Stop
 
         return $dest;

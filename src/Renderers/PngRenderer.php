@@ -47,7 +47,7 @@ class PngRenderer
 
     public function render(Barcode $barcode, int $widthFactor = 2, int $height = 30): string
     {
-        $width = round($barcode->getWidth() * $widthFactor);
+        $width = (int)round($barcode->getWidth() * $widthFactor);
 
         if ($this->useImagick) {
             $imagickBarsShape = new ImagickDraw();
@@ -61,11 +61,11 @@ class PngRenderer
         $positionHorizontal = 0;
         /** @var BarcodeBar $bar */
         foreach ($barcode->getBars() as $bar) {
-            $barWidth = round(($bar->getWidth() * $widthFactor), 3);
+            $barWidth = (int)round(($bar->getWidth() * $widthFactor));
 
             if ($bar->isBar() && $barWidth > 0) {
-                $y = round(($bar->getPositionVertical() * $height / $barcode->getHeight()), 3);
-                $barHeight = round(($bar->getHeight() * $height / $barcode->getHeight()), 3);
+                $y = (int)round(($bar->getPositionVertical() * $height / $barcode->getHeight()));
+                $barHeight = (int)round(($bar->getHeight() * $height / $barcode->getHeight()));
 
                 // draw a vertical bar
                 if ($this->useImagick) {

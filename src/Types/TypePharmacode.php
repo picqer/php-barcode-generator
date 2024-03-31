@@ -31,6 +31,6 @@ class TypePharmacode implements TypeInterface
         $seq = substr($seq, 0, -2);
         $seq = strrev($seq);
 
-        return BinarySequenceConverter::convert($code, $seq);
+        return BinarySequenceConverter::convert(strval($code), $seq);
     }
 }

@@ -62,7 +62,7 @@ class TypeInterleaved25Checksum implements TypeInterface
                 } else {
                     $t = false; // space
                 }
-                $w = $seq[$j];
+                $w = intval($seq[$j]);
                 $barcode->addBar(new BarcodeBar($w, 1, $t));
             }
         }
