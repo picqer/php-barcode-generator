@@ -58,13 +58,59 @@ $renderer->setForegroundColor($colorRed);
 file_put_contents('barcode.png', $renderer->render($barcode, 3, 50));
 ```
 
-## Image types
+## Image renderers
+These are the available renderers:
 ```php
 $renderer = new Picqer\Barcode\Renderers\SvgRenderer(); // Vector based SVG
 $renderer = new Picqer\Barcode\Renderers\PngRenderer(); // Pixel based PNG
 $renderer = new Picqer\Barcode\Renderers\JpgRenderer(); // Pixel based JPG
 $renderer = new Picqer\Barcode\Renderers\HtmlRenderer(); // Pixel based HTML
 $renderer = new Picqer\Barcode\Renderers\DynamicHtmlRenderer(); // Vector based HTML (full 'page' width and height)
+```
+
+Each renderer has their own options. Only the barcode is required, the rest is optional. Here are all the options for each renderers:
+
+### SVG
+```php
+$renderer = new Picqer\Barcode\Renderers\SvgRenderer();
+$renderer->setForegroundColor('red'); // Give a color for the bars, the background is always white
+$renderer->setSvgType($renderer::TYPE_SVG_INLINE); // Changes the output to be used inline inside HTML documents, instead of a standalone SVG image (default)
+$renderer->setSvgType($renderer::TYPE_SVG_STANDALONE); // If you want to force the default, create a stand alone SVG image
+
+$renderer->render($barcode, 450.20, 75); // Width and height support floats
+````
+
+### PNG + JPG
+All options for PNG and JPG are the same.
+```php
+$renderer = new Picqer\Barcode\Renderers\PngRenderer();
+$renderer->setForegroundColor([255, 0, 0]); // Give a color for the bars, the background is always white. Give it as 3 times 0-255 values for red, green and blue. 
+$renderer->useGd(); // If you have Imagick and GD installed, but want to use GD
+$renderer->useImagick(); // If you have Imagick and GD installed, but want to use Imagick
+$renderer->render($barcode, 5, 40); // Width factor (how many pixel wide every bar is), and the height in pixels
+````
+
+### HTML
+Gives HTML to use inline in a full HTML document.
+```php
+$renderer = new Picqer\Barcode\Renderers\HtmlRenderer();
+$renderer->setForegroundColor('red'); // Give a color for the bars, the background is always white
+
+$renderer->render($barcode, 450.20, 75); // Width and height support floats
+````
+
+### Dynamic HTML
+Give HTML here the barcode is using the full width and height, to put inside a container/div that has a fixed size.
+```php
+$renderer = new Picqer\Barcode\Renderers\DynamicHtmlRenderer();
+$renderer->setForegroundColor('red'); // Give a color for the bars, the background is always white
+
+$renderer->render($barcode);
+````
+
+You can put the rendered HTML inside a div like this:
+```html
+<div style="width: 400px; height: 75px"><?php echo $renderedBarcode; ?></div>
 ```
 
 ## Accepted barcode types

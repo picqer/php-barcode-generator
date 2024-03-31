@@ -32,7 +32,7 @@ class PngRenderer
     /**
      * Force the use of Imagick image extension
      */
-    public function useImagick()
+    public function useImagick(): void
     {
         $this->useImagick = true;
     }
@@ -40,7 +40,7 @@ class PngRenderer
     /**
      * Force the use of the GD image library
      */
-    public function useGd()
+    public function useGd(): void
     {
         $this->useImagick = false;
     }
@@ -81,14 +81,14 @@ class PngRenderer
             $image = $this->createImagickImageObject($width, $height);
             $image->drawImage($imagickBarsShape);
             return $image->getImageBlob();
+        } else {
+            ob_start();
+            $this->generateGdImage($image);
+            return ob_get_clean();
         }
-
-        ob_start();
-        $this->generateGdImage($image);
-        return ob_get_clean();
     }
 
-    public function setForegroundColor(array $color)
+    public function setForegroundColor(array $color): void
     {
         $this->foregroundColor = $color;
     }
@@ -110,7 +110,7 @@ class PngRenderer
         return $image;
     }
 
-    protected function generateGdImage($image)
+    protected function generateGdImage($image): void
     {
         \imagepng($image);
         \imagedestroy($image);
