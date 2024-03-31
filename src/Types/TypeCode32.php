@@ -13,7 +13,7 @@ use Picqer\Barcode\Exceptions\InvalidLengthException;
  */
 class TypeCode32 extends TypeCode39
 {
-    protected $conversionTable32 = [
+    protected array $conversionTable32 = [
         '0' => '0',
         '1' => '1',
         '2' => '2',

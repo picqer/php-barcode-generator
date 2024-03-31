@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode;
 
+use Picqer\Barcode\Exceptions\UnknownTypeException;
+
 class BarcodeGeneratorHTML extends BarcodeGenerator
 {
     /**
@@ -14,6 +16,7 @@ class BarcodeGeneratorHTML extends BarcodeGenerator
      * @param int $height Height of a single bar element in pixels.
      * @param string $foregroundColor Foreground color for bar elements as '#333' or 'orange' for example (background is transparent).
      * @return string HTML code.
+     * @throws UnknownTypeException
      */
     public function getBarcode(string $barcode, $type, int $widthFactor = 2, int $height = 30, string $foregroundColor = 'black'): string
     {

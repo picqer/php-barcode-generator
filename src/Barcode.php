@@ -14,7 +14,7 @@ class Barcode
         $this->barcode = $barcode;
     }
 
-    public function addBar(BarcodeBar $bar)
+    public function addBar(BarcodeBar $bar): void
     {
         $this->bars[] = $bar;
         $this->width += $bar->getWidth();

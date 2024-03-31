@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode;
 
+use Picqer\Barcode\Exceptions\UnknownTypeException;
+
 class BarcodeGeneratorPNG extends BarcodeGenerator
 {
     protected ?bool $useImagick = null;
@@ -15,6 +17,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
      * @param int $height Height of a single bar element in pixels.
      * @param array $foregroundColor RGB (0-255) foreground color for bar elements (background is transparent).
      * @return string image data or false in case of error.
+     * @throws UnknownTypeException
      */
     public function getBarcode(string $barcode, $type, int $widthFactor = 2, int $height = 30, array $foregroundColor = [0, 0, 0]): string
     {
@@ -37,7 +40,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
     /**
      * Force the use of Imagick image extension
      */
-    public function useImagick()
+    public function useImagick(): void
     {
         $this->useImagick = true;
     }
@@ -45,7 +48,7 @@ class BarcodeGeneratorPNG extends BarcodeGenerator
     /**
      * Force the use of the GD image library
      */
-    public function useGd()
+    public function useGd(): void
     {
         $this->useImagick = false;
     }

@@ -75,11 +75,11 @@ class TypeInterleaved25Checksum implements TypeInterface
         $len = strlen($code);
         $sum = 0;
         for ($i = 0; $i < $len; $i += 2) {
-            $sum += $code[$i];
+            $sum += intval($code[$i]);
         }
         $sum *= 3;
         for ($i = 1; $i < $len; $i += 2) {
-            $sum += ($code[$i]);
+            $sum += intval($code[$i]);
         }
         $r = $sum % 10;
         if ($r > 0) {

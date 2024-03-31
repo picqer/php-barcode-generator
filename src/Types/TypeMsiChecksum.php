@@ -17,7 +17,7 @@ use Picqer\Barcode\Helpers\BinarySequenceConverter;
 
 class TypeMsiChecksum implements TypeInterface
 {
-    protected $checksum = true;
+    protected bool $checksum = true;
 
     public function getBarcode(string $code): Barcode
     {

@@ -211,7 +211,7 @@ abstract class TypeEanUpcBase implements TypeInterface
         // calculate check digit
         $sum_a = 0;
         for ($i = 1; $i < $this->length - 1; $i += 2) {
-            $sum_a += $code[$i];
+            $sum_a += intval($code[$i]);
         }
         if ($this->length > 12) {
             $sum_a *= 3;

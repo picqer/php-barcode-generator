@@ -18,9 +18,9 @@ use Picqer\Barcode\Exceptions\InvalidLengthException;
 
 class TypeCode128 implements TypeInterface
 {
-    protected $type = null;
+    protected ?string $type = null;
 
-    protected $conversionTable = [
+    protected array $conversionTable = [
         '212222', /* 00 */
         '222122', /* 01 */
         '222221', /* 02 */
@@ -383,7 +383,7 @@ class TypeCode128 implements TypeInterface
      * @return array sequence
      * @protected
      */
-    protected function get128ABsequence($code)
+    protected function get128ABsequence($code): array
     {
         $len = strlen($code);
         $sequence = [];

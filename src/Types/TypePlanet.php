@@ -13,7 +13,7 @@ namespace Picqer\Barcode\Types;
 
 class TypePlanet extends TypePostnet
 {
-    protected $barlen = [
+    protected array $barlen = [
         0 => [1, 1, 2, 2, 2],
         1 => [2, 2, 2, 1, 1],
         2 => [2, 2, 1, 2, 1],

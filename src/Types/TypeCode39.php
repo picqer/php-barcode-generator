@@ -14,10 +14,10 @@ use Picqer\Barcode\Exceptions\InvalidLengthException;
 
 class TypeCode39 implements TypeInterface
 {
-    protected $extended = false;
-    protected $checksum = false;
+    protected bool $extended = false;
+    protected bool $checksum = false;
 
-    protected $conversionTable = [
+    protected array $conversionTable = [
         '0' => '111331311',
         '1' => '311311113',
         '2' => '113311113',
@@ -113,10 +113,11 @@ class TypeCode39 implements TypeInterface
      * Encode a string to be used for CODE 39 Extended mode.
      *
      * @param string $code code to represent.
-     * @return bool|string encoded string.
+     * @return string encoded string.
      * @protected
+     * @throws InvalidCharacterException
      */
-    protected function encode_code39_ext($code)
+    protected function encode_code39_ext(string $code): string
     {
         $encode = [
             chr(0) => '%U',

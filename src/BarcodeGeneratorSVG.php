@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode;
 
+use Picqer\Barcode\Exceptions\UnknownTypeException;
+
 class BarcodeGeneratorSVG extends BarcodeGenerator
 {
     /**
@@ -14,6 +16,7 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
      * @param $foregroundColor (string) Foreground color (in SVG format) for bar elements (background is transparent).
      * @return string SVG code.
      * @public
+     * @throws UnknownTypeException
      */
     public function getBarcode(string $barcode, $type, float $widthFactor = 2, float $height = 30, string $foregroundColor = 'black'): string
     {

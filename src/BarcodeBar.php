@@ -2,7 +2,7 @@
 
 namespace Picqer\Barcode;
 
-class BarcodeBar
+readonly class BarcodeBar
 {
     protected int $width;
     protected int $height;

@@ -15,7 +15,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 class TypeCode93 implements TypeInterface
 {
-    protected $conversionTable = [
+    protected array $conversionTable = [
         48 => '131112', // 0
         49 => '111213', // 1
         50 => '111312', // 2
@@ -246,7 +246,7 @@ class TypeCode93 implements TypeInterface
      * @return string checksum code.
      * @protected
      */
-    protected function checksum_code93($code)
+    protected function checksum_code93(string $code): string
     {
         $chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%', 'a', 'b', 'c', 'd'];
 
@@ -280,8 +280,6 @@ class TypeCode93 implements TypeInterface
         $check %= 47;
         $k = $chars[$check];
 
-        $checksum = $c . $k;
-
-        return $checksum;
+        return $c . $k;
     }
 }
