@@ -14,7 +14,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 class TypeInterleaved25Checksum implements TypeInterface
 {
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $chr = [];
         $chr['0'] = '11221';

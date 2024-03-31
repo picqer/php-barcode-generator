@@ -34,7 +34,7 @@ use Picqer\Barcode\Exceptions\BarcodeException;
 
 class TypeIntelligentMailBarcode implements TypeInterface
 {
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $asc_chr = [
             4,

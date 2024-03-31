@@ -13,7 +13,7 @@ class TypeITF14 implements TypeInterface
      * @throws InvalidLengthException
      * @throws InvalidCharacterException
      */
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $chr = [];
         $chr['0'] = '11221';

@@ -29,7 +29,7 @@ class TypePostnet implements TypeInterface
         9 => [2, 1, 2, 1, 1]
     ];
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $code = str_replace(['-', ' '], '', $code);
         $len = strlen($code);

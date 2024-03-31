@@ -16,7 +16,7 @@ class TypeStandard2of5 implements TypeInterface
 {
     protected $checksum = false;
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $chr['0'] = '10101110111010';
         $chr['1'] = '11101010101110';

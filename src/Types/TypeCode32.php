@@ -48,7 +48,7 @@ class TypeCode32 extends TypeCode39
         '31' => 'Z'
     ];
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         // Validate code 32.
         $stringLength = strlen($code);
@@ -85,7 +85,7 @@ class TypeCode32 extends TypeCode39
         }
 
         // Return barcode data for code 39.
-        return parent::getBarcodeData($code39);
+        return parent::getBarcode($code39);
     }
 
 

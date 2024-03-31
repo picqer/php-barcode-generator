@@ -66,7 +66,7 @@ class TypeCode93 implements TypeInterface
         42 => '111141', // start-stop
     ];
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $encode = [
             chr(0) => 'bU',

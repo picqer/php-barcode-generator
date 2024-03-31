@@ -36,7 +36,7 @@ class TypeCodabar implements TypeInterface
         'D' => '11122211'
     ];
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $barcode = new Barcode($code);
 

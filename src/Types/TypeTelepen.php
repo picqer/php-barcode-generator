@@ -38,7 +38,7 @@ class TypeTelepen implements TypeInterface
         $this->createTelepenConversionTable();
     }
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         /* The stream we get from the telepen output gives us the 
          * width of alternating black/white stripes

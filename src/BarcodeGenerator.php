@@ -105,7 +105,7 @@ abstract class BarcodeGenerator
     {
         $barcodeDataBuilder = $this->createDataBuilderForType($type);
 
-        return $barcodeDataBuilder->getBarcodeData($code);
+        return $barcodeDataBuilder->getBarcode($code);
     }
 
     protected function createDataBuilderForType(string $type)

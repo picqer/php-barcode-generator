@@ -12,7 +12,7 @@ use Picqer\Barcode\Helpers\BinarySequenceConverter;
 
 class TypePharmacode implements TypeInterface
 {
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $code = intval($code);
 

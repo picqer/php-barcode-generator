@@ -15,7 +15,7 @@ use Picqer\Barcode\Exceptions\InvalidLengthException;
 
 class TypePharmacodeTwoCode implements TypeInterface
 {
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $code = intval($code);
 

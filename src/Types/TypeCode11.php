@@ -28,7 +28,7 @@ class TypeCode11 implements TypeInterface
         'S' => '112211',
     ];
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $barcode = new Barcode($code);
 

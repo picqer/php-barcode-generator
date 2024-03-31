@@ -17,7 +17,7 @@ class TypeRms4cc implements TypeInterface
 {
     protected $kix = false;
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         // bar mode
         // 1 = pos 1, length 2

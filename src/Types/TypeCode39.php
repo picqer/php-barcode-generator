@@ -64,7 +64,7 @@ class TypeCode39 implements TypeInterface
         '*' => '131131311',
     ];
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         if (strlen(trim($code)) === 0) {
             throw new InvalidLengthException('You should provide a barcode string.');

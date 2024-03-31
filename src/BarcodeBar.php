@@ -4,10 +4,10 @@ namespace Picqer\Barcode;
 
 class BarcodeBar
 {
-    protected $width;
-    protected $height;
-    protected $positionVertical;
-    protected $type;
+    protected int $width;
+    protected int $height;
+    protected int $positionVertical;
+    protected int $type;
 
     const TYPE_BAR = 1;
     const TYPE_SPACING = 0;
