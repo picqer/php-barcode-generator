@@ -178,6 +178,30 @@ file_put_contents('barcode.svg', (new Picqer\Barcode\Renderers\SvgRenderer())->r
 ## Upgrading to v3
 There is no need to change anything when upgrading from v2 to v3. Above you find the new preferred way of using this library since v3. But the old style still works.
 
+If you want to convert to the new style, here is an example:
+```php
+// Old style
+$generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+echo $generator->getBarcode('081231723897', $generator::TYPE_CODE_128);
+
+// New style
+$barcode = (new Picqer\Barcode\Types\TypeCode128())->getBarcode('081231723897');
+$renderer = new Picqer\Barcode\Renderers\SvgRenderer();
+echo $renderer->render($barcode);
+```
+
+The width in the SVG and HTML renderer is now the width of the end result, instead of the widthFactor. If you want to keep dynamic widths, you can get the width of the encoded Barcode and multiply it by the widthFactor to get the same result as before. See here an example for a widthFactor of 2:
+```php
+// Old style
+$generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+echo $generator->getBarcode('081231723897', $generator::TYPE_CODE_128, 2. 30);
+
+// New style
+$barcode = (new Picqer\Barcode\Types\TypeCode128())->getBarcode('081231723897');
+$renderer = new Picqer\Barcode\Renderers\SvgRenderer();
+echo $renderer->render($barcode, $barcode->getWidth() * 2, 30);
+```
+
 ---
 
 ## Previous style generators

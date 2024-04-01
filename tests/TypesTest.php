@@ -1,29 +1,36 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
+use Picqer\Barcode\Renderers\SvgRenderer;
+use Picqer\Barcode\Types\TypeCode39;
+use Picqer\Barcode\Types\TypeCode39Checksum;
+use Picqer\Barcode\Types\TypeCode39Extended;
 
 class TypesTest extends TestCase
 {
     public function test_generator_can_generate_code_39_barcode()
     {
-        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-        $result = $generator->getBarcode('1234567890ABC', $generator::TYPE_CODE_39);
+        $barcode = (new TypeCode39())->getBarcode('1234567890ABC');
+        $renderer = new SvgRenderer();
+        $result = $renderer->render($barcode, $barcode->getWidth() * 2);
 
         $this->assertStringEqualsFile('tests/verified-files/TypeCode39-1234567890ABC.svg', $result);
     }
 
     public function test_generator_can_generate_code_39_checksum_barcode()
     {
-        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-        $result = $generator->getBarcode('1234567890ABC', $generator::TYPE_CODE_39_CHECKSUM);
+        $barcode = (new TypeCode39Checksum())->getBarcode('1234567890ABC');
+        $renderer = new SvgRenderer();
+        $result = $renderer->render($barcode, $barcode->getWidth() * 2);
 
         $this->assertGreaterThan(100, strlen($result));
     }
 
     public function test_generator_can_generate_code_39_extended_barcode()
     {
-        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-        $result = $generator->getBarcode('1234567890abcABC', $generator::TYPE_CODE_39E);
+        $barcode = (new TypeCode39Extended())->getBarcode('1234567890abcABC');
+        $renderer = new SvgRenderer();
+        $result = $renderer->render($barcode, $barcode->getWidth() * 2);
 
         $this->assertStringEqualsFile('tests/verified-files/TypeCode39Extended-1234567890abcABC.svg', $result);
     }
