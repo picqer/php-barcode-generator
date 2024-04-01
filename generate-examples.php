@@ -1,9 +1,5 @@
 <?php
 
-function getSaveFilename($value) {
-    return preg_replace('/[^a-zA-Z0-9_ \-+]/s', '-', $value);
-}
-
 require('vendor/autoload.php');
 require(__DIR__ . '/tests/VerifiedBarcodeTest.php');
 $verifiedFiles = VerifiedBarcodeTest::$supportedBarcodes;
@@ -11,12 +7,18 @@ $verifiedFiles = VerifiedBarcodeTest::$supportedBarcodes;
 $result = [];
 $result[] = '# Examples of supported barcodes';
 $result[] = 'These are examples of supported barcodes with this library.';
+$result[] = 'All types can be found in the src/Types directory.';
 $result[] = '';
 
 foreach ($verifiedFiles as $verifiedFile) {
-    $result[] = '### ' . $verifiedFile['type'];
+    $result[] = '### ' . substr($verifiedFile['type'], strrpos($verifiedFile['type'], '\\') + 1);
     foreach ($verifiedFile['barcodes'] as $barcode) {
-        $result[] = sprintf('![Barcode %s as %s](tests/verified-files/%s.svg)', $barcode, $verifiedFile['type'], getSaveFilename($verifiedFile['type'] . '-' . $barcode));
+        $result[] = sprintf(
+            '![Barcode %s as %s](tests/verified-files/%s.svg)',
+            $barcode,
+            $verifiedFile['type'],
+            Picqer\Barcode\Helpers\StringHelpers::getSafeFilenameFrom($verifiedFile['type'] . '-' . $barcode)
+        );
     }
 }
 

@@ -16,6 +16,8 @@ class TypePharmacodeTwoCode implements TypeInterface
 {
     public function getBarcode(string $code): Barcode
     {
+        $originalCode = $code;
+
         $code = intval($code);
 
         if ($code < 1) {
@@ -45,7 +47,7 @@ class TypePharmacodeTwoCode implements TypeInterface
 
         $seq = strrev($seq);
 
-        $barcode = new Barcode(strval($code));
+        $barcode = new Barcode($originalCode);
 
         for ($i = 0; $i < strlen($seq); ++$i) {
             switch ($seq[$i]) {
