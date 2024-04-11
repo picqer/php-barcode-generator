@@ -16,7 +16,7 @@ use Picqer\Barcode\BarcodeBar;
 
 class TypePostnet implements TypeInterface
 {
-    protected $barlen = [
+    protected array $barlen = [
         0 => [2, 2, 1, 1, 1],
         1 => [1, 1, 1, 2, 2],
         2 => [1, 1, 2, 1, 2],
@@ -29,7 +29,7 @@ class TypePostnet implements TypeInterface
         9 => [2, 1, 2, 1, 1]
     ];
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $code = str_replace(['-', ' '], '', $code);
         $len = strlen($code);
@@ -49,20 +49,20 @@ class TypePostnet implements TypeInterface
         $len = strlen($code);
 
         // start bar
-        $barcode->addBar(new BarcodeBar(1, 2, 1));
-        $barcode->addBar(new BarcodeBar(1, 2, 0));
+        $barcode->addBar(new BarcodeBar(1, 2, true));
+        $barcode->addBar(new BarcodeBar(1, 2, false));
 
         for ($i = 0; $i < $len; ++$i) {
             for ($j = 0; $j < 5; ++$j) {
                 $h = $this->barlen[$code[$i]][$j];
-                $p = floor(1 / $h);
-                $barcode->addBar(new BarcodeBar(1, $h, 1, $p));
-                $barcode->addBar(new BarcodeBar(1, 2, 0));
+                $p = (int)floor(1 / $h);
+                $barcode->addBar(new BarcodeBar(1, (int)$h, true, $p));
+                $barcode->addBar(new BarcodeBar(1, 2, false));
             }
         }
 
         // end bar
-        $barcode->addBar(new BarcodeBar(1, 2, 1));
+        $barcode->addBar(new BarcodeBar(1, 2, true));
 
         return $barcode;
     }

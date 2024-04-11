@@ -13,5 +13,5 @@ namespace Picqer\Barcode\Types;
 
 class TypeMsi extends TypeMsiChecksum
 {
-    protected $checksum = false;
+    protected bool $checksum = false;
 }

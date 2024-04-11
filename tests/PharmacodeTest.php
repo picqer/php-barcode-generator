@@ -10,6 +10,6 @@ class PharmacodeTest extends TestCase
 
         $this->expectException(Picqer\Barcode\Exceptions\InvalidLengthException::class);
 
-        $pharmacode->getBarcodeData('0');
+        $pharmacode->getBarcode('0');
     }
 }

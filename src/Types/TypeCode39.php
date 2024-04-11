@@ -14,10 +14,10 @@ use Picqer\Barcode\Exceptions\InvalidLengthException;
 
 class TypeCode39 implements TypeInterface
 {
-    protected $extended = false;
-    protected $checksum = false;
+    protected bool $extended = false;
+    protected bool $checksum = false;
 
-    protected $conversionTable = [
+    protected array $conversionTable = [
         '0' => '111331311',
         '1' => '311311113',
         '2' => '113311113',
@@ -64,7 +64,7 @@ class TypeCode39 implements TypeInterface
         '*' => '131131311',
     ];
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         if (strlen(trim($code)) === 0) {
             throw new InvalidLengthException('You should provide a barcode string.');
@@ -115,8 +115,9 @@ class TypeCode39 implements TypeInterface
      * @param string $code code to represent.
      * @return string encoded string.
      * @protected
+     * @throws InvalidCharacterException
      */
-    protected function encode_code39_ext($code)
+    protected function encode_code39_ext(string $code): string
     {
         $encode = [
             chr(0) => '%U',

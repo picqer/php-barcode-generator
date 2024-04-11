@@ -34,7 +34,7 @@ use Picqer\Barcode\Exceptions\BarcodeException;
 
 class TypeIntelligentMailBarcode implements TypeInterface
 {
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $asc_chr = [
             4,
@@ -333,9 +333,9 @@ class TypeIntelligentMailBarcode implements TypeInterface
                 throw new BarcodeException('Routing code unknown');
         }
 
-        $binary_code = bcmul($binary_code, 10);
+        $binary_code = bcmul($binary_code, strval(10));
         $binary_code = bcadd($binary_code, $tracking_number[0]);
-        $binary_code = bcmul($binary_code, 5);
+        $binary_code = bcmul($binary_code, strval(5));
         $binary_code = bcadd($binary_code, $tracking_number[1]);
         $binary_code .= substr($tracking_number, 2, 18);
 
@@ -360,11 +360,11 @@ class TypeIntelligentMailBarcode implements TypeInterface
         // convert binary data to codewords
         $codewords = [];
         $data = $this->hex_to_dec($binary_code_102bit);
-        $codewords[0] = bcmod($data, 636) * 2;
-        $data = bcdiv($data, 636);
+        $codewords[0] = bcmod($data, strval(636)) * 2;
+        $data = bcdiv($data, strval(636));
         for ($i = 1; $i < 9; ++$i) {
-            $codewords[$i] = bcmod($data, 1365);
-            $data = bcdiv($data, 1365);
+            $codewords[$i] = bcmod($data, strval(1365));
+            $data = bcdiv($data, strval(1365));
         }
         $codewords[9] = $data;
         if (($fcs >> 10) == 1) {
@@ -440,7 +440,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
         $hex = [];
 
         while ($number > 0) {
-            array_push($hex, strtoupper(dechex(bcmod($number, '16'))));
+            $hex[] = strtoupper(dechex(intval(bcmod(strval($number), '16'))));
             $number = bcdiv($number, '16', 0);
         }
         $hex = array_reverse($hex);
@@ -501,8 +501,8 @@ class TypeIntelligentMailBarcode implements TypeInterface
         $bitval = 1;
         $len = strlen($hex);
         for ($pos = ($len - 1); $pos >= 0; --$pos) {
-            $dec = bcadd($dec, bcmul(hexdec($hex[$pos]), $bitval));
-            $bitval = bcmul($bitval, 16);
+            $dec = bcadd($dec, bcmul(strval(hexdec($hex[$pos])), strval($bitval)));
+            $bitval = bcmul($bitval, '16');
         }
 
         return $dec;
