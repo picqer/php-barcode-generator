@@ -113,7 +113,7 @@ class TypeCode39 implements TypeInterface
      * Encode a string to be used for CODE 39 Extended mode.
      *
      * @param string $code code to represent.
-     * @return bool|string encoded string.
+     * @return string encoded string.
      * @protected
      */
     protected function encode_code39_ext($code)
