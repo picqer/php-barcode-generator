@@ -236,7 +236,7 @@ abstract class TypeEanUpcBase implements TypeInterface
         ];
 
         $seq = '101'; // left guard bar
-        if ($this->upce) {
+        if ($this->upce && isset ($upce_code)) {
             $barcode = new Barcode($upce_code);
             $p = $upce_parities[$code[1]][$checksumDigit];
             for ($i = 0; $i < 6; ++$i) {
