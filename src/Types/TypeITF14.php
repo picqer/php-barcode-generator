@@ -73,8 +73,8 @@ class TypeITF14 implements TypeInterface
         $total = 0;
 
         for ($charIndex = 0; $charIndex <= (strlen($code) - 1); $charIndex++) {
-            $integerOfChar = intval($code . substr($charIndex, 1));
-            $total += $integerOfChar * (($charIndex === 0 || $charIndex % 2 === 0) ? 3 : 1);
+            $integerOfChar = intval($code[$charIndex]);
+            $total += $integerOfChar * ($charIndex % 2 === 0 ? 3 : 1);
         }
 
         $checksum = 10 - ($total % 10);
