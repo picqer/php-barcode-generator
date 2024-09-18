@@ -25,7 +25,7 @@ class TypeUpcExtension2 implements TypeInterface
 
         // Calculate check digit
         if ($len == 2) {
-            $r = $code % 4;
+            $r = (int)$code % 4;
         } elseif ($len == 5) {
             $r = (3 * intval($code[0] . $code[2] . $code[4])) + (9 * intval($code[1] . $code[3]));
             $r %= 10;
