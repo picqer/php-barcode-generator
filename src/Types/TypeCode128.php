@@ -214,7 +214,7 @@ class TypeCode128 implements TypeInterface
                 // get numeric sequences (if any)
                 $numseq = [];
                 preg_match_all('/([0-9]{4,})/', $code, $numseq, PREG_OFFSET_CAPTURE);
-                if (isset($numseq[1]) AND ! empty($numseq[1])) {
+                if (! empty($numseq[1])) {
                     $end_offset = 0;
                     foreach ($numseq[1] as $val) {
                         $offset = $val[1];
@@ -390,7 +390,7 @@ class TypeCode128 implements TypeInterface
         // get A sequences (if any)
         $numseq = [];
         preg_match_all('/([\x00-\x1f])/', $code, $numseq, PREG_OFFSET_CAPTURE);
-        if (isset($numseq[1]) AND ! empty($numseq[1])) {
+        if (empty($numseq[1])) {
             $end_offset = 0;
             foreach ($numseq[1] as $val) {
                 $offset = $val[1];
