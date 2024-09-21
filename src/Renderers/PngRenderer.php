@@ -12,6 +12,8 @@ use Picqer\Barcode\Exceptions\BarcodeException;
 class PngRenderer
 {
     protected array $foregroundColor = [0, 0, 0];
+    protected ?array $backgroundColor = null;
+
     protected bool $useImagick;
 
     /**
@@ -52,6 +54,7 @@ class PngRenderer
         $width = (int)round($barcode->getWidth() * $widthFactor);
 
         if ($this->useImagick) {
+            $image = $this->createImagickImageObject($width, $height);
             $imagickBarsShape = new ImagickDraw();
             $imagickBarsShape->setFillColor(new ImagickPixel('rgb(' . implode(',', $this->foregroundColor) .')'));
         } else {
@@ -80,7 +83,6 @@ class PngRenderer
         }
 
         if ($this->useImagick) {
-            $image = $this->createImagickImageObject($width, $height);
             $image->drawImage($imagickBarsShape);
             return $image->getImageBlob();
         } else {
@@ -90,18 +92,34 @@ class PngRenderer
         }
     }
 
+    // Use RGB color definitions, like [0, 0, 0] or [255, 255, 255]
     public function setForegroundColor(array $color): self
     {
         $this->foregroundColor = $color;
-        
+        return $this;
+    }
+
+    // Use RGB color definitions, like [0, 0, 0] or [255, 255, 255]
+    // If no color is set, the background will be transparent
+    public function setBackgroundColor(?array $color): self
+    {
+        $this->backgroundColor = $color;
         return $this;
     }
 
     protected function createGdImageObject(int $width, int $height)
     {
         $image = \imagecreate($width, $height);
-        $colorBackground = \imagecolorallocate($image, 255, 255, 255);
-        \imagecolortransparent($image, $colorBackground);
+
+        if ($this->backgroundColor !== null) {
+            // Colored background
+            $backgroundColor = \imagecolorallocate($image, $this->backgroundColor[0], $this->backgroundColor[1], $this->backgroundColor[2]);
+            \imagefill($image, 0, 0, $backgroundColor);
+        } else {
+            // Use transparent background
+            $backgroundColor = \imagecolorallocate($image, 255, 255, 255);
+            \imagecolortransparent($image, $backgroundColor);
+        }
 
         return $image;
     }
@@ -109,7 +127,14 @@ class PngRenderer
     protected function createImagickImageObject(int $width, int $height): Imagick
     {
         $image = new Imagick();
-        $image->newImage($width, $height, 'none', 'PNG');
+        if ($this->backgroundColor !== null) {
+            // Colored background
+            $backgroundColor = new ImagickPixel('rgb(' . implode(',', $this->backgroundColor) . ')');
+        } else {
+            // Use transparent background
+            $backgroundColor = new ImagickPixel('none');
+        }
+        $image->newImage($width, $height, $backgroundColor, 'PNG');
 
         return $image;
     }

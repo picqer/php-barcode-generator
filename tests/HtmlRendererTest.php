@@ -23,4 +23,15 @@ class HtmlRendererTest extends TestCase
 
         $this->assertStringEqualsFile('tests/verified-files/12345678903-imb.html', $generated);
     }
+
+    public function test_html_barcode_generator_with_background()
+    {
+        $barcode = (new Picqer\Barcode\Types\TypeCode128())->getBarcode('081231723897');
+
+        $renderer = new Picqer\Barcode\Renderers\HtmlRenderer();
+        $renderer->setBackgroundColor('red');
+        $generated = $renderer->render($barcode, $barcode->getWidth() * 2);
+
+        $this->assertStringEqualsFile('tests/verified-files/081231723897-code128-red-background.html', $generated);
+    }
 }

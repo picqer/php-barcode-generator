@@ -9,6 +9,7 @@ use Picqer\Barcode\Exceptions\InvalidOptionException;
 class SvgRenderer
 {
     protected string $foregroundColor = 'black';
+    protected ?string $backgroundColor = null;
     protected string $svgType = self::TYPE_SVG_STANDALONE;
 
     public const TYPE_SVG_STANDALONE = 'standalone';
@@ -25,6 +26,12 @@ class SvgRenderer
         }
         $svg .= '<svg width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" version="1.1" xmlns="http://www.w3.org/2000/svg">' . PHP_EOL;
         $svg .= "\t" . '<desc>' . htmlspecialchars($barcode->getBarcode()) . '</desc>' . PHP_EOL;
+
+        // Add background rectangle if backgroundColor is set
+        if ($this->backgroundColor !== null) {
+            $svg .= "\t" . '<rect id="background" width="100%" height="100%" fill="' . $this->backgroundColor . '"/>' . PHP_EOL;
+        }
+
         $svg .= "\t" . '<g id="bars" fill="' . $this->foregroundColor . '" stroke="none">' . PHP_EOL;
 
         // print bars
@@ -52,6 +59,12 @@ class SvgRenderer
     public function setForegroundColor(string $color): self
     {
         $this->foregroundColor = $color;
+        return $this;
+    }
+
+    public function setBackgroundColor(?string $color): self
+    {
+        $this->backgroundColor = $color;
         return $this;
     }
 

@@ -14,8 +14,15 @@ $barcode = $typeEncoderEan13->getBarcode('081231723897');
 file_put_contents('tests/verified-files/081231723897-ean13.svg', $svgRenderer->render($barcode, $barcode->getWidth() * 2));
 file_put_contents('tests/verified-files/081231723897-ean13-fractional-width.svg', $svgRenderer->render($barcode, $barcode->getWidth() * 0.25, 25.75));
 
+$svgRendererRed = new Picqer\Barcode\Renderers\SvgRenderer();
+$svgRendererRed->setBackgroundColor('red');
+file_put_contents('tests/verified-files/081231723897-ean13-red-background.svg', $svgRendererRed->render($barcode, $barcode->getWidth() * 2));
+
 $barcode = $typeEncoderCode128->getBarcode('081231723897');
 file_put_contents('tests/verified-files/081231723897-code128.html', $htmlRenderer->render($barcode, $barcode->getWidth() * 2));
+$htmlRendererRed = new Picqer\Barcode\Renderers\HtmlRenderer();
+$htmlRendererRed->setBackgroundColor('red');
+file_put_contents('tests/verified-files/081231723897-code128-red-background.html', $htmlRendererRed->render($barcode, $barcode->getWidth() * 2));
 
 $barcode = $typeEncoderIMB->getBarcode('12345678903');
 file_put_contents('tests/verified-files/12345678903-imb.html', $htmlRenderer->render($barcode, $barcode->getWidth() * 2));
