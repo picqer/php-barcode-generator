@@ -2,6 +2,7 @@
 
 namespace Picqer\Barcode;
 
+// Represents a single bar or space in a barcode
 readonly class BarcodeBar
 {
     protected int $width;

@@ -36,8 +36,10 @@ class HtmlRenderer
         return $html;
     }
 
-    public function setForegroundColor(string $color): void
+    public function setForegroundColor(string $color): self
     {
         $this->foregroundColor = $color;
+        
+        return $this;
     }
 }

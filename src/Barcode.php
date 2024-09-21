@@ -14,6 +14,7 @@ class Barcode
         $this->barcode = $barcode;
     }
 
+    // Add a bar to the barcode, either a bar or a space, at the right side of the barcode
     public function addBar(BarcodeBar $bar): void
     {
         $this->bars[] = $bar;

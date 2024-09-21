@@ -32,17 +32,19 @@ class PngRenderer
     /**
      * Force the use of Imagick image extension
      */
-    public function useImagick(): void
+    public function useImagick(): self
     {
         $this->useImagick = true;
+        return $this;
     }
 
     /**
      * Force the use of the GD image library
      */
-    public function useGd(): void
+    public function useGd(): self
     {
         $this->useImagick = false;
+        return $this;
     }
 
     public function render(Barcode $barcode, int $widthFactor = 2, int $height = 30): string
@@ -88,9 +90,11 @@ class PngRenderer
         }
     }
 
-    public function setForegroundColor(array $color): void
+    public function setForegroundColor(array $color): self
     {
         $this->foregroundColor = $color;
+        
+        return $this;
     }
 
     protected function createGdImageObject(int $width, int $height)

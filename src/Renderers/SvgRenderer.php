@@ -49,17 +49,19 @@ class SvgRenderer
         return $svg;
     }
 
-    public function setForegroundColor(string $color): void
+    public function setForegroundColor(string $color): self
     {
         $this->foregroundColor = $color;
+        return $this;
     }
 
-    public function setSvgType(string $svgType): void
+    public function setSvgType(string $svgType): self
     {
         if (! in_array($svgType, [self::TYPE_SVG_INLINE, self::TYPE_SVG_STANDALONE])) {
             throw new InvalidOptionException();
         }
 
         $this->svgType = $svgType;
+        return $this;
     }
 }
