@@ -318,13 +318,13 @@ class TypeCode39 implements TypeInterface
             '%'
         ];
 
-        $sum = 0;
-        for ($i = 0; $i < strlen($code); ++$i) {
-            $k = array_keys($chars, $code[$i]);
-            $sum += $k[0];
+        $checksum = 0;
+        for ($index = 0; $index < strlen($code); ++$index) {
+            $charPosition = array_keys($chars, $code[$index]);
+            $checksum += $charPosition[0];
         }
-        $j = ($sum % 43);
+        $checksumIndex = ($checksum % 43);
 
-        return $chars[$j];
+        return $chars[$checksumIndex];
     }
 }

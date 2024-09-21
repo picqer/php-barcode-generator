@@ -251,35 +251,35 @@ class TypeCode93 implements TypeInterface
         $chars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '-', '.', ' ', '$', '/', '+', '%', 'a', 'b', 'c', 'd'];
 
         // calculate check digit C
-        $len = strlen($code);
-        $p = 1;
-        $check = 0;
-        for ($i = ($len - 1); $i >= 0; --$i) {
-            $k = array_keys($chars, $code[$i]);
-            $check += ($k[0] * $p);
-            ++$p;
-            if ($p > 20) {
-                $p = 1;
+        $codeLength = strlen($code);
+        $weight = 1;
+        $checksum = 0;
+        for ($i = ($codeLength - 1); $i >= 0; --$i) {
+            $charIndex = array_keys($chars, $code[$i]);
+            $checksum += ($charIndex[0] * $weight);
+            ++$weight;
+            if ($weight > 20) {
+                $weight = 1;
             }
         }
-        $check %= 47;
-        $c = $chars[$check];
-        $code .= $c;
+        $checksumC = $checksum % 47;
+        $checkDigitC = $chars[$checksumC];
+        $codeWithC = $code . $checkDigitC;
 
         // calculate check digit K
-        $p = 1;
-        $check = 0;
-        for ($i = $len; $i >= 0; --$i) {
-            $k = array_keys($chars, $code[$i]);
-            $check += ($k[0] * $p);
-            ++$p;
-            if ($p > 15) {
-                $p = 1;
+        $weight = 1;
+        $checksum = 0;
+        for ($i = $codeLength; $i >= 0; --$i) {
+            $charIndex = array_keys($chars, $codeWithC[$i]);
+            $checksum += ($charIndex[0] * $weight);
+            ++$weight;
+            if ($weight > 15) {
+                $weight = 1;
             }
         }
-        $check %= 47;
-        $k = $chars[$check];
+        $checksumK = $checksum % 47;
+        $checkDigitK = $chars[$checksumK];
 
-        return $c . $k;
+        return $checkDigitC . $checkDigitK;
     }
 }
