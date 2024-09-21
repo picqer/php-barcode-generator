@@ -8,12 +8,13 @@ use Picqer\Barcode\BarcodeBar;
 class HtmlRenderer
 {
     protected string $foregroundColor = 'black';
+    protected ?string $backgroundColor = null;
 
     public function render(Barcode $barcode, float $width = 200, float $height = 30): string
     {
         $widthFactor = $width / $barcode->getWidth();
 
-        $html = '<div style="font-size:0;position:relative;width:' . $width . 'px;height:' . ($height) . 'px;">' . PHP_EOL;
+        $html = '<div style="font-size:0;position:relative;width:' . $width . 'px;height:' . ($height) . 'px;' . ($this->backgroundColor ? 'background-color:' . $this->backgroundColor . ';' : '') . '">' . PHP_EOL;
 
         $positionHorizontal = 0;
         /** @var BarcodeBar $bar */
@@ -36,10 +37,17 @@ class HtmlRenderer
         return $html;
     }
 
+    // Use HTML color definitions, like 'red' or '#ff0000'
     public function setForegroundColor(string $color): self
     {
         $this->foregroundColor = $color;
-        
+        return $this;
+    }
+
+    // Use HTML color definitions, like 'red' or '#ff0000'
+    public function setBackgroundColor(?string $color): self
+    {
+        $this->backgroundColor = $color;
         return $this;
     }
 }

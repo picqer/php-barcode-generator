@@ -10,10 +10,11 @@ class DynamicHtmlRenderer
     protected const WIDTH_PRECISION = 6;
 
     protected string $foregroundColor = 'black';
+    protected ?string $backgroundColor = null;
 
     public function render(Barcode $barcode): string
     {
-        $html = '<div style="font-size:0;position:relative;width:100%;height:100%">' . PHP_EOL;
+        $html = '<div style="font-size:0;position:relative;width:100%;height:100%' . ($this->backgroundColor ? ';background-color:' . $this->backgroundColor : '') . '">' . PHP_EOL;
 
         $positionHorizontal = 0;
         /** @var BarcodeBar $bar */
@@ -36,10 +37,17 @@ class DynamicHtmlRenderer
         return $html;
     }
 
+    // Use HTML color definitions, like 'red' or '#ff0000'
     public function setForegroundColor(string $color): self
     {
         $this->foregroundColor = $color;
+        return $this;
+    }
 
+    // Use HTML color definitions, like 'red' or '#ff0000'
+    public function setBackgroundColor(?string $color): self
+    {
+        $this->backgroundColor = $color;
         return $this;
     }
 }
