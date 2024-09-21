@@ -67,7 +67,8 @@ Each renderer has their own options. Only the barcode is required, the rest is o
 A vector based SVG image. Gives the best quality to print.
 ```php
 $renderer = new Picqer\Barcode\Renderers\SvgRenderer();
-$renderer->setForegroundColor('red'); // Give a color for the bars, the background is always white
+$renderer->setForegroundColor('red'); // Give a color for the bars, default is black
+$renderer->setBackgroundColor('blue'); // Give a color for the background, default is transparent
 $renderer->setSvgType($renderer::TYPE_SVG_INLINE); // Changes the output to be used inline inside HTML documents, instead of a standalone SVG image (default)
 $renderer->setSvgType($renderer::TYPE_SVG_STANDALONE); // If you want to force the default, create a stand alone SVG image
 
@@ -78,7 +79,8 @@ $renderer->render($barcode, 450.20, 75); // Width and height support floats
 All options for PNG and JPG are the same.
 ```php
 $renderer = new Picqer\Barcode\Renderers\PngRenderer();
-$renderer->setForegroundColor([255, 0, 0]); // Give a color for the bars, the background is always white. Give it as 3 times 0-255 values for red, green and blue. 
+$renderer->setForegroundColor([255, 0, 0]); // Give a color for the bars, default is black. Give it as 3 times 0-255 values for red, green and blue. 
+$renderer->setBackgroundColor([0, 255, 255]); // Give a color for the background, default is transparent (in PNG) or white (in JPG). Give it as 3 times 0-255 values for red, green and blue. 
 $renderer->useGd(); // If you have Imagick and GD installed, but want to use GD
 $renderer->useImagick(); // If you have Imagick and GD installed, but want to use Imagick
 
@@ -89,7 +91,8 @@ $renderer->render($barcode, 5, 40); // Width factor (how many pixel wide every b
 Gives HTML to use inline in a full HTML document.
 ```php
 $renderer = new Picqer\Barcode\Renderers\HtmlRenderer();
-$renderer->setForegroundColor('red'); // Give a color for the bars, the background is always white
+$renderer->setForegroundColor('red'); // Give a color for the bars, default is black
+$renderer->setBackgroundColor('blue'); // Give a color for the background, default is transparent
 
 $renderer->render($barcode, 450.20, 75); // Width and height support floats
 ````
@@ -98,7 +101,8 @@ $renderer->render($barcode, 450.20, 75); // Width and height support floats
 Give HTML here the barcode is using the full width and height, to put inside a container/div that has a fixed size.
 ```php
 $renderer = new Picqer\Barcode\Renderers\DynamicHtmlRenderer();
-$renderer->setForegroundColor('red'); // Give a color for the bars, the background is always white
+$renderer->setForegroundColor('red'); // Give a color for the bars, default is black
+$renderer->setBackgroundColor('blue'); // Give a color for the background, default is transparent
 
 $renderer->render($barcode);
 ````
