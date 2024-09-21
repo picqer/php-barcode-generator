@@ -7,14 +7,14 @@
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
-            "name": "Nicola Asuni",
-            "email": "info@tecnick.com",
-            "homepage": "http://nicolaasuni.tecnick.com"
-        },
-        {
             "name": "Casper Bakker",
             "email": "info@picqer.com",
             "homepage": "https://picqer.com"
+        },
+        {
+            "name": "Nicola Asuni",
+            "email": "info@tecnick.com",
+            "homepage": "http://nicolaasuni.tecnick.com"
         }
     ],
     "require": {
