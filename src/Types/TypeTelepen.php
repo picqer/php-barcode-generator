@@ -23,11 +23,12 @@ class TypeTelepen implements TypeInterface
 {
     private const TELEPEN_START_CHAR = '_';
     private const TELEPEN_STOP_CHAR = 'z';
+
     private const TELEPEN_ALPHA = 'alpha';
     private const TELEPEN_NUMERIC = 'numeric';
 
-    private $telepen_lookup_table;
-    private $mode;
+    private array $telepen_lookup_table;
+    private string $mode;
 
     public function __construct($m = 'alpha')
     {
@@ -38,7 +39,7 @@ class TypeTelepen implements TypeInterface
         $this->createTelepenConversionTable();
     }
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         /* The stream we get from the telepen output gives us the 
          * width of alternating black/white stripes
@@ -50,7 +51,7 @@ class TypeTelepen implements TypeInterface
         $drawBar = true;
         for ($i = 0; $i < strlen($encoded); ++$i) {
             $barWidth = $encoded[$i];
-            $barcode->addBar(new BarcodeBar($barWidth, 250, $drawBar));
+            $barcode->addBar(new BarcodeBar(intval($barWidth), 250, $drawBar));
             $drawBar = !$drawBar; //flip to other colour
         }
 
@@ -59,7 +60,6 @@ class TypeTelepen implements TypeInterface
 
     protected function encode($code) : string
     {
-        $result = null;
         if ($this->mode == self::TELEPEN_ALPHA) {
             $result = $this->encodeAlpha($code);
         } else {
@@ -101,7 +101,7 @@ class TypeTelepen implements TypeInterface
             $check_digit = 0;
         }
 
-        $dest .= $this->telepen_lookup_table[ord($check_digit)];
+        $dest .= $this->telepen_lookup_table[ord(strval($check_digit))];
         $dest .= $this->telepen_lookup_table[ord(self::TELEPEN_STOP_CHAR)]; // Stop
 
         return $dest;
@@ -160,7 +160,7 @@ class TypeTelepen implements TypeInterface
      * More information about Telepen symbology is available from
      * https://v4l237.n3cdn1.secureserver.net/wp-content/uploads/2022/05/Barcode-Symbology-information-and-History.pdf
      */
-    private function createTelepenConversionTable()
+    private function createTelepenConversionTable(): void
     {
         $this->telepen_lookup_table = [
             "1111111111111111", "1131313111", "33313111", "1111313131", 

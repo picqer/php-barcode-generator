@@ -13,7 +13,7 @@ use Picqer\Barcode\Exceptions\InvalidLengthException;
  */
 class TypeCode32 extends TypeCode39
 {
-    protected $conversionTable32 = [
+    protected array $conversionTable32 = [
         '0' => '0',
         '1' => '1',
         '2' => '2',
@@ -48,7 +48,7 @@ class TypeCode32 extends TypeCode39
         '31' => 'Z'
     ];
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         // Validate code 32.
         $stringLength = strlen($code);
@@ -85,7 +85,7 @@ class TypeCode32 extends TypeCode39
         }
 
         // Return barcode data for code 39.
-        return parent::getBarcodeData($code39);
+        return parent::getBarcode($code39);
     }
 
 
@@ -98,17 +98,17 @@ class TypeCode32 extends TypeCode39
      */
     protected function checksum_code32(string $code): string
     {
-        $s = 0;
+        $checksum = 0;
 
         foreach (str_split($code) as $i => $c) {
             if (0 === $i % 2) {
-                $s += (int)$c;
+                $checksum += (int)$c;
             } else {
                 $c  = 2 * (int)$c;
-                $s += (int)floor($c / 10) + ($c % 10);
+                $checksum += (int)floor($c / 10) + ($c % 10);
             }
         }
 
-        return (string)($s % 10);
+        return (string)($checksum % 10);
     }
 }

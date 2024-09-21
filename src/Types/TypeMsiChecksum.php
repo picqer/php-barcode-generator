@@ -17,9 +17,9 @@ use Picqer\Barcode\Helpers\BinarySequenceConverter;
 
 class TypeMsiChecksum implements TypeInterface
 {
-    protected $checksum = true;
+    protected bool $checksum = true;
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $chr['0'] = '100100100100';
         $chr['1'] = '100100100110';

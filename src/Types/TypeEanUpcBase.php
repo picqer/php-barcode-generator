@@ -20,11 +20,11 @@ use Picqer\Barcode\Exceptions\InvalidLengthException;
 
 abstract class TypeEanUpcBase implements TypeInterface
 {
-    protected $length = 13;
-    protected $upca = false;
-    protected $upce = false;
+    protected int $length = 13;
+    protected bool $upca = false;
+    protected bool $upce = false;
 
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         if (strlen(trim($code)) === 0) {
             throw new InvalidLengthException('You should provide a barcode string.');
@@ -206,12 +206,12 @@ abstract class TypeEanUpcBase implements TypeInterface
         return $barcode;
     }
 
-    protected function calculateChecksumDigit(string $code)
+    protected function calculateChecksumDigit(string $code): int
     {
         // calculate check digit
         $sum_a = 0;
         for ($i = 1; $i < $this->length - 1; $i += 2) {
-            $sum_a += $code[$i];
+            $sum_a += intval($code[$i]);
         }
         if ($this->length > 12) {
             $sum_a *= 3;

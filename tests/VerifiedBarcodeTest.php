@@ -1,7 +1,7 @@
 <?php
 
 use PHPUnit\Framework\TestCase;
-use Picqer\Barcode\BarcodeGenerator;
+use Picqer\Barcode\Helpers\StringHelpers;
 
 /*
  * Test all supported barcodes types, with as much different but supported input strings.
@@ -13,60 +13,56 @@ use Picqer\Barcode\BarcodeGenerator;
 
 class VerifiedBarcodeTest extends TestCase
 {
-    public static $supportedBarcodes = [
-        ['type' => BarcodeGenerator::TYPE_CODE_39, 'barcodes' => ['1234567890ABC']],
-        ['type' => BarcodeGenerator::TYPE_CODE_39_CHECKSUM, 'barcodes' => ['1234567890ABC']],
-        ['type' => BarcodeGenerator::TYPE_CODE_39E, 'barcodes' => ['1234567890abcABC']],
-        ['type' => BarcodeGenerator::TYPE_CODE_39E_CHECKSUM, 'barcodes' => ['1234567890abcABC']],
-        ['type' => BarcodeGenerator::TYPE_CODE_93, 'barcodes' => ['1234567890abcABC']],
-        ['type' => BarcodeGenerator::TYPE_STANDARD_2_5, 'barcodes' => ['1234567890']],
-        ['type' => BarcodeGenerator::TYPE_STANDARD_2_5_CHECKSUM, 'barcodes' => ['1234567890']],
-        ['type' => BarcodeGenerator::TYPE_INTERLEAVED_2_5, 'barcodes' => ['1234567890']],
-        ['type' => BarcodeGenerator::TYPE_INTERLEAVED_2_5_CHECKSUM, 'barcodes' => ['1234567890']],
-        ['type' => BarcodeGenerator::TYPE_EAN_13, 'barcodes' => ['081231723897', '0049000004632', '004900000463']],
-        ['type' => BarcodeGenerator::TYPE_ITF_14, 'barcodes' => ['00012345600012', '05400141288766']],
-        ['type' => BarcodeGenerator::TYPE_CODE_128, 'barcodes' => ['081231723897', '1234567890abcABC-283*33']],
-        ['type' => BarcodeGenerator::TYPE_CODE_128_A, 'barcodes' => ['1234567890']],
-        ['type' => BarcodeGenerator::TYPE_CODE_128_B, 'barcodes' => ['081231723897', '1234567890abcABC-283*33']],
-        ['type' => BarcodeGenerator::TYPE_EAN_2, 'barcodes' => ['22']],
-        ['type' => BarcodeGenerator::TYPE_EAN_5, 'barcodes' => ['1234567890abcABC-283*33']],
-        ['type' => BarcodeGenerator::TYPE_EAN_8, 'barcodes' => ['1234568']],
-        ['type' => BarcodeGenerator::TYPE_UPC_A, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_UPC_E, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_MSI, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_MSI_CHECKSUM, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_POSTNET, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_PLANET, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_RMS4CC, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_KIX, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_IMB, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_CODABAR, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_CODE_11, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_PHARMA_CODE, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_PHARMA_CODE_TWO_TRACKS, 'barcodes' => ['123456789']],
-        ['type' => BarcodeGenerator::TYPE_TELEPEN_ALPHA, 'barcodes' => ['1234567890ASCD']],
-        ['type' => BarcodeGenerator::TYPE_TELEPEN_NUMERIC, 'barcodes' => ['1234567890']]
+    public static array $supportedBarcodes = [
+        ['type' => \Picqer\Barcode\Types\TypeCode39::class, 'barcodes' => ['1234567890ABC']],
+        ['type' => \Picqer\Barcode\Types\TypeCode39Checksum::class, 'barcodes' => ['1234567890ABC']],
+        ['type' => \Picqer\Barcode\Types\TypeCode39Extended::class, 'barcodes' => ['1234567890abcABC']],
+        ['type' => \Picqer\Barcode\Types\TypeCode39ExtendedChecksum::class, 'barcodes' => ['1234567890abcABC']],
+        ['type' => \Picqer\Barcode\Types\TypeCode93::class, 'barcodes' => ['1234567890abcABC']],
+        ['type' => \Picqer\Barcode\Types\TypeStandard2of5::class, 'barcodes' => ['1234567890']],
+        ['type' => \Picqer\Barcode\Types\TypeStandard2of5Checksum::class, 'barcodes' => ['1234567890']],
+        ['type' => \Picqer\Barcode\Types\TypeInterleaved25::class, 'barcodes' => ['1234567890']],
+        ['type' => \Picqer\Barcode\Types\TypeInterleaved25Checksum::class, 'barcodes' => ['1234567890']],
+        ['type' => \Picqer\Barcode\Types\TypeEan13::class, 'barcodes' => ['081231723897', '0049000004632', '004900000463']],
+        ['type' => \Picqer\Barcode\Types\TypeITF14::class, 'barcodes' => ['00012345600012', '05400141288766']],
+        ['type' => \Picqer\Barcode\Types\TypeCode128::class, 'barcodes' => ['081231723897', '1234567890abcABC-283*33']],
+        ['type' => \Picqer\Barcode\Types\TypeCode128A::class, 'barcodes' => ['1234567890']],
+        ['type' => \Picqer\Barcode\Types\TypeCode128B::class, 'barcodes' => ['081231723897', '1234567890abcABC-283*33']],
+        ['type' => \Picqer\Barcode\Types\TypeUpcExtension2::class, 'barcodes' => ['22']],
+        ['type' => \Picqer\Barcode\Types\TypeUpcExtension5::class, 'barcodes' => ['1234567890abcABC-283*33']],
+        ['type' => \Picqer\Barcode\Types\TypeEan8::class, 'barcodes' => ['1234568']],
+        ['type' => \Picqer\Barcode\Types\TypeUpcA::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeUpcE::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeMsi::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeMsiChecksum::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypePostnet::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypePlanet::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeRms4cc::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeKix::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeIntelligentMailBarcode::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeCodabar::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeCode11::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypePharmacode::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypePharmacodeTwoCode::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeTelepen::class, 'barcodes' => ['1234567890ASCD']],
+        ['type' => \Picqer\Barcode\Types\TypeTelepenNumeric::class, 'barcodes' => ['1234567890']]
     ];
 
     public function testAllSupportedBarcodeTypes()
     {
-        $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
+        $renderer = new Picqer\Barcode\Renderers\SvgRenderer();
 
         foreach ($this::$supportedBarcodes as $barcodeTestSet) {
-            foreach ($barcodeTestSet['barcodes'] as $barcode) {
-                $result = $generator->getBarcode($barcode, $barcodeTestSet['type']);
+            foreach ($barcodeTestSet['barcodes'] as $barcodeText) {
+                $barcode = (new $barcodeTestSet['type']())->getBarcode($barcodeText);
+                $result = $renderer->render($barcode, $barcode->getWidth() * 2);
 
                 $this->assertStringEqualsFile(
-                    sprintf('tests/verified-files/%s.svg', $this->getSaveFilename($barcodeTestSet['type'] . '-' . $barcode)),
+                    sprintf('tests/verified-files/%s.svg', StringHelpers::getSafeFilenameFrom($barcodeTestSet['type'] . '-' . $barcodeText)),
                     $result,
-                    sprintf('%s x %s dynamic test failed', $barcodeTestSet['type'], $barcode)
+                    sprintf('%s x %s dynamic test failed', $barcodeTestSet['type'], $barcodeText)
                 );
             }
         }
-    }
-
-    protected function getSaveFilename($value)
-    {
-        return preg_replace('/[^a-zA-Z0-9_ \-+]/s', '-', $value);
     }
 }

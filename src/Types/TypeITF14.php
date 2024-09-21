@@ -15,7 +15,7 @@ class TypeITF14 implements TypeInterface
      * @throws InvalidCharacterException
      * @throws InvalidCheckDigitException
      */
-    public function getBarcodeData(string $code): Barcode
+    public function getBarcode(string $code): Barcode
     {
         $chr = [];
         $chr['0'] = '11221';
@@ -66,7 +66,7 @@ class TypeITF14 implements TypeInterface
             }
 
             foreach (str_split($pmixed) as $width) {
-                $barcode->addBar(new BarcodeBar($width, 1, $drawBar));
+                $barcode->addBar(new BarcodeBar(intval($width), 1, $drawBar));
                 $drawBar = ! $drawBar;
             }
         }

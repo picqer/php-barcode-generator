@@ -2,6 +2,8 @@
 
 namespace Picqer\Barcode;
 
+use Picqer\Barcode\Exceptions\UnknownTypeException;
+
 class BarcodeGeneratorSVG extends BarcodeGenerator
 {
     /**
@@ -14,46 +16,17 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
      * @param $foregroundColor (string) Foreground color (in SVG format) for bar elements (background is transparent).
      * @return string SVG code.
      * @public
+     * @throws UnknownTypeException
      */
     public function getBarcode(string $barcode, $type, float $widthFactor = 2, float $height = 30, string $foregroundColor = 'black'): string
     {
         $barcodeData = $this->getBarcodeData($barcode, $type);
 
-        // replace table for special characters
-        $repstr = [
-            "\0" => '',
-            '&' => '&amp;',
-            '<' => '&lt;',
-            '>' => '&gt;',
-        ];
-
         $width = round(($barcodeData->getWidth() * $widthFactor), 3);
 
-        $svg = '<?xml version="1.0" standalone="no" ?>' . PHP_EOL;
-        $svg .= '<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">' . PHP_EOL;
-        $svg .= '<svg width="' . $width . '" height="' . $height . '" viewBox="0 0 ' . $width . ' ' . $height . '" version="1.1" xmlns="http://www.w3.org/2000/svg">' . PHP_EOL;
-        $svg .= "\t" . '<desc>' . strtr($barcodeData->getBarcode(), $repstr) . '</desc>' . PHP_EOL;
-        $svg .= "\t" . '<g id="bars" fill="' . $foregroundColor . '" stroke="none">' . PHP_EOL;
+        $renderer = new \Picqer\Barcode\Renderers\SvgRenderer();
+        $renderer->setForegroundColor($foregroundColor);
 
-        // print bars
-        $positionHorizontal = 0;
-        /** @var BarcodeBar $bar */
-        foreach ($barcodeData->getBars() as $bar) {
-            $barWidth = round(($bar->getWidth() * $widthFactor), 3);
-            $barHeight = round(($bar->getHeight() * $height / $barcodeData->getHeight()), 3);
-
-            if ($bar->isBar() && $barWidth > 0) {
-                $positionVertical = round(($bar->getPositionVertical() * $height / $barcodeData->getHeight()), 3);
-                // draw a vertical bar
-                $svg .= "\t\t" . '<rect x="' . $positionHorizontal . '" y="' . $positionVertical . '" width="' . $barWidth . '" height="' . $barHeight . '" />' . PHP_EOL;
-            }
-
-            $positionHorizontal += $barWidth;
-        }
-
-        $svg .= "\t</g>" . PHP_EOL;
-        $svg .= '</svg>' . PHP_EOL;
-
-        return $svg;
+        return $renderer->render($barcodeData, $width, $height);
     }
 }

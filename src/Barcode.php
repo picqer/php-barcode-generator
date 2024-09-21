@@ -4,17 +4,18 @@ namespace Picqer\Barcode;
 
 class Barcode
 {
-    protected $barcode;
-    protected $width = 0;
-    protected $height = 0;
-    protected $bars = [];
+    protected string $barcode;
+    protected int $width = 0;
+    protected int $height = 0;
+    protected array $bars = [];
 
     public function __construct(string $barcode)
     {
         $this->barcode = $barcode;
     }
 
-    public function addBar(BarcodeBar $bar)
+    // Add a bar to the barcode, either a bar or a space, at the right side of the barcode
+    public function addBar(BarcodeBar $bar): void
     {
         $this->bars[] = $bar;
         $this->width += $bar->getWidth();

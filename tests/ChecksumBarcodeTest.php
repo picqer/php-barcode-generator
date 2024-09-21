@@ -30,7 +30,7 @@ class ChecksumBarcodeTest extends TestCase
             $barcodeType = $this->getBarcodeType($barcodeTestSet['type']);
 
             foreach ($barcodeTestSet['barcodes'] as $testBarcode => $validBarcode) {
-                $this->assertEquals($validBarcode, $barcodeType->getBarcodeData($testBarcode)->getBarcode());
+                $this->assertEquals($validBarcode, $barcodeType->getBarcode($testBarcode)->getBarcode());
             }
         }
     }
@@ -42,7 +42,7 @@ class ChecksumBarcodeTest extends TestCase
 
             foreach ($barcodeTestSet['barcodes'] as $invalidBarcode) {
                 try {
-                    $barcodeType->getBarcodeData($invalidBarcode)->getBarcode();
+                    $barcodeType->getBarcode($invalidBarcode)->getBarcode();
                 } catch (BarcodeException $exception) {
                     $this->assertInstanceOf(InvalidCheckDigitException::class, $exception);
                     continue;
@@ -52,7 +52,6 @@ class ChecksumBarcodeTest extends TestCase
             }
         }
     }
-
 
     private function getBarcodeType(string $typeClass): TypeInterface
     {
