@@ -3,6 +3,7 @@
 namespace Picqer\Barcode\Renderers;
 
 use Imagick;
+use ImagickPixel;
 
 class JpgRenderer extends PngRenderer
 {
