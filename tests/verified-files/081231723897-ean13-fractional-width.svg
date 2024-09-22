@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="23.75" height="25.75" viewBox="0 0 23.75 25.75" version="1.1" xmlns="http://www.w3.org/2000/svg">
 	<desc>0812317238973</desc>
-	<g id="bars" fill="black" stroke="none">
+	<g id="bars" fill="rgb(0,0,0)" stroke="none">
 		<rect x="0" y="0" width="0.25" height="25.75" />
 		<rect x="0.5" y="0" width="0.25" height="25.75" />
 		<rect x="1" y="0" width="0.5" height="25.75" />
