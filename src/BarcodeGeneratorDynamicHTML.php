@@ -3,6 +3,7 @@
 namespace Picqer\Barcode;
 
 use Picqer\Barcode\Exceptions\UnknownTypeException;
+use Picqer\Barcode\Helpers\ColorHelper;
 
 class BarcodeGeneratorDynamicHTML extends BarcodeGenerator
 {
@@ -21,7 +22,7 @@ class BarcodeGeneratorDynamicHTML extends BarcodeGenerator
         $barcodeData = $this->getBarcodeData($barcode, $type);
 
         $renderer = new \Picqer\Barcode\Renderers\DynamicHtmlRenderer();
-        $renderer->setForegroundColor($foregroundColor);
+        $renderer->setForegroundColor(ColorHelper::getArrayFromColorString($foregroundColor));
 
         return $renderer->render($barcodeData);
     }

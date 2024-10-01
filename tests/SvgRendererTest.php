@@ -62,7 +62,7 @@ class SvgRendererTest extends TestCase
         $barcode = (new Picqer\Barcode\Types\TypeEan13())->getBarcode('081231723897');
 
         $renderer = new Picqer\Barcode\Renderers\SvgRenderer();
-        $renderer->setBackgroundColor('red');
+        $renderer->setBackgroundColor([255, 0, 0]);
         $generated = $renderer->render($barcode, 190);
 
         $this->assertStringEqualsFile('tests/verified-files/081231723897-ean13-red-background.svg', $generated);
