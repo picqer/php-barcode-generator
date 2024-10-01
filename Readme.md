@@ -18,7 +18,7 @@ Install through [composer](https://getcomposer.org/doc/00-intro.md):
 composer require picqer/php-barcode-generator
 ```
 
-If you want to generate PNG or JPG images, you need the GD library or Imagick installed on your system as well.
+If you want to generate PNG or JPG images, you need the GD library or Imagick installed on your system as well. For SVG or HTML renders, there are no dependencies.
 
 ## Usage
 You want a barcode for a specific "type" (for example Code 128 or UPC) in a specific image format (for example PNG or SVG).
@@ -54,21 +54,28 @@ $barcode = (new Picqer\Barcode\Types\TypeCode128())->getBarcode('081231723897');
 $renderer = new Picqer\Barcode\Renderers\PngRenderer();
 $renderer->setForegroundColor($colorRed);
 
-// Save PNG to the filesystem, with widthFactor 3 and height of 50 pixels
-file_put_contents('barcode.png', $renderer->render($barcode, 3, 50));
+// Save PNG to the filesystem, with widthFactor 3 (width of the barcode x 3) and height of 50 pixels
+file_put_contents('barcode.png', $renderer->render($barcode, $barcode->getWidth() * 3, 50));
 ```
 
 ## Image renderers
 Available image renderers: SVG, PNG, JPG and HTML.
 
-Each renderer has their own options. Only the barcode is required, the rest is optional. Here are all the options for each renderers:
+They all conform to the RendererInterface and have the same `render()` method. Some renderers have extra options as well, via set*() methods.
+
+### Widths
+The render() method needs the Barcode object, the width and height. **For JPG/PNG images**, you only get a valid barcode if you give a width that is a factor of the width of the Barcode object. That is why the examples show `$barcode->getWidth() * 2` to make the image 2 times wider in pixels then the width of the barcode data. You *can* give an arbitrary number as width and the image will be scaled as best as possible, but without anti-aliasing, it will not be perfectly valid.
+
+HTML and SVG renderers can handle any width and height, even floats.
+
+Here are all the options for each renderer:
 
 ### SVG
 A vector based SVG image. Gives the best quality to print.
 ```php
 $renderer = new Picqer\Barcode\Renderers\SvgRenderer();
-$renderer->setForegroundColor('red'); // Give a color for the bars, default is black
-$renderer->setBackgroundColor('blue'); // Give a color for the background, default is transparent
+$renderer->setForegroundColor([255, 0, 0]); // Give a color red for the bars, default is black. Give it as 3 times 0-255 values for red, green and blue. 
+$renderer->setBackgroundColor([0, 0, 255]); // Give a color blue for the background, default is transparent. Give it as 3 times 0-255 values for red, green and blue. 
 $renderer->setSvgType($renderer::TYPE_SVG_INLINE); // Changes the output to be used inline inside HTML documents, instead of a standalone SVG image (default)
 $renderer->setSvgType($renderer::TYPE_SVG_STANDALONE); // If you want to force the default, create a stand alone SVG image
 
@@ -91,8 +98,8 @@ $renderer->render($barcode, 5, 40); // Width factor (how many pixel wide every b
 Gives HTML to use inline in a full HTML document.
 ```php
 $renderer = new Picqer\Barcode\Renderers\HtmlRenderer();
-$renderer->setForegroundColor('red'); // Give a color for the bars, default is black
-$renderer->setBackgroundColor('blue'); // Give a color for the background, default is transparent
+$renderer->setForegroundColor([255, 0, 0]); // Give a color red for the bars, default is black. Give it as 3 times 0-255 values for red, green and blue. 
+$renderer->setBackgroundColor([0, 0, 255]); // Give a color blue for the background, default is transparent. Give it as 3 times 0-255 values for red, green and blue. 
 
 $renderer->render($barcode, 450.20, 75); // Width and height support floats
 ````
@@ -101,8 +108,8 @@ $renderer->render($barcode, 450.20, 75); // Width and height support floats
 Give HTML here the barcode is using the full width and height, to put inside a container/div that has a fixed size.
 ```php
 $renderer = new Picqer\Barcode\Renderers\DynamicHtmlRenderer();
-$renderer->setForegroundColor('red'); // Give a color for the bars, default is black
-$renderer->setBackgroundColor('blue'); // Give a color for the background, default is transparent
+$renderer->setForegroundColor([255, 0, 0]); // Give a color red for the bars, default is black. Give it as 3 times 0-255 values for red, green and blue. 
+$renderer->setBackgroundColor([0, 0, 255]); // Give a color blue for the background, default is transparent. Give it as 3 times 0-255 values for red, green and blue. 
 
 $renderer->render($barcode);
 ````
@@ -163,7 +170,7 @@ If you want to use PNG or JPG images, you need to install [Imagick](https://www.
 ```php
 $barcode = (new Picqer\Barcode\Types\TypeCode128())->getBarcode('081231723897');
 $renderer = new Picqer\Barcode\Renderers\PngRenderer();
-echo '<img src="data:image/png;base64,' . base64_encode($renderer->render($barcode)) . '">';
+echo '<img src="data:image/png;base64,' . base64_encode($renderer->render($barcode, $barcode->getWidth() * 2)) . '">';
 ```
 
 ### Save JPG barcode to disk
@@ -171,7 +178,7 @@ echo '<img src="data:image/png;base64,' . base64_encode($renderer->render($barco
 $barcode = (new Picqer\Barcode\Types\TypeCodabar())->getBarcode('081231723897');
 $renderer = new Picqer\Barcode\Renderers\JpgRenderer();
 
-file_put_contents('barcode.jpg', $renderer->render($barcode));
+file_put_contents('barcode.jpg', $renderer->render($barcode, $barcode->getWidth() * 2));
 ```
 
 ### Oneliner SVG output to disk
@@ -181,6 +188,8 @@ file_put_contents('barcode.svg', (new Picqer\Barcode\Renderers\SvgRenderer())->r
 
 ## Upgrading to v3
 There is no need to change anything when upgrading from v2 to v3. Above you find the new preferred way of using this library since v3. But the old style still works.
+
+To give the renderers the same interface, setting colors is now always with an array of RGB colors. If you use the old BarcodeGenerator* classes and use colors with names ('red') or hex codes (#3399ef), these will be converted using the ColorHelper. All hexcodes are supported, but for names of colors only the basic colors are supported.
 
 If you want to convert to the new style, here is an example:
 ```php
@@ -194,7 +203,7 @@ $renderer = new Picqer\Barcode\Renderers\SvgRenderer();
 echo $renderer->render($barcode);
 ```
 
-The width in the SVG and HTML renderer is now the width of the end result, instead of the widthFactor. If you want to keep dynamic widths, you can get the width of the encoded Barcode and multiply it by the widthFactor to get the same result as before. See here an example for a widthFactor of 2:
+The width in the renderer is now the width of the end result, instead of the widthFactor. If you want to keep dynamic widths, you can get the width of the encoded Barcode and multiply it by the widthFactor to get the same result as before. See here an example for a widthFactor of 2:
 ```php
 // Old style
 $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
