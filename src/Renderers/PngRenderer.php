@@ -54,8 +54,8 @@ class PngRenderer implements RendererInterface
     // Example: $width = $barcode->getWidth() * 3
     public function render(Barcode $barcode, float $width = 200, float $height = 30): string
     {
-        $width = round($width);
-        $height = round($height);
+        $width = (int)round($width);
+        $height = (int)round($height);
 
         $widthFactor = $width / $barcode->getWidth();
 
@@ -80,9 +80,9 @@ class PngRenderer implements RendererInterface
 
                 // draw a vertical bar
                 if ($this->useImagick) {
-                    $imagickBarsShape->rectangle(round($positionHorizontal), $y, round($positionHorizontal + $barWidth - 1), ($y + $barHeight));
+                    $imagickBarsShape->rectangle((int)round($positionHorizontal), $y, (int)round($positionHorizontal + $barWidth - 1), ($y + $barHeight));
                 } else {
-                    \imagefilledrectangle($image, round($positionHorizontal), $y, round($positionHorizontal + $barWidth - 1), ($y + $barHeight), $gdForegroundColor);
+                    \imagefilledrectangle($image, (int)round($positionHorizontal), $y, (int)round($positionHorizontal + $barWidth - 1), ($y + $barHeight), $gdForegroundColor);
                 }
             }
             $positionHorizontal += $barWidth;
