@@ -22,7 +22,7 @@ class PngRendererTest extends TestCase
 
         $renderer = new Picqer\Barcode\Renderers\PngRenderer();
         $renderer->useGd();
-        $generated = $renderer->render($barcode, 1);
+        $generated = $renderer->render($barcode, $barcode->getWidth());
 
         $imageInfo = getimagesizefromstring($generated);
 
@@ -38,7 +38,7 @@ class PngRendererTest extends TestCase
 
         $renderer = new Picqer\Barcode\Renderers\PngRenderer();
         $renderer->useGd();
-        $generated = $renderer->render($barcode, 2, 45);
+        $generated = $renderer->render($barcode, $barcode->getWidth() * 2, 45);
 
         $imageInfo = getimagesizefromstring($generated);
 
@@ -54,7 +54,7 @@ class PngRendererTest extends TestCase
 
         $renderer = new Picqer\Barcode\Renderers\PngRenderer();
         $renderer->useGd();
-        $generated = $renderer->render($barcode, 5);
+        $generated = $renderer->render($barcode, $barcode->getWidth() * 5);
 
         $imageInfo = getimagesizefromstring($generated);
 
@@ -76,7 +76,7 @@ class PngRendererTest extends TestCase
 
         $renderer = new Picqer\Barcode\Renderers\PngRenderer();
         $renderer->useImagick();
-        $generated = $renderer->render($barcode);
+        $generated = $renderer->render($barcode, $barcode->getWidth() * 2);
 
         $this->assertEquals('PNG', substr($generated, 1, 3));
     }
@@ -91,7 +91,7 @@ class PngRendererTest extends TestCase
 
         $renderer = new Picqer\Barcode\Renderers\PngRenderer();
         $renderer->useImagick();
-        $generated = $renderer->render($barcode, 1);
+        $generated = $renderer->render($barcode, $barcode->getWidth());
 
         $imageInfo = getimagesizefromstring($generated);
 
@@ -111,7 +111,7 @@ class PngRendererTest extends TestCase
 
         $renderer = new Picqer\Barcode\Renderers\PngRenderer();
         $renderer->useGd();
-        $generated = $renderer->render($barcode, 2, 45);
+        $generated = $renderer->render($barcode, $barcode->getWidth() * 2, 45);
 
         $imageInfo = getimagesizefromstring($generated);
 
@@ -131,7 +131,7 @@ class PngRendererTest extends TestCase
 
         $renderer = new Picqer\Barcode\Renderers\PngRenderer();
         $renderer->useGd();
-        $generated = $renderer->render($barcode, 5);
+        $generated = $renderer->render($barcode, $barcode->getWidth() * 5);
 
         $imageInfo = getimagesizefromstring($generated);
 

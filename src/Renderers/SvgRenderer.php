@@ -6,10 +6,10 @@ use Picqer\Barcode\Barcode;
 use Picqer\Barcode\BarcodeBar;
 use Picqer\Barcode\Exceptions\InvalidOptionException;
 
-class SvgRenderer
+class SvgRenderer implements RendererInterface
 {
-    protected string $foregroundColor = 'black';
-    protected ?string $backgroundColor = null;
+    protected array $foregroundColor = [0, 0, 0];
+    protected ?array $backgroundColor = null;
     protected string $svgType = self::TYPE_SVG_STANDALONE;
 
     public const TYPE_SVG_STANDALONE = 'standalone';
@@ -29,10 +29,10 @@ class SvgRenderer
 
         // Add background rectangle if backgroundColor is set
         if ($this->backgroundColor !== null) {
-            $svg .= "\t" . '<rect id="background" width="100%" height="100%" fill="' . $this->backgroundColor . '"/>' . PHP_EOL;
+            $svg .= "\t" . '<rect id="background" width="100%" height="100%" fill="rgb(' . implode(',', $this->backgroundColor) . ')"/>' . PHP_EOL;
         }
 
-        $svg .= "\t" . '<g id="bars" fill="' . $this->foregroundColor . '" stroke="none">' . PHP_EOL;
+        $svg .= "\t" . '<g id="bars" fill="rgb(' . implode(',', $this->foregroundColor) . ')" stroke="none">' . PHP_EOL;
 
         // print bars
         $positionHorizontal = 0;
@@ -56,13 +56,13 @@ class SvgRenderer
         return $svg;
     }
 
-    public function setForegroundColor(string $color): self
+    public function setForegroundColor(array $color): self
     {
         $this->foregroundColor = $color;
         return $this;
     }
 
-    public function setBackgroundColor(?string $color): self
+    public function setBackgroundColor(?array $color): self
     {
         $this->backgroundColor = $color;
         return $this;

@@ -3,6 +3,7 @@
 namespace Picqer\Barcode;
 
 use Picqer\Barcode\Exceptions\UnknownTypeException;
+use Picqer\Barcode\Helpers\ColorHelper;
 
 class BarcodeGeneratorSVG extends BarcodeGenerator
 {
@@ -25,7 +26,7 @@ class BarcodeGeneratorSVG extends BarcodeGenerator
         $width = round(($barcodeData->getWidth() * $widthFactor), 3);
 
         $renderer = new \Picqer\Barcode\Renderers\SvgRenderer();
-        $renderer->setForegroundColor($foregroundColor);
+        $renderer->setForegroundColor(ColorHelper::getArrayFromColorString($foregroundColor));
 
         return $renderer->render($barcodeData, $width, $height);
     }

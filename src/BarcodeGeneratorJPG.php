@@ -34,7 +34,7 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
             }
         }
 
-        return $renderer->render($barcodeData, $widthFactor, $height);
+        return $renderer->render($barcodeData, $barcodeData->getWidth() * $widthFactor, $height);
     }
 
     /**

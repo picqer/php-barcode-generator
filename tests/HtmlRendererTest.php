@@ -29,7 +29,7 @@ class HtmlRendererTest extends TestCase
         $barcode = (new Picqer\Barcode\Types\TypeCode128())->getBarcode('081231723897');
 
         $renderer = new Picqer\Barcode\Renderers\HtmlRenderer();
-        $renderer->setBackgroundColor('red');
+        $renderer->setBackgroundColor([255, 0, 0]);
         $generated = $renderer->render($barcode, $barcode->getWidth() * 2);
 
         $this->assertStringEqualsFile('tests/verified-files/081231723897-code128-red-background.html', $generated);
