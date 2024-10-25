@@ -1,0 +1,3 @@
+# ignore directories in the git-generated distributed .zip archive
+/.github export-ignore
+/tests export-ignore
