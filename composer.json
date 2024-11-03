@@ -26,10 +26,5 @@
         "psr-4": {
             "Picqer\\Barcode\\": "src"
         }
-    },
-    "repositories": [
-        { "type": "composer", "url": "https://g4m.jfrog.io/g4m/api/composer/php-local" },
-        { "type": "composer", "url": "https://g4m.jfrog.io/g4m/api/composer/php-remote" },
-        { "packagist": false }
-    ]
+    }
 }
