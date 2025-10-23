@@ -27,7 +27,7 @@ class PngRenderer implements RendererInterface
         } elseif (function_exists('imagecreate')) {
             $this->useImagick = false;
         } else {
-            throw new BarcodeException('Neither gd-lib or imagick are installed!');
+            throw new BarcodeException('Neither the GD library nor the Imagick extension is installed!');
         }
     }
 
