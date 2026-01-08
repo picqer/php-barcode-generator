@@ -148,6 +148,5 @@ class PngRenderer implements RendererInterface
     protected function generateGdImage($image): void
     {
         \imagepng($image);
-        \imagedestroy($image);
     }
 }

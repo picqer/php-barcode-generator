@@ -25,6 +25,5 @@ class JpgRenderer extends PngRenderer
     protected function generateGdImage($image): void
     {
         \imagejpeg($image);
-        \imagedestroy($image);
     }
 }
