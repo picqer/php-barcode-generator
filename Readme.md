@@ -54,7 +54,7 @@ $barcode = (new Picqer\Barcode\Types\TypeCode128())->getBarcode('081231723897');
 $renderer = new Picqer\Barcode\Renderers\PngRenderer();
 $renderer->setForegroundColor($colorRed);
 
-// Save PNG to the filesystem, with widthFactor 3 (width of the barcode x 3) and height of 50 pixels
+// Save a PNG that is three times the barcode's intrinsic width and 50 pixels high
 file_put_contents('barcode.png', $renderer->render($barcode, $barcode->getWidth() * 3, 50));
 ```
 
@@ -64,7 +64,9 @@ Available image renderers: SVG, PNG, JPG and HTML.
 They all conform to the RendererInterface and have the same `render()` method. Some renderers have extra options as well, via set*() methods.
 
 ### Widths
-The render() method needs the Barcode object, the width and height. **For JPG/PNG images**, you only get a valid barcode if you give a width that is a factor of the width of the Barcode object. That is why the examples show `$barcode->getWidth() * 2` to make the image 2 times wider in pixels then the width of the barcode data. You *can* give an arbitrary number as width and the image will be scaled as best as possible, but without anti-aliasing, it will not be perfectly valid.
+The `render()` method accepts the `Barcode` object, the final output width, and the final output height. The width argument is the total width of the rendered image, not a width factor.
+
+**For JPG and PNG images**, always pass a width that is an integer multiple of `$barcode->getWidth()`. For example, `$barcode->getWidth() * 2` produces an image where every barcode module is two pixels wide. An arbitrary width can force module boundaries onto fractional pixels, causing uneven bars and a barcode that scanners may not read reliably. Do not rely on the default width for raster images, because it may not be an integer multiple of the barcode's intrinsic width.
 
 HTML and SVG renderers can handle any width and height, even floats.
 
@@ -79,8 +81,8 @@ $renderer->setBackgroundColor([0, 0, 255]); // Give a color blue for the backgro
 $renderer->setSvgType($renderer::TYPE_SVG_INLINE); // Changes the output to be used inline inside HTML documents, instead of a standalone SVG image (default)
 $renderer->setSvgType($renderer::TYPE_SVG_STANDALONE); // If you want to force the default, create a stand alone SVG image
 
-$renderer->render($barcode, 450.20, 75); // Width and height support floats
-````
+$renderer->render($barcode, 450.20, 75); // Final width and height; floats are supported
+```
 
 ### PNG + JPG
 All options for PNG and JPG are the same.
@@ -91,8 +93,8 @@ $renderer->setBackgroundColor([0, 255, 255]); // Give a color for the background
 $renderer->useGd(); // If you have Imagick and GD installed, but want to use GD
 $renderer->useImagick(); // If you have Imagick and GD installed, but want to use Imagick
 
-$renderer->render($barcode, 5, 40); // Width factor (how many pixel wide every bar is), and the height in pixels
-````
+$renderer->render($barcode, $barcode->getWidth() * 2, 40); // Final width and height in pixels
+```
 
 ### HTML
 Gives HTML to use inline in a full HTML document.
@@ -101,8 +103,8 @@ $renderer = new Picqer\Barcode\Renderers\HtmlRenderer();
 $renderer->setForegroundColor([255, 0, 0]); // Give a color red for the bars, default is black. Give it as 3 times 0-255 values for red, green and blue. 
 $renderer->setBackgroundColor([0, 0, 255]); // Give a color blue for the background, default is transparent. Give it as 3 times 0-255 values for red, green and blue. 
 
-$renderer->render($barcode, 450.20, 75); // Width and height support floats
-````
+$renderer->render($barcode, 450.20, 75); // Final width and height; floats are supported
+```
 
 ### Dynamic HTML
 Give HTML here the barcode is using the full width and height, to put inside a container/div that has a fixed size.
@@ -112,7 +114,7 @@ $renderer->setForegroundColor([255, 0, 0]); // Give a color red for the bars, de
 $renderer->setBackgroundColor([0, 0, 255]); // Give a color blue for the background, default is transparent. Give it as 3 times 0-255 values for red, green and blue. 
 
 $renderer->render($barcode);
-````
+```
 
 You can put the rendered HTML inside a div like this:
 ```html
@@ -203,11 +205,11 @@ $renderer = new Picqer\Barcode\Renderers\SvgRenderer();
 echo $renderer->render($barcode);
 ```
 
-The width in the renderer is now the width of the end result, instead of the widthFactor. If you want to keep dynamic widths, you can get the width of the encoded Barcode and multiply it by the widthFactor to get the same result as before. See here an example for a widthFactor of 2:
+The renderer's width argument is the final output width, not a width factor. To preserve a legacy width factor, multiply the encoded barcode's intrinsic width by that factor. This is especially important for PNG and JPG output, where the final width should be an integer multiple of the intrinsic width. For example, to preserve a width factor of 2:
 ```php
 // Old style
 $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-echo $generator->getBarcode('081231723897', $generator::TYPE_CODE_128, 2. 30);
+echo $generator->getBarcode('081231723897', $generator::TYPE_CODE_128, 2, 30);
 
 // New style
 $barcode = (new Picqer\Barcode\Types\TypeCode128())->getBarcode('081231723897');
