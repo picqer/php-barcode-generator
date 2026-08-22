@@ -163,6 +163,16 @@ Most used types are TYPE_CODE_128 and TYPE_CODE_39. Because of the best scanner 
 
 [See example images for all supported barcode types](examples.md)
 
+### UPC-E input
+
+`TypeUpcE` and `TYPE_UPC_E` accept these input forms:
+
+- A 7-digit UPC-E value consisting of the number system digit `0` and six encoded digits. The check digit is calculated automatically.
+- The complete 8-digit UPC-E human-readable value, including its check digit.
+- An 11- or 12-digit UPC-A value that can be represented using UPC-E zero suppression. The check digit may be omitted or supplied.
+
+Supplied check digits are validated. UPC-A values that cannot be zero-suppressed, non-numeric input, and ambiguous lengths are rejected instead of being silently padded.
+
 ## A note about PNG and JPG images
 If you want to use PNG or JPG images, you need to install [Imagick](https://www.php.net/manual/en/intro.imagick.php) or the [GD library](https://www.php.net/manual/en/intro.image.php). This package will use Imagick if that is installed, or fall back to GD. If you have both installed, but you want a specific method, you can use `$renderer->useGd()` or `$renderer->useImagick()` to force your preference.
 

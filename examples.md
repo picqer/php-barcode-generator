@@ -90,7 +90,7 @@ All types can be found in the src/Types directory.
 
 ### TypeUpcE
 
-![Barcode 123456789 as Picqer\Barcode\Types\TypeUpcE](tests/verified-files/TypeUpcE-123456789.svg)
+![Barcode 01234558 as Picqer\Barcode\Types\TypeUpcE](tests/verified-files/TypeUpcE-01234558.svg)
 
 ### TypeMsi
 

@@ -32,7 +32,7 @@ class VerifiedBarcodeTest extends TestCase
         ['type' => \Picqer\Barcode\Types\TypeUpcExtension5::class, 'barcodes' => ['1234567890abcABC-283*33']],
         ['type' => \Picqer\Barcode\Types\TypeEan8::class, 'barcodes' => ['1234568']],
         ['type' => \Picqer\Barcode\Types\TypeUpcA::class, 'barcodes' => ['123456789']],
-        ['type' => \Picqer\Barcode\Types\TypeUpcE::class, 'barcodes' => ['123456789']],
+        ['type' => \Picqer\Barcode\Types\TypeUpcE::class, 'barcodes' => ['01234558']],
         ['type' => \Picqer\Barcode\Types\TypeMsi::class, 'barcodes' => ['123456789']],
         ['type' => \Picqer\Barcode\Types\TypeMsiChecksum::class, 'barcodes' => ['123456789']],
         ['type' => \Picqer\Barcode\Types\TypePostnet::class, 'barcodes' => ['123456789']],

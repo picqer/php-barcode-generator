@@ -150,7 +150,7 @@ class TypesTest extends TestCase
     public function test_generator_can_generate_upc_e_barcode()
     {
         $generator = new Picqer\Barcode\BarcodeGeneratorSVG();
-        $result = $generator->getBarcode('123456789', $generator::TYPE_UPC_E);
+        $result = $generator->getBarcode('01234558', $generator::TYPE_UPC_E);
 
         $this->assertGreaterThan(100, strlen($result));
     }
