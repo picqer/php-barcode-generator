@@ -42,4 +42,18 @@ class ColorHelperTest extends TestCase
 
         ColorHelper::getArrayFromColorString('aubergine');
     }
+
+    public function test_throws_exception_on_invalid_short_hex_color()
+    {
+        $this->expectException(UnknownColorException::class);
+
+        ColorHelper::getArrayFromColorString('#ggg');
+    }
+
+    public function test_throws_exception_on_invalid_long_hex_color()
+    {
+        $this->expectException(UnknownColorException::class);
+
+        ColorHelper::getArrayFromColorString('#12x456');
+    }
 }

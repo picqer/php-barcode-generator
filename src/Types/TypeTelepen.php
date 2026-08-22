@@ -72,10 +72,8 @@ class TypeTelepen implements TypeInterface
     protected function encodeAlpha($code) : string
     {
         // We aren't interested in the non-printable parts of the ASCII set
-        if (
-            !preg_match('/[ -~]+/', $code)
-        ) { // everything from ASCII32-ASCII127
-            throw new InvalidFormatException("Invalid characters in data");
+        if (preg_match('/\A[ -~]+\z/', $code) !== 1) { // everything from ASCII 32-126
+            throw new InvalidFormatException('Invalid characters in data');
         }
 
         $count = 0;
@@ -101,7 +99,7 @@ class TypeTelepen implements TypeInterface
             $check_digit = 0;
         }
 
-        $dest .= $this->telepen_lookup_table[ord(strval($check_digit))];
+        $dest .= $this->telepen_lookup_table[$check_digit];
         $dest .= $this->telepen_lookup_table[ord(self::TELEPEN_STOP_CHAR)]; // Stop
 
         return $dest;
