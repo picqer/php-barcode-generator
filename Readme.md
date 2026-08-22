@@ -1,5 +1,5 @@
 # PHP Barcode Generator 
-<a href="https://github.com/picqer/php-barcode-generator/actions"><img src="https://github.com/picqer/php-barcode-generator/workflows/phpunit/badge.svg" alt="Build Status"></a>
+<a href="https://github.com/picqer/php-barcode-generator/actions/workflows/phpunit.yml"><img src="https://github.com/picqer/php-barcode-generator/actions/workflows/phpunit.yml/badge.svg" alt="Build Status"></a>
 <a href="https://packagist.org/packages/picqer/php-barcode-generator"><img src="https://img.shields.io/packagist/dt/picqer/php-barcode-generator" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/picqer/php-barcode-generator"><img src="https://img.shields.io/packagist/v/picqer/php-barcode-generator" alt="Latest Stable Version"></a>
 
