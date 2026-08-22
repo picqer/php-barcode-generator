@@ -12,17 +12,15 @@ use Picqer\Barcode\Exceptions\InvalidLengthException;
  * EAN13 and UPC-A barcodes.
  * EAN13: European Article Numbering international retail product code
  * UPC-A: Universal product code seen on almost all retail products in the USA and Canada
- * UPC-E: Short version of UPC symbol
  *
  * @param $code (string) code to represent.
- * @param $len (string) barcode type: 6 = UPC-E, 8 = EAN8, 13 = EAN13, 12 = UPC-A
+ * @param $len (string) barcode type: 8 = EAN8, 13 = EAN13, 12 = UPC-A
  */
 
 abstract class TypeEanUpcBase implements TypeInterface
 {
     protected int $length = 13;
     protected bool $upca = false;
-    protected bool $upce = false;
 
     public function getBarcode(string $code): Barcode
     {
@@ -47,33 +45,9 @@ abstract class TypeEanUpcBase implements TypeInterface
             throw new InvalidCheckDigitException();
         }
 
-        if ($this->upca || $this->upce) {
+        if ($this->upca) {
             $code = '0' . $code;
             ++$length;
-        }
-        
-        if ($this->upce) {
-            // convert UPC-A to UPC-E
-            $tmp = substr($code, 4, 3);
-            if (($tmp == '000') OR ($tmp == '100') OR ($tmp == '200')) {
-                // manufacturer code ends in 000, 100, or 200
-                $upce_code = substr($code, 2, 2) . substr($code, 9, 3) . substr($code, 4, 1);
-            } else {
-                $tmp = substr($code, 5, 2);
-                if ($tmp == '00') {
-                    // manufacturer code ends in 00
-                    $upce_code = substr($code, 2, 3) . substr($code, 10, 2) . '3';
-                } else {
-                    $tmp = substr($code, 6, 1);
-                    if ($tmp == '0') {
-                        // manufacturer code ends in 0
-                        $upce_code = substr($code, 2, 4) . substr($code, 11, 1) . '4';
-                    } else {
-                        // manufacturer code does not end in zero
-                        $upce_code = substr($code, 2, 5) . substr($code, 11, 1);
-                    }
-                }
-            }
         }
 
         // Convert digits to bars
@@ -129,63 +103,27 @@ abstract class TypeEanUpcBase implements TypeInterface
             '9' => ['A', 'B', 'B', 'A', 'B', 'A'],
         ];
 
-        $upce_parities = [
-            [
-                '0' => ['B', 'B', 'B', 'A', 'A', 'A'],
-                '1' => ['B', 'B', 'A', 'B', 'A', 'A'],
-                '2' => ['B', 'B', 'A', 'A', 'B', 'A'],
-                '3' => ['B', 'B', 'A', 'A', 'A', 'B'],
-                '4' => ['B', 'A', 'B', 'B', 'A', 'A'],
-                '5' => ['B', 'A', 'A', 'B', 'B', 'A'],
-                '6' => ['B', 'A', 'A', 'A', 'B', 'B'],
-                '7' => ['B', 'A', 'B', 'A', 'B', 'A'],
-                '8' => ['B', 'A', 'B', 'A', 'A', 'B'],
-                '9' => ['B', 'A', 'A', 'B', 'A', 'B'],
-            ],
-            [
-                '0' => ['A', 'A', 'A', 'B', 'B', 'B'],
-                '1' => ['A', 'A', 'B', 'A', 'B', 'B'],
-                '2' => ['A', 'A', 'B', 'B', 'A', 'B'],
-                '3' => ['A', 'A', 'B', 'B', 'B', 'A'],
-                '4' => ['A', 'B', 'A', 'A', 'B', 'B'],
-                '5' => ['A', 'B', 'B', 'A', 'A', 'B'],
-                '6' => ['A', 'B', 'B', 'B', 'A', 'A'],
-                '7' => ['A', 'B', 'A', 'B', 'A', 'B'],
-                '8' => ['A', 'B', 'A', 'B', 'B', 'A'],
-                '9' => ['A', 'B', 'B', 'A', 'B', 'A'],
-            ],
-        ];
-
         $seq = '101'; // left guard bar
-        if ($this->upce) {
-            $barcode = new Barcode($upce_code);
-            $p = $upce_parities[$code[1]][$checksumDigit];
-            for ($i = 0; $i < 6; ++$i) {
-                $seq .= $codes[$p[$i]][$upce_code[$i]];
+        $barcode = new Barcode($code);
+        $half_len = intval(ceil($length / 2));
+        if ($length == 8) {
+            for ($i = 0; $i < $half_len; ++$i) {
+                $seq .= $codes['A'][$code[$i]];
             }
-            $seq .= '010101'; // right guard bar
         } else {
-            $barcode = new Barcode($code);
-            $half_len = intval(ceil($length / 2));
-            if ($length == 8) {
-                for ($i = 0; $i < $half_len; ++$i) {
-                    $seq .= $codes['A'][$code[$i]];
-                }
-            } else {
-                $p = $parities[$code[0]];
-                for ($i = 1; $i < $half_len; ++$i) {
-                    $seq .= $codes[$p[$i - 1]][$code[$i]];
-                }
+            $p = $parities[$code[0]];
+            for ($i = 1; $i < $half_len; ++$i) {
+                $seq .= $codes[$p[$i - 1]][$code[$i]];
             }
-            $seq .= '01010'; // center guard bar
-            for ($i = $half_len; $i < $length; ++$i) {
-                if (! isset($codes['C'][$code[$i]])) {
-                    throw new InvalidCharacterException('Char ' . $code[$i] . ' not allowed');
-                }
-                $seq .= $codes['C'][$code[$i]];
-            }
-            $seq .= '101'; // right guard bar
         }
+        $seq .= '01010'; // center guard bar
+        for ($i = $half_len; $i < $length; ++$i) {
+            if (! isset($codes['C'][$code[$i]])) {
+                throw new InvalidCharacterException('Char ' . $code[$i] . ' not allowed');
+            }
+            $seq .= $codes['C'][$code[$i]];
+        }
+        $seq .= '101'; // right guard bar
 
         $clen = strlen($seq);
         $w = 0;

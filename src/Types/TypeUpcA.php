@@ -16,5 +16,4 @@ class TypeUpcA extends TypeEanUpcBase
 {
     protected int $length = 12;
     protected bool $upca = true;
-    protected bool $upce = false;
 }
