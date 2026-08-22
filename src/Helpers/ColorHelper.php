@@ -24,7 +24,7 @@ class ColorHelper
         }
 
         // #333 style
-        if (str_starts_with($color, '#') && strlen($color) === 4) {
+        if (preg_match('/\A#[0-9a-fA-F]{3}\z/', $color) === 1) {
             return [
                 hexdec(substr($color, 1, 1) . substr($color, 1, 1)),
                 hexdec(substr($color, 2, 1) . substr($color, 2, 1)),
@@ -33,7 +33,7 @@ class ColorHelper
         }
 
         // #009933 style
-        if (str_starts_with($color, '#') && strlen($color) === 7) {
+        if (preg_match('/\A#[0-9a-fA-F]{6}\z/', $color) === 1) {
             return [
                 hexdec(substr($color, 1, 2)),
                 hexdec(substr($color, 3, 2)),
