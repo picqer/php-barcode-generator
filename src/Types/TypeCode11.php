@@ -81,7 +81,7 @@ class TypeCode11 implements TypeInterface
             $checksum = '-';
         }
 
-        return $checksum;
+        return (string)$checksum;
     }
 
     private function getCheckDigitK(string $code): string

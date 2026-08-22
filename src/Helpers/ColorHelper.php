@@ -27,18 +27,18 @@ class ColorHelper
         // #333 style
         if (preg_match('/\A#[0-9a-fA-F]{3}\z/', $color) === 1) {
             return [
-                hexdec(substr($color, 1, 1) . substr($color, 1, 1)),
-                hexdec(substr($color, 2, 1) . substr($color, 2, 1)),
-                hexdec(substr($color, 3, 1) . substr($color, 3, 1)),
+                (int)hexdec(substr($color, 1, 1) . substr($color, 1, 1)),
+                (int)hexdec(substr($color, 2, 1) . substr($color, 2, 1)),
+                (int)hexdec(substr($color, 3, 1) . substr($color, 3, 1)),
             ];
         }
 
         // #009933 style
         if (preg_match('/\A#[0-9a-fA-F]{6}\z/', $color) === 1) {
             return [
-                hexdec(substr($color, 1, 2)),
-                hexdec(substr($color, 3, 2)),
-                hexdec(substr($color, 5, 2)),
+                (int)hexdec(substr($color, 1, 2)),
+                (int)hexdec(substr($color, 3, 2)),
+                (int)hexdec(substr($color, 5, 2)),
             ];
         }
 

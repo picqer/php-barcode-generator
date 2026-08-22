@@ -314,7 +314,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
         // Conversion of Routing Code
         switch (strlen($routing_code)) {
             case 0:
-                $binary_code = 0;
+                $binary_code = '0';
                 break;
 
             case 5:
@@ -354,7 +354,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
         $fcs = $this->imb_crc11fcs($binary_code_arr);
 
         // exclude first 2 bits from first byte
-        $first_byte = sprintf('%2s', dechex((hexdec($binary_code_arr[0]) << 2) >> 2));
+        $first_byte = sprintf('%2s', dechex(((int)hexdec($binary_code_arr[0]) << 2) >> 2));
         $binary_code_102bit = $first_byte . substr($binary_code, 2);
 
         // convert binary data to codewords
@@ -428,7 +428,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
      * Convert large integer number to hexadecimal representation.
      * (requires PHP bcmath extension)
      *
-     * @param int|string $number number to convert specified as a string
+     * @param string $number number to convert specified as a string
      * @return string hexadecimal representation
      */
     protected function dec_to_hex($number)
@@ -497,8 +497,8 @@ class TypeIntelligentMailBarcode implements TypeInterface
      */
     protected function hex_to_dec($hex)
     {
-        $dec = 0;
-        $bitval = 1;
+        $dec = '0';
+        $bitval = '1';
         $len = strlen($hex);
         for ($pos = ($len - 1); $pos >= 0; --$pos) {
             $dec = bcadd($dec, bcmul(strval(hexdec($hex[$pos])), strval($bitval)));

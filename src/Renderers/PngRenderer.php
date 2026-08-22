@@ -67,7 +67,7 @@ class PngRenderer implements RendererInterface
             $imagickBarsShape->setFillColor(new ImagickPixel('rgb(' . implode(',', $this->foregroundColor) .')'));
         } else {
             $image = $this->createGdImageObject($width, $height);
-            $gdForegroundColor = \imagecolorallocate($image, $this->foregroundColor[0], $this->foregroundColor[1], $this->foregroundColor[2]);
+            $gdForegroundColor = $this->allocateGdColor($image, $this->foregroundColor);
         }
 
         // print bars
@@ -94,9 +94,17 @@ class PngRenderer implements RendererInterface
             $image->drawImage($imagickBarsShape);
             return $image->getImageBlob();
         } else {
-            ob_start();
+            if (! ob_start()) {
+                throw new BarcodeException('Could not start the image output buffer.');
+            }
+
             $this->generateGdImage($image);
-            return ob_get_clean();
+            $imageData = ob_get_clean();
+            if ($imageData === false) {
+                throw new BarcodeException('Could not read the generated image data.');
+            }
+
+            return $imageData;
         }
     }
 
@@ -128,15 +136,26 @@ class PngRenderer implements RendererInterface
 
         if ($this->backgroundColor !== null) {
             // Colored background
-            $backgroundColor = \imagecolorallocate($image, $this->backgroundColor[0], $this->backgroundColor[1], $this->backgroundColor[2]);
+            $backgroundColor = $this->allocateGdColor($image, $this->backgroundColor);
             \imagefill($image, 0, 0, $backgroundColor);
         } else {
             // Use transparent background
-            $backgroundColor = \imagecolorallocate($image, 255, 255, 255);
+            $backgroundColor = $this->allocateGdColor($image, [255, 255, 255]);
             \imagecolortransparent($image, $backgroundColor);
         }
 
         return $image;
+    }
+
+    /** @param array{int, int, int} $color */
+    private function allocateGdColor(\GdImage $image, array $color): int
+    {
+        $allocatedColor = \imagecolorallocate($image, $color[0], $color[1], $color[2]);
+        if ($allocatedColor === false) {
+            throw new BarcodeException('Could not allocate GD image color.');
+        }
+
+        return $allocatedColor;
     }
 
     protected function createImagickImageObject(int $width, int $height): Imagick
