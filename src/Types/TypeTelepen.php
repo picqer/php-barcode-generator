@@ -27,9 +27,11 @@ class TypeTelepen implements TypeInterface
     private const TELEPEN_ALPHA = 'alpha';
     private const TELEPEN_NUMERIC = 'numeric';
 
+    /** @var array<int, string> */
     private array $telepen_lookup_table;
     private string $mode;
 
+    /** @param string $m */
     public function __construct($m = 'alpha')
     {
         $this->mode = self::TELEPEN_ALPHA;
@@ -58,6 +60,7 @@ class TypeTelepen implements TypeInterface
         return $barcode;
     }
 
+    /** @param string $code */
     protected function encode($code) : string
     {
         if ($this->mode == self::TELEPEN_ALPHA) {
@@ -69,6 +72,7 @@ class TypeTelepen implements TypeInterface
         return $result;
     }
 
+    /** @param string $code */
     protected function encodeAlpha($code) : string
     {
         // We aren't interested in the non-printable parts of the ASCII set

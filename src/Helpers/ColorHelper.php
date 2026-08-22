@@ -8,6 +8,7 @@ class ColorHelper
 {
     // Convert textual color values, to array of 3 colors 0-255
     // Can be "red", "#333" or "#009945" styles
+    /** @return array{int, int, int} */
     public static function getArrayFromColorString(string $color): array {
         if ($color == 'black') {
             return [0, 0, 0];

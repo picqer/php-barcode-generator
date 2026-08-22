@@ -8,7 +8,9 @@ use Picqer\Barcode\Exceptions\InvalidOptionException;
 
 class SvgRenderer implements RendererInterface
 {
+    /** @var array{int, int, int} */
     protected array $foregroundColor = [0, 0, 0];
+    /** @var array{int, int, int}|null */
     protected ?array $backgroundColor = null;
     protected string $svgType = self::TYPE_SVG_STANDALONE;
 
@@ -56,12 +58,14 @@ class SvgRenderer implements RendererInterface
         return $svg;
     }
 
+    /** @param array{int, int, int} $color */
     public function setForegroundColor(array $color): self
     {
         $this->foregroundColor = $color;
         return $this;
     }
 
+    /** @param array{int, int, int}|null $color */
     public function setBackgroundColor(?array $color): self
     {
         $this->backgroundColor = $color;

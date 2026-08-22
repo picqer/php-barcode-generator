@@ -15,7 +15,7 @@ class BarcodeGeneratorJPG extends BarcodeGenerator
      * @param BarcodeGenerator::TYPE_* $type (string) type of barcode
      * @param int $widthFactor Width of a single bar element in pixels.
      * @param int $height Height of a single bar element in pixels.
-     * @param array $foregroundColor RGB (0-255) foreground color for bar elements (background is transparent).
+     * @param array{int, int, int} $foregroundColor RGB (0-255) foreground color for bar elements (background is transparent).
      * @return string image data or false in case of error.
      * @throws UnknownTypeException
      */

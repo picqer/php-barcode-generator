@@ -7,7 +7,9 @@ use Picqer\Barcode\BarcodeBar;
 
 class HtmlRenderer implements RendererInterface
 {
+    /** @var array{int, int, int} */
     protected array $foregroundColor = [0, 0, 0];
+    /** @var array{int, int, int}|null */
     protected ?array $backgroundColor = null;
 
     public function render(Barcode $barcode, float $width = 200, float $height = 30): string
@@ -37,12 +39,14 @@ class HtmlRenderer implements RendererInterface
         return $html;
     }
 
+    /** @param array{int, int, int} $color */
     public function setForegroundColor(array $color): self
     {
         $this->foregroundColor = $color;
         return $this;
     }
 
+    /** @param array{int, int, int}|null $color */
     public function setBackgroundColor(?array $color): self
     {
         $this->backgroundColor = $color;

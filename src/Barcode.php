@@ -7,6 +7,7 @@ class Barcode
     protected string $barcode;
     protected int $width = 0;
     protected int $height = 0;
+    /** @var BarcodeBar[] */
     protected array $bars = [];
 
     public function __construct(string $barcode)
@@ -37,6 +38,7 @@ class Barcode
         return $this->height;
     }
 
+    /** @return BarcodeBar[] */
     public function getBars(): array
     {
         return $this->bars;

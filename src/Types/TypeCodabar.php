@@ -13,6 +13,7 @@ use Picqer\Barcode\Exceptions\InvalidCharacterException;
 
 class TypeCodabar implements TypeInterface
 {
+    /** @var array<int|string, string> */
     protected array $conversionTable = [
         '0' => '11111221',
         '1' => '11112211',
@@ -54,7 +55,7 @@ class TypeCodabar implements TypeInterface
                 } else {
                     $drawBar = false;
                 }
-                $barWidth = $seq[$j];
+                $barWidth = (int)$seq[$j];
                 $barcode->addBar(new BarcodeBar($barWidth, 1, $drawBar));
             }
         }

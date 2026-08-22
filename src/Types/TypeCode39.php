@@ -17,6 +17,7 @@ class TypeCode39 implements TypeInterface
     protected bool $extended = false;
     protected bool $checksum = false;
 
+    /** @var array<int|string, string> */
     protected array $conversionTable = [
         '0' => '111331311',
         '1' => '311311113',
@@ -97,7 +98,7 @@ class TypeCode39 implements TypeInterface
                 } else {
                     $drawBar = false;
                 }
-                $barWidth = $this->conversionTable[$char][$j];
+                $barWidth = (int)$this->conversionTable[$char][$j];
                 $barcode->addBar(new BarcodeBar($barWidth, 1, $drawBar));
             }
 

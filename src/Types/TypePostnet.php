@@ -16,6 +16,7 @@ use Picqer\Barcode\BarcodeBar;
 
 class TypePostnet implements TypeInterface
 {
+    /** @var array<int, array{int, int, int, int, int}> */
     protected array $barlen = [
         0 => [2, 2, 1, 1, 1],
         1 => [1, 1, 1, 2, 2],

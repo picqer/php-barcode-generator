@@ -11,7 +11,9 @@ use Picqer\Barcode\Exceptions\BarcodeException;
 
 class PngRenderer implements RendererInterface
 {
+    /** @var array{int, int, int} */
     protected array $foregroundColor = [0, 0, 0];
+    /** @var array{int, int, int}|null */
     protected ?array $backgroundColor = null;
 
     protected bool $useImagick;
@@ -99,6 +101,7 @@ class PngRenderer implements RendererInterface
     }
 
     // Use RGB color definitions, like [0, 0, 0] or [255, 255, 255]
+    /** @param array{int, int, int} $color */
     public function setForegroundColor(array $color): self
     {
         $this->foregroundColor = $color;
@@ -107,15 +110,21 @@ class PngRenderer implements RendererInterface
 
     // Use RGB color definitions, like [0, 0, 0] or [255, 255, 255]
     // If no color is set, the background will be transparent
+    /** @param array{int, int, int}|null $color */
     public function setBackgroundColor(?array $color): self
     {
         $this->backgroundColor = $color;
         return $this;
     }
 
+    /** @return \GdImage */
     protected function createGdImageObject(int $width, int $height)
     {
         $image = \imagecreate($width, $height);
+
+        if ($image === false) {
+            throw new BarcodeException('Could not create GD image.');
+        }
 
         if ($this->backgroundColor !== null) {
             // Colored background
@@ -145,6 +154,7 @@ class PngRenderer implements RendererInterface
         return $image;
     }
 
+    /** @param \GdImage $image */
     protected function generateGdImage($image): void
     {
         \imagepng($image);

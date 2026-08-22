@@ -20,6 +20,7 @@ class TypeCode128 implements TypeInterface
 {
     protected ?string $type = null;
 
+    /** @var string[] */
     protected array $conversionTable = [
         '212222', /* 00 */
         '222122', /* 01 */
@@ -366,7 +367,7 @@ class TypeCode128 implements TypeInterface
                 } else {
                     $t = false; // space
                 }
-                $w = $seq[$j];
+                $w = (int)$seq[$j];
 
                 $barcode->addBar(new BarcodeBar($w, 1, $t));
             }
@@ -379,8 +380,8 @@ class TypeCode128 implements TypeInterface
     /**
      * Split text code in A/B sequence for 128 code
      *
-     * @param $code (string) code to split.
-     * @return array sequence
+     * @param string $code code to split.
+     * @return list<array{0: string, 1: string, 2: int, 3?: bool}> sequence
      * @protected
      */
     protected function get128ABsequence($code): array

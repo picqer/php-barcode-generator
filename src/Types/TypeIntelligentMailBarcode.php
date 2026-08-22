@@ -428,7 +428,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
      * Convert large integer number to hexadecimal representation.
      * (requires PHP bcmath extension)
      *
-     * @param $number (string) number to convert specified as a string
+     * @param int|string $number number to convert specified as a string
      * @return string hexadecimal representation
      */
     protected function dec_to_hex($number)
@@ -452,7 +452,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
     /**
      * Intelligent Mail Barcode calculation of Frame Check Sequence
      *
-     * @param $code_arr (string) array of hexadecimal values (13 bytes holding 102 bits right justified).
+     * @param string[] $code_arr array of hexadecimal values (13 bytes holding 102 bits right justified).
      * @return int 11 bit Frame Check Sequence as integer (decimal base)
      * @protected
      */
@@ -492,7 +492,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
      * Convert large hexadecimal number to decimal representation (string).
      * (requires PHP bcmath extension)
      *
-     * @param $hex (string) hexadecimal number to convert specified as a string
+     * @param string $hex hexadecimal number to convert specified as a string
      * @return string hexadecimal representation
      */
     protected function hex_to_dec($hex)
@@ -514,7 +514,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
      *
      * @param $n (int) is the type of table: 2 for 2of13 table, 5 for 5of13table
      * @param $size (int) size of table (78 for n=2 and 1287 for n=5)
-     * @return array requested table
+     * @return array<int, int> requested table
      * @protected
      */
     protected function imb_tables(int $n, int $size): array
@@ -553,7 +553,7 @@ class TypeIntelligentMailBarcode implements TypeInterface
     /**
      * Reverse unsigned short value
      *
-     * @param $num (int) value to reversr
+     * @param int $num value to reverse
      * @return int reversed value
      * @protected
      */
