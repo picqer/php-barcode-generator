@@ -30,6 +30,10 @@ abstract class TypeEanUpcBase implements TypeInterface
 
         $length = $this->length;
 
+        if (strlen($code) > $length) {
+            throw new InvalidLengthException('Barcode is longer than ' . $length . ' digits.');
+        }
+
         $dataLength = $length - 1;
 
         // Add zero padding in front
