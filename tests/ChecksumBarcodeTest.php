@@ -3,6 +3,7 @@
 use PHPUnit\Framework\TestCase;
 use Picqer\Barcode\Exceptions\BarcodeException;
 use Picqer\Barcode\Exceptions\InvalidCheckDigitException;
+use Picqer\Barcode\Exceptions\InvalidLengthException;
 use Picqer\Barcode\Types\TypeEan13;
 use Picqer\Barcode\Types\TypeInterface;
 use Picqer\Barcode\Types\TypeITF14;
@@ -51,6 +52,12 @@ class ChecksumBarcodeTest extends TestCase
                 $this->assertTrue(false, sprintf('Exception was not thrown for barcode "%s".', $invalidBarcode));
             }
         }
+    }
+
+    public function testEan13RejectsAnExtraDigit()
+    {
+        $this->expectException(InvalidLengthException::class);
+        (new TypeEan13())->getBarcode('08123172389739');
     }
 
     private function getBarcodeType(string $typeClass): TypeInterface
